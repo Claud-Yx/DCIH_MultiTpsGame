@@ -19,6 +19,9 @@ public:
 	// Sets default values for this component's properties
 	UYGC_InputSystemManager();
 
+protected:
+	virtual void InitializeComponent() override;
+	
 public:
 	UFUNCTION( BlueprintCallable, Category = "Input" )
 	void ClearImc();
@@ -44,6 +47,8 @@ public:
 	UFUNCTION( BlueprintCallable, Category = "Input" )
 	UInputAction* GetIa( EYG_InputAction Name );
 
+	void SetPlayer(class APlayerController* NewOwnerPlayer);
+
 protected:
 	UPROPERTY( BlueprintReadOnly, EditDefaultsOnly, Category = "Input", Meta = (AllowPrivateAccess = "true") )
 	TObjectPtr<class UYGDAB_InputDefinition> InputDefinition;
@@ -53,5 +58,5 @@ protected:
 	UEnhancedInputComponent* CachedInputComponent;
 
 	UPROPERTY()
-	TObjectPtr<class APlayerController> OwnerPlayer;
+	TWeakObjectPtr<class APlayerController> OwnerPlayer;
 };

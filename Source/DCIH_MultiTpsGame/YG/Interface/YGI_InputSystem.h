@@ -8,6 +8,10 @@
 #include "YG/Enum/YGE_InputSystem.h"
 #include "YGI_InputSystem.generated.h"
 
+#define IF_IMPLEMENTS_InputSystem(ObjectName) if (ObjectName->Implements<UYGI_InputSystem>())
+#define INTERFACE_InputSystem_AddImc(ObjectName, ImcIndex, Priority, Options) IYGI_InputSystem::Execute_AddImc(ObjectName, ImcIndex, Priority, Options)
+#define INTERFACE_InputSystem_GetIa(ObjectName, IaName) IYGI_InputSystem::Execute_GetIa(ObjectName, IaName)
+
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI, Blueprintable)
 class UYGI_InputSystem : public UInterface

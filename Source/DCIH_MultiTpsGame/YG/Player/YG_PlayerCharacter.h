@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InputActionValue.h"
 #include "Character/MT_Character.h"
 #include "YG_PlayerCharacter.generated.h"
 
@@ -18,6 +19,10 @@ public:
 	AYG_PlayerCharacter();
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+
+protected:
+	void MoveOnTps(const FInputActionValue& Value);
+	void LookOnTps(const FInputActionValue& Value);
 	
 protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Components", meta=(AllowPrivateAccess=true))

@@ -16,9 +16,14 @@ UYGC_InputSystemManager::UYGC_InputSystemManager()
 {
 }
 
+void UYGC_InputSystemManager::InitializeComponent()
+{
+	Super::InitializeComponent();
+}
+
 void UYGC_InputSystemManager::ClearImc()
 {
-	IF_EILPS(GetPlayerController())
+	IF_EILPS(OwnerPlayer)
 	{
 		Subsystem->ClearAllMappings();
 	}
@@ -27,7 +32,7 @@ void UYGC_InputSystemManager::ClearImc()
 void UYGC_InputSystemManager::AddImc(EYG_InputMappingContext ImcIndex, int32 Priority,
                                      const FModifyContextOptions& Options)
 {
-	IF_EILPS(GetPlayerController())
+	IF_EILPS(OwnerPlayer)
 	{
 		if (auto Imc = GetImc(ImcIndex))
 		{
@@ -38,7 +43,7 @@ void UYGC_InputSystemManager::AddImc(EYG_InputMappingContext ImcIndex, int32 Pri
 
 bool UYGC_InputSystemManager::RemoveImc(EYG_InputMappingContext ImcIndex, const FModifyContextOptions& Options)
 {
-	IF_EILPS(GetPlayerController())
+	IF_EILPS(OwnerPlayer)
 	{
 		if (HasImc(ImcIndex))
 		{
@@ -46,13 +51,13 @@ bool UYGC_InputSystemManager::RemoveImc(EYG_InputMappingContext ImcIndex, const 
 			return true;
 		}
 	}
-
+	
 	return false;
 }
 
 bool UYGC_InputSystemManager::HasImc(EYG_InputMappingContext ImcIndex)
 {
-	IF_EILPS(GetPlayerController())
+	IF_EILPS(OwnerPlayer)
 	{
 		if (auto Imc = GetImc(ImcIndex))
 		{
@@ -65,27 +70,23 @@ bool UYGC_InputSystemManager::HasImc(EYG_InputMappingContext ImcIndex)
 
 void UYGC_InputSystemManager::ChangeInputModeGameOnly(bool bConsumeCaptureMouseDown, bool bShowMouseCursor)
 {
-	auto PlayerController = GetPlayerController();
-
-	PlayerController->bShowMouseCursor = false;
+	OwnerPlayer->bShowMouseCursor = false;
 	FInputModeGameOnly InputMode;
 	InputMode.SetConsumeCaptureMouseDown( bConsumeCaptureMouseDown );
-	PlayerController->SetShowMouseCursor( bShowMouseCursor );
-	PlayerController->SetInputMode( InputMode );
+	OwnerPlayer->SetShowMouseCursor( bShowMouseCursor );
+	OwnerPlayer->SetInputMode( InputMode );
 }
 
 void UYGC_InputSystemManager::ChangeInputModeUiOnly(UUserWidget* TargetWidget, EMouseLockMode InMouseLockMode,
                                                     bool bHideCursorDuringCapture)
 {
-	auto PlayerController = GetPlayerController();
-
-	PlayerController->bShowMouseCursor = true;
+	OwnerPlayer->bShowMouseCursor = true;
 
 	FInputModeGameAndUI InputMode;
 	InputMode.SetWidgetToFocus( TargetWidget->TakeWidget() );
 	InputMode.SetLockMouseToViewportBehavior( InMouseLockMode );
 	InputMode.SetHideCursorDuringCapture( bHideCursorDuringCapture );
-	PlayerController->SetInputMode( InputMode );
+	OwnerPlayer->SetInputMode( InputMode );
 }
 
 UInputMappingContext* UYGC_InputSystemManager::GetImc(EYG_InputMappingContext Name)
@@ -98,4 +99,10 @@ UInputAction* UYGC_InputSystemManager::GetIa(EYG_InputAction Name)
 {
 	check( InputDefinition );
 	return InputDefinition->GetIa( Name );
+}
+
+void UYGC_InputSystemManager::SetPlayer(class APlayerController* NewOwnerPlayer)
+{
+	OwnerPlayer = NewOwnerPlayer;
+	check( OwnerPlayer.IsValid() );
 }
