@@ -24,5 +24,6 @@ enum class EYG_InputAction : uint8
 	FireGun,
 	Interaction,
 	Jump,
-	TpsMove
+	TpsMove,
+	TpsLook
 };

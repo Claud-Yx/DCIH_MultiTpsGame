@@ -30,6 +30,8 @@ void AYG_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		INTERFACE_InputSystem_AddImc(InController, EYG_InputMappingContext::PlayerCharacter_DefaultMovement, 0, {} );
 
 		EnhancedInputComponent->BindAction(INTERFACE_InputSystem_GetIa(InController, EYG_InputAction::TpsMove), ETriggerEvent::Triggered, this, &ThisClass::MoveOnTps);
+		EnhancedInputComponent->BindAction(INTERFACE_InputSystem_GetIa(InController, EYG_InputAction::TpsLook), ETriggerEvent::Triggered, this, &ThisClass::LookOnTps);
+		
 	}
 
 }
