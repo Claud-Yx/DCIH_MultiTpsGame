@@ -4,22 +4,24 @@
 
 AWeaponBase::AWeaponBase()
 {
-    Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
-    SetRootComponent(Mesh);
+    mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
+    SetRootComponent(mesh);
+
+	weaponState = EWeaponState::Idle;
 }
 
 void AWeaponBase::BeginPlay()
 {
     Super::BeginPlay();
 
-    if (APawn* P = Cast<APawn>(GetOwner()))
-    {
-        OwningPawn = P;
-    }
-    else
-    {
-        OwningPawn.Reset();
-    }
+    //if (APawn* P = Cast<APawn>(GetOwner()))
+    //{
+    //    OwningPawn = P;
+    //}
+    //else
+    //{
+    //    OwningPawn.Reset();
+    //}
 }
 
 void AWeaponBase::SetOwner(AActor* NewOwner)
@@ -28,10 +30,10 @@ void AWeaponBase::SetOwner(AActor* NewOwner)
 
     if (APawn* P = Cast<APawn>(NewOwner))
     {
-        OwningPawn = P;
+        owningPawn = P;
     }
     else
     {
-        OwningPawn.Reset();
+        owningPawn.Reset();
     }
 }

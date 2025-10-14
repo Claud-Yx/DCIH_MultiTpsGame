@@ -6,9 +6,5 @@
 AJHGameModeBase::AJHGameModeBase()
 {
 	DefaultPawnClass = AJHCharacter::StaticClass();
-
 	PlayerControllerClass = AJHPlayerController::StaticClass();
-
-	HUDClass = nullptr;
-
 }

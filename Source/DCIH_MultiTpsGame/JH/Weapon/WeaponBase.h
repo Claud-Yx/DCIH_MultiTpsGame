@@ -7,40 +7,54 @@
 class USkeletalMeshComponent;
 class APawn;
 
+// 파일로 따로
+// ============================================
 UENUM(BlueprintType)
 enum class EWeaponState : uint8
 {
     Idle,
-    Using,
-    Reloading,
-    Equipping
+    Firing,
+    Reloading
 };
 
-UCLASS()
+// ============================================
+
+UCLASS(Abstract)
 class DCIH_MULTITPSGAME_API AWeaponBase : public AActor
 {
     GENERATED_BODY()
 
-public:
-    AWeaponBase();
-
-    UFUNCTION(BlueprintPure, Category = "Weapon|State")
-    EWeaponState GetWeaponState() const { return WeaponState; }
-    
-    virtual void SetOwner(AActor* NewOwner) override;
-
-protected:
-    virtual void BeginPlay() override;
-
-
-    void SetWeaponState(EWeaponState NewState) { WeaponState = NewState; }
-
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-    USkeletalMeshComponent* Mesh;
+    TObjectPtr<class USkeletalMeshComponent> mesh;
 
-    UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Weapon|State")
-    EWeaponState WeaponState = EWeaponState::Idle;
+    //굳이. 다른 방법
+    UPROPERTY()
+    TWeakObjectPtr<APawn> owningPawn;
 
-    TWeakObjectPtr<APawn> OwningPawn;
+    UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "State")
+    EWeaponState weaponState = EWeaponState::Idle;
+
+
+
+
+protected:
+
+    AWeaponBase();
+
+    virtual void BeginPlay() override;
+
+    
+    UFUNCTION(BlueprintPure, Category = "State")
+    EWeaponState GetWeaponState() const { return weaponState; }
+    
+    void SetWeaponState(EWeaponState newState) { weaponState = newState; }
+
+public:
+    virtual void SetOwner(AActor* NewOwner) override;
+
+    UFUNCTION(BlueprintCallable, Category = "Weapon")
+    virtual void Use() PURE_VIRTUAL(AWeaponBase::Use, );
+
+	FORCEINLINE USkeletalMeshComponent* GetMesh() const { return mesh; }
 };

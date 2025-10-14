@@ -14,6 +14,6 @@ public class DCIH_MultiTpsGame : ModuleRules
 		});
 
 		PublicDependencyModuleNames.AddRange(new string[] { 
-			"Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput" });
+			"Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "UMG" });
 	}
 }

@@ -4,65 +4,72 @@
 #include "JH/Weapon/WeaponBase.h"
 #include "RangedWeaponBase.generated.h"
 
-class APawn;
-
 UCLASS(Abstract)
 class DCIH_MULTITPSGAME_API ARangedWeaponBase : public AWeaponBase
 {
 	GENERATED_BODY()
 
-public:
+
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Socket")
+	FName muzzleSocketName = "Muzzle";
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "TraceChannel")
+	TEnumAsByte<ECollisionChannel> traceChannel = ECC_Visibility;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ammo")
+	int32 curAmmo = 30;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ammo")
+	int32 maxAmmo = 30;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "TraceRange")
+	float traceRange = 20000.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage")
+	float damage = 30.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Rate")
+	float fireRate;
+
+	float lastFireTime;
+
+	FTimerHandle fireTimerHandle;
+	//UPROPERTY(EditAnywhere, Category = "Weapon|Tuning")
+	//float ReloadTime = 2.f;
+
+	// FTimerHandle ReloadTimerHandle;
+
+
+
+protected:
 	ARangedWeaponBase();
 
-	UFUNCTION(BlueprintCallable, Category = "Weapon|Fire")
-	virtual void Fire();
-
-	UFUNCTION(BlueprintCallable, Category = "Weapon|Reload")
-	void Reload();
-
-	bool CanFire() const;
-
-protected:
 	virtual void BeginPlay() override;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintPure, Category = "Fire")
+	bool CanFire() const;
+
+
+
+	UFUNCTION(BlueprintCallable, Category = "Reload")
+	void Reload();
+
+	UFUNCTION(BlueprintCallable, Category = "Reload")
 	void FinishReload();
 
+	UFUNCTION(BlueprintPure, Category = "Fire")
 	FVector GetMuzzleLocation() const;
 
+	UFUNCTION(BlueprintPure, Category = "Fire")
 	FVector GetAimPoint() const;
 
-	FVector GetShotDirection(FVector& OutMuzzleLoc, FVector& OutTraceEnd) const;
+	//UFUNCTION(BlueprintPure, Category = "Fire")
+	//FVector GetShotDirection() const;
 
+public:
+	UFUNCTION(BlueprintCallable, Category = "Fire")
+	virtual void Fire();	// °¡»ó ÇÔ¼ö
 
-protected:
-	// ===========================
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon|Sockets")
-	FName MuzzleSocketName = "Muzzle";
-
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon|Trace")
-	TEnumAsByte<ECollisionChannel> TraceChannel = ECC_Visibility;
-
-	// ===========================
-	// ½ºÅÈ
-	// ===========================
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Stats")
-	float TraceRange = 20000.f;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Stats")
-	float Damage = 30.f;
-
-	// ===========================
-	// Åº¾à
-	// ===========================
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Ammo")
-	int32 Ammo = 30;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Ammo")
-	int32 MaxAmmo = 30;
-	UPROPERTY(EditAnywhere, Category = "Weapon|Tuning")
-	float ReloadTime = 2.f;
-
-protected:
-	FTimerHandle ReloadTimerHandle;
+	virtual void Use() override { Fire(); }
 };

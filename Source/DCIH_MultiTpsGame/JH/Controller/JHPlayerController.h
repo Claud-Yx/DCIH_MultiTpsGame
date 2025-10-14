@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -25,6 +23,33 @@ protected:
     virtual void SetupInputComponent() override;
 
 private:
+    void CacheCharacter();
+	void InitializeUIManager();
+    void BindHealthComponentToUI();
+    
+    // ===== Input Callbacks =====
+    void AddDefaultMappingContext();
+    void OnMove(const FInputActionValue& Value);
+    void OnLook(const FInputActionValue& Value);
+    void OnJumpStarted();
+    void OnJumpCompleted();
+    void OnSprintStarted();
+    void OnSprintCompleted();
+    void OnFire();
+
+
+
+private:
+    TWeakObjectPtr<AJHCharacter> CachedCharacter;
+
+	// ===== UI =====
+    UPROPERTY()
+    TObjectPtr<class UUIManager> UIManager;
+
+    UPROPERTY(EditDefaultsOnly, Category = "UI")
+    TSubclassOf<class UUIManager> UIManagerClass;
+
+    //===== Input =====
     UPROPERTY(EditDefaultsOnly, Category = "Input|Mapping", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UInputMappingContext> IMC_Default;
 
@@ -42,18 +67,4 @@ private:
 
     UPROPERTY(EditDefaultsOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UInputAction> IA_Fire;
-
-    TWeakObjectPtr<AJHCharacter> CachedCharacter;
-
-    // 입력 콜백
-    void OnMove(const FInputActionValue& Value);
-    void OnLook(const FInputActionValue& Value);
-    void OnJumpStarted();
-    void OnJumpCompleted();
-    void OnSprintStarted();
-    void OnSprintCompleted();
-	void OnFire();
-
-    void CacheControlledCharacter();
-    void AddDefaultMappingContext();
 };

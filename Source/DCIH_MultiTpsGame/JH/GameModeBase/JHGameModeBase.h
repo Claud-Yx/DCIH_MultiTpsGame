@@ -4,9 +4,6 @@
 #include "GameFramework/GameModeBase.h"
 #include "JHGameModeBase.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class DCIH_MULTITPSGAME_API AJHGameModeBase : public AGameModeBase
 {
