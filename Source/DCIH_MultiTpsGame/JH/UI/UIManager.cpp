@@ -29,3 +29,8 @@ void UUIManager::OnHealthChanged(float Current, float Max)
 {
     MainHUD->UpdateHealthBar(Current, Max);
 }
+
+//void UUIManager::OnSatminaChanged(float Current, float Max)
+//{
+//	//MainHUD->UpdateStaminaBar(Current, Max);
+//}

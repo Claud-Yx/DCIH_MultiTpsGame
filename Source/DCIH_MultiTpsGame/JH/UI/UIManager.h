@@ -19,10 +19,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "UI")
     void OnHealthChanged(float Current, float Max);
 
-    //void OnAmmoChanged(int32 CurrentAmmo, int32 MaxAmmo);
+	// void OnSatminaChanged(float Current, float Max);
 
-    //UFUNCTION(BlueprintCallable, Category = "UI")
-    //void ToggleInventory();
+    // void OnAmmoChanged(int32 CurrentAmmo, int32 MaxAmmo);
+
+    // UFUNCTION(BlueprintCallable, Category = "UI")
+    // void ToggleInventory();
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "UI")

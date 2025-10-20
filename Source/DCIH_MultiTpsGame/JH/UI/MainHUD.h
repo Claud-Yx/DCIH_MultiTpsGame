@@ -16,4 +16,7 @@ public:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UHealthWidget> WBP_CharacterHealthWidget;
+
+	//UPROPERTY(meta = (BindWidget))
+	//TObjectPtr<class UStaminaWidget> WBP_StaminaWidget
 };

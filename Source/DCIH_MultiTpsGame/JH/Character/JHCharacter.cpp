@@ -266,14 +266,16 @@ void AJHCharacter::TurnInPlace(float DeltaTime)
 {
 	UE_LOG(LogTemp, Warning, TEXT("AO_Yaw : %f"), AO_Yaw);
 	UE_LOG(LogTemp, Warning, TEXT("TurningInPlace : %d"), (uint8)TurningInPlace);
+
 	if (AO_Yaw > 90.f)
 	{
-		TurningInPlace = ETurnInPlace::ETIP_Right;
+		// TurningInPlace = ETurnInPlace::ETIP_Right;
 	}
 	else if (AO_Yaw<-90.f)
 	{
-		TurningInPlace = ETurnInPlace::ETIP_Left;
+		// TurningInPlace = ETurnInPlace::ETIP_Left;
 	}
+
 	if (TurningInPlace != ETurnInPlace::ETIP_NotTurning)
 	{
 		FRotator CurrentRotation = GetActorRotation();

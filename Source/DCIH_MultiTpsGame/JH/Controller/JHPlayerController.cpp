@@ -13,6 +13,8 @@ AJHPlayerController::AJHPlayerController()
 	bShowMouseCursor = false;
 	bEnableClickEvents = false;
 	bEnableMouseOverEvents = false;
+
+
 }
 
 
@@ -22,14 +24,20 @@ void AJHPlayerController::BeginPlay()
 	Super::BeginPlay();
 
 	AddDefaultMappingContext();
-	CacheCharacter();
 
-	InitializeUIManager();
+	// InitializeUIManager();
+
 }
 
 void AJHPlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
+	// AddDefaultMappingContext();
+	CacheCharacter();
+
+	InitializeUIManager();
+
+	BindHealthComponentToUI();
 
 }
 
@@ -84,6 +92,7 @@ void AJHPlayerController::CacheCharacter()
 
 void AJHPlayerController::InitializeUIManager()
 {
+	if (UIManager) return;
 	if (!UIManagerClass) return;
 
 	UIManager = NewObject<UUIManager>(this, UIManagerClass);
@@ -92,7 +101,7 @@ void AJHPlayerController::InitializeUIManager()
 	{
 		UIManager->Init(this);
 
-		BindHealthComponentToUI();
+		// BindHealthComponentToUI();
 	}
 
 }
