@@ -14,7 +14,7 @@ AJHPlayerController::AJHPlayerController()
 	bEnableClickEvents = false;
 	bEnableMouseOverEvents = false;
 
-
+	// UIManager = CreateDefaultSubObject <UIManager>(TEXT("UIManager"));
 }
 
 
@@ -76,7 +76,7 @@ void AJHPlayerController::SetupInputComponent()
 
 		if (ensureMsgf(IA_Fire, TEXT("IA_Jump not assigned")))
 		{
-			EIC->BindAction(IA_Fire, ETriggerEvent::Triggered, this, &AJHPlayerController::OnFire);
+			EIC->BindAction(IA_Fire, ETriggerEvent::Triggered, this, &AJHPlayerController::OnAttack);
 		}
 	}
 }
@@ -93,6 +93,7 @@ void AJHPlayerController::CacheCharacter()
 void AJHPlayerController::InitializeUIManager()
 {
 	if (UIManager) return;
+
 	if (!UIManagerClass) return;
 
 	UIManager = NewObject<UUIManager>(this, UIManagerClass);
@@ -110,10 +111,12 @@ void AJHPlayerController::BindHealthComponentToUI()
 {
 	if (!UIManager || !CachedCharacter.IsValid()) return;
 
+	// if(CacheCharacter->healthComp)
 	if (UHealthComponent* HealthComp = CachedCharacter->FindComponentByClass<UHealthComponent>())
 	{
 		// HealthComponent의 OnHealthChanged 이벤트에 UIManager의 OnHealthChanged 함수를 바인딩
 		HealthComp->OnHealthChanged.AddDynamic(UIManager, &UUIManager::OnHealthChanged);
+
 		UIManager->OnHealthChanged(HealthComp->GetCurrentHealth(), HealthComp->GetMaxHealth());
 	}
 	else
@@ -175,8 +178,8 @@ void AJHPlayerController::OnSprintCompleted()
 		CachedCharacter->StopSprint();
 }
 
-void AJHPlayerController::OnFire()
+void AJHPlayerController::OnAttack()
 {
 	if (CachedCharacter.IsValid())
-		CachedCharacter->Fire();
+		CachedCharacter->Attack();
 }

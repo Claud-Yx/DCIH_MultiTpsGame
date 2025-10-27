@@ -1,39 +1,121 @@
 #include "JH/Weapon/WeaponBase.h"
 #include "Components/SkeletalMeshComponent.h"
-#include "GameFramework/Pawn.h"
+#include "Components/SphereComponent.h"
+#include "GameFramework/Character.h"
+
+// IMPLEMENT_PURE_VIRTUAL(AWeaponBase, Attack, );
 
 AWeaponBase::AWeaponBase()
 {
-    mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
-    SetRootComponent(mesh);
+    MeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
+    SetRootComponent(MeshComp);
 
-	weaponState = EWeaponState::Idle;
+   CollisionComp = CreateDefaultSubobject<USphereComponent>(TEXT("PickupSphere"));
+   CollisionComp->SetupAttachment(RootComponent);
+
+   CollisionComp->SetSphereRadius(100.f);
+   CollisionComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+   CollisionComp->SetCollisionResponseToAllChannels(ECR_Ignore);
+   CollisionComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
+    WeaponState = EWeaponState::UnEquipping;
 }
 
 void AWeaponBase::BeginPlay()
 {
     Super::BeginPlay();
-
-    //if (APawn* P = Cast<APawn>(GetOwner()))
-    //{
-    //    OwningPawn = P;
-    //}
-    //else
-    //{
-    //    OwningPawn.Reset();
-    //}
 }
 
-void AWeaponBase::SetOwner(AActor* NewOwner)
+void AWeaponBase::Equip(ACharacter* Character)
 {
-    Super::SetOwner(NewOwner);
+    if (!Character) return;
 
-    if (APawn* P = Cast<APawn>(NewOwner))
+    OwnerCharacter = Character;
+    //OwnerController = Character->GetController();
+
+    SetWeaponState(EWeaponState::Equipping);
+    AttachWeaponToSocket(FName("WeaponSocket"));
+    EnablePhysics(false);
+
+    if (CollisionComp)
     {
-        owningPawn = P;
+        CollisionComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    }
+}
+
+
+void AWeaponBase::AttachWeaponToSocket(const FName& SocketName)
+{
+    if (!OwnerCharacter.Get() || !MeshComp) return;
+
+    FAttachmentTransformRules AttachRules(
+        EAttachmentRule::SnapToTarget,
+        EAttachmentRule::SnapToTarget,
+        EAttachmentRule::KeepWorld,
+        true
+    );
+
+    AttachToComponent(OwnerCharacter->GetMesh(), AttachRules, SocketName);
+}
+
+// void AWeaponBase::SetOwner(AActor* NewOwner)
+// {
+//     Super::SetOwner(NewOwner);
+// 
+//     if (APawn* P = Cast<APawn>(NewOwner))
+//     {
+//         OwnerCharacter = P;
+//     }
+//     else
+//     {
+//         OwnerCharacter.Reset();
+//     }
+// }
+
+
+void AWeaponBase::UnEquip()
+{
+    SetWeaponState(EWeaponState::UnEquipping);
+    OwnerCharacter = nullptr;
+    // OwnerController = nullptr;
+}
+void AWeaponBase::Drop()
+{
+    SetWeaponState(EWeaponState::UnEquipping);
+    DetachWeapon();
+    EnablePhysics(true);
+
+    // Enable pickup collision
+    if (CollisionComp)
+    {
+        CollisionComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+    }
+
+    OwnerCharacter = nullptr;
+    // OwnerController = nullptr;
+}
+
+
+void AWeaponBase::DetachWeapon()
+{
+    FDetachmentTransformRules DetachRules(EDetachmentRule::KeepWorld, true);
+    DetachFromActor(DetachRules);
+}
+
+void AWeaponBase::EnablePhysics(bool bEnable)
+{
+    if (!MeshComp) return;
+
+    if (bEnable)
+    {
+        MeshComp->SetSimulatePhysics(true);
+        MeshComp->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+        MeshComp->SetCollisionResponseToAllChannels(ECR_Block);
     }
     else
     {
-        owningPawn.Reset();
+        MeshComp->SetSimulatePhysics(false);
+        MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+        MeshComp->SetCollisionResponseToAllChannels(ECR_Ignore);
     }
 }

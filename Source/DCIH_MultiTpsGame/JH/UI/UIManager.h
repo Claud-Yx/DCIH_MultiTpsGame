@@ -13,7 +13,8 @@ public:
 	UUIManager();
 
     void Init (APlayerController* Controller);
-
+	
+	// private:
 	void InitMainHUD(APlayerController* Controller);
 
 	UFUNCTION(BlueprintCallable, Category = "UI")

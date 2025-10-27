@@ -9,43 +9,50 @@ class DCIH_MULTITPSGAME_API ARangedWeaponBase : public AWeaponBase
 {
 	GENERATED_BODY()
 
+public:
+	ARangedWeaponBase();
+protected:
+	virtual void BeginPlay() override;
+
+
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Socket")
-	FName muzzleSocketName = "Muzzle";
+	FName MuzzleSocketName;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "TraceChannel")
-	TEnumAsByte<ECollisionChannel> traceChannel = ECC_Visibility;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ammo")
-	int32 curAmmo = 30;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ammo")
-	int32 maxAmmo = 30;
+	UPROPERTY(EditAnywhere, Category = "Trace")
+	TEnumAsByte<ECollisionChannel> TraceChannel;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "TraceRange")
-	float traceRange = 20000.f;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage")
-	float damage = 30.f;
+	float TraceRange;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Rate")
-	float fireRate;
+	float FireRate;
+	float LastFireTime;
+	FTimerHandle FireTimerHandle;
 
-	float lastFireTime;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Fire", meta = (ClampMin = "0.1", ClampMax = "10.0"))
+	float ReloadTime;
+	FTimerHandle ReloadTimerHandle;
 
-	FTimerHandle fireTimerHandle;
-	//UPROPERTY(EditAnywhere, Category = "Weapon|Tuning")
-	//float ReloadTime = 2.f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ammo")
+	int32 CurAmmo;
 
-	// FTimerHandle ReloadTimerHandle;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ammo")
+	int32 MaxAmmo;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage")
+	float Damage;
 
 
 
 protected:
-	ARangedWeaponBase();
+	
+	UFUNCTION(BlueprintPure, Category = "Fire")
+	FVector GetMuzzleLocation() const;
 
-	virtual void BeginPlay() override;
+	UFUNCTION(BlueprintPure, Category = "Fire")
+	FVector GetAimPoint() const;
 
 	UFUNCTION(BlueprintPure, Category = "Fire")
 	bool CanFire() const;
@@ -58,18 +65,11 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Reload")
 	void FinishReload();
 
-	UFUNCTION(BlueprintPure, Category = "Fire")
-	FVector GetMuzzleLocation() const;
 
-	UFUNCTION(BlueprintPure, Category = "Fire")
-	FVector GetAimPoint() const;
-
-	//UFUNCTION(BlueprintPure, Category = "Fire")
-	//FVector GetShotDirection() const;
 
 public:
-	UFUNCTION(BlueprintCallable, Category = "Fire")
-	virtual void Fire();	// 가상 함수
+	virtual void Attack() override { Fire(); }
 
-	virtual void Use() override { Fire(); }
+	UFUNCTION(BlueprintCallable, Category = "Fire")
+	virtual void Fire();
 };

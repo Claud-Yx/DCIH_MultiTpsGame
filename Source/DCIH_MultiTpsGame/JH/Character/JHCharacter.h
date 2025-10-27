@@ -17,100 +17,137 @@ protected:
 	virtual void BeginPlay() override;
 public:
 	virtual void Tick(float DeltaTime) override;
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 
 
-	// Initialization
-	void InitializeCharacter();
-	void InitializeCamera();
-	void InitializeHealth();
-	void InitializeWeapon();
+	// ========== Component ==========
+private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class USpringArmComponent> SpringArmComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UCameraComponent> CameraComp;
+public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<class UHealthComponent> HealthComp;
 
 
+	//========= Input ==========
+public:
+	UFUNCTION(BlueprintCallable, Category = "Input")
+	void Move(const FVector2D& Axis);
+	UFUNCTION(BlueprintCallable, Category = "Input")
+	void Look(const FVector2D& Axis);
+	UFUNCTION(BlueprintCallable, Category = "Input")
+	void StartJump();
+	UFUNCTION(BlueprintCallable, Category = "Input")
+	void StopJump();
+	UFUNCTION(BlueprintCallable, Category = "Input")
+	void StartSprint();
+	UFUNCTION(BlueprintCallable, Category = "Input")
+	void StopSprint();
+	UFUNCTION(BlueprintCallable, Category = "Input")
+	void Attack();
 
-	// State
+
+	// ========= State ==========
+private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
+	ECharacterState CurrentState;
+public:
 	UFUNCTION(BlueprintCallable, Category = "State")
 	void SetState(ECharacterState NewState);
 
 	UFUNCTION(BlueprintCallable, Category = "State")
-	ECharacterState GetState() const { return CurrentState; }
-
+	FORCEINLINE ECharacterState GetState() const { return CurrentState; }
+	
+	UFUNCTION(BlueprintPure, Category = "State")
 	bool CanFire() const;
 
 
+	//  ========= Movement ==========
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Movement", meta = (ClampMin = "150.0", ClampMax = "1200.0"))
+	float WalkSpeed;
 
-	// Input
-	void Move(const FVector2D& Axis);
-	void Look(const FVector2D& Axis);
-	void StartJump();
-	void StopJump();
-	void StartSprint();
-	void StopSprint();
-	void Fire();
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Movement", meta = (ClampMin = "150.0", ClampMax = "1600.0"))
+	float SprintSpeed;
 
-
-
-
-protected:
-
-
-	void AimOffset(float DeltaTime);
-
-
-
-public	:
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-
-private:
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class USpringArmComponent> SpringArm;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UCameraComponent> Camera;
-public:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	TObjectPtr<class UHealthComponent> healthComp;
-private:
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<class AWeaponBase> EquippedWeapon;
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
-	ECharacterState CurrentState = ECharacterState::Idle;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Movement", meta = (ClampMin = "150.0", ClampMax = "1200.0"))
-	float WalkSpeed = 400.f;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Movement", meta = (ClampMin = "150.0", ClampMax = "1600.0"))
-	float SprintSpeed = 700.f;
-
-	
 	void ApplySpeed(float NewSpeed);
 
+
+
+	// ========= Health ==========
+
+public:
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	void ApplyDamages(float DamageAmount);
+
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	void Heal(float HealAmount);
+
+
+	// ========== Weapon ==========
+private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class AWeaponBase> WeaponClass;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class AWeaponBase> EquippedWeapon;
+	
+public:
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void EquipWeapon(AWeaponBase* Weapon);
+
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void UnEquipWeapon();
+
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void DropWeapon();
+
+	UFUNCTION(BlueprintPure, Category = "Weapon")
+	FORCEINLINE AWeaponBase* GetEquippedWeapon() { return EquippedWeapon; }
+
+
+
+	// ========== Aim Offset ==========
+private:
 	FRotator StartingAimRotation;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Aim Offset", meta = (AllowPrivateAccess = "true"))
 	float AO_Yaw;
-	float InterpAO_Yaw;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Aim Offset", meta = (AllowPrivateAccess = "true"))
 	float AO_Pitch;
 
+	float InterpAO_Yaw;
+
+	void CalculateAimOffset(float DeltaTime);
+
+public:
+	UFUNCTION(BlueprintPure, Category = "Aim Offset")
+	FORCEINLINE float GetAO_Yaw() const { return AO_Yaw; }
+	UFUNCTION(BlueprintPure, Category = "Aim Offset")
+	FORCEINLINE float GetAO_Pitch() const { return AO_Pitch; }
+
+
+
+	//========== Turn In Place ==========
+private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Turn In Place", meta = (AllowPrivateAccess = "true"))
 	ETurnInPlace TurningInPlace;
+
 	void TurnInPlace(float DeltaTime);
 
 public:
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-	TSubclassOf<class AWeaponBase> WeaponClass;
-	
-	UFUNCTION(BlueprintCallable, Category = "Health")
-	void GetDamage(float damageAmount);
-
-	FORCEINLINE float GetAO_Yaw() const { return AO_Yaw; }
-	FORCEINLINE float GetAO_Pitch() const {return AO_Pitch;}
-
-	FORCEINLINE AWeaponBase*  GetEquippedWeapon() { return EquippedWeapon; }
-	
-
+	UFUNCTION(BlueprintPure, Category = "Turn In Place")
 	FORCEINLINE ETurnInPlace GetTurningInPlace() const { return TurningInPlace; }
 
-	// class EquipedWeapon* GetEquippedWeapon() const { return EquippedWeapon; }
+
+
+		// ========== Initialize ==========
+private:
+	void InitializeCharacter();
+	void InitializeCamera();
+	void InitializeWeapon();
+	// void InitializeHealth();
 };

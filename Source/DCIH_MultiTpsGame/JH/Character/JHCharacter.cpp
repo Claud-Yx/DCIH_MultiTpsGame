@@ -26,7 +26,15 @@ AJHCharacter::AJHCharacter()
 	InitializeCharacter();
 	InitializeCamera();
 
-	healthComp = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComp"));
+	HealthComp = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComp"));
+
+	WalkSpeed = 400.f;
+	SprintSpeed = 700.f;
+	CurrentState = ECharacterState::Idle;
+	TurningInPlace = ETurnInPlace::ETIP_NotTurning;
+	AO_Yaw = 0.f;
+	AO_Pitch = 0.f;
+	InterpAO_Yaw = 0.f;
 }
 
 void AJHCharacter::BeginPlay()
@@ -35,30 +43,14 @@ void AJHCharacter::BeginPlay()
 
 	StartingAimRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
 	
-	TurningInPlace = ETurnInPlace::ETIP_NotTurning;
-
-	if (UWorld* World = GetWorld())
-	{
-		// 라이플 스폰
-		EquippedWeapon = World->SpawnActor<AWeaponBase>(WeaponClass);
-		if (EquippedWeapon)
-		{
-			EquippedWeapon->SetOwner(this);
-
-			EquippedWeapon->AttachToComponent(
-				GetMesh(),
-				FAttachmentTransformRules::SnapToTargetNotIncludingScale,
-				TEXT("WeaponSocket")
-			);
-		}
-	}
+	InitializeWeapon();
 }
 
 void AJHCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	AimOffset(DeltaTime);
+	CalculateAimOffset(DeltaTime);
 
 	if (GetVelocity().Size() <= 5.f)
 	{
@@ -93,18 +85,74 @@ void AJHCharacter::InitializeCharacter()
 
 void AJHCharacter::InitializeCamera()
 {
-	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
-	SpringArm->SetupAttachment(RootComponent);
-	SpringArm->TargetArmLength = 350.f;
-	SpringArm->bUsePawnControlRotation = true;
+	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+	SpringArmComp->SetupAttachment(RootComponent);
+	SpringArmComp->TargetArmLength = 350.f;
+	SpringArmComp->bUsePawnControlRotation = true;
 	//SpringArm->bInheritPitch = true;
 	//SpringArm->bInheritYaw = true;
 	//SpringArm->bInheritRoll = false;
-	SpringArm->SocketOffset = FVector(0.f, 50.f, 50.f);
+	SpringArmComp->SocketOffset = FVector(0.f, 50.f, 50.f);
 
-	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
+	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
+	CameraComp->SetupAttachment(SpringArmComp, USpringArmComponent::SocketName);
 	// Camera->bUsePawnControlRotation = false; // 카메라는 붐만 따라감
+}
+
+void AJHCharacter::EquipWeapon(AWeaponBase* Weapon)
+{
+	if (!Weapon) return;
+
+	// Unequip current weapon
+	if (EquippedWeapon)
+	{
+		UnEquipWeapon();
+	}
+
+	EquippedWeapon = Weapon;
+	EquippedWeapon->Equip(this);
+}
+
+void AJHCharacter::UnEquipWeapon()
+{
+	if (!EquippedWeapon) return;
+
+	EquippedWeapon->UnEquip();
+	EquippedWeapon = nullptr;
+}
+
+void AJHCharacter::DropWeapon()
+{
+	if (!EquippedWeapon) return;
+
+	EquippedWeapon->Drop();
+	EquippedWeapon = nullptr;
+}
+
+void AJHCharacter::InitializeWeapon()
+{
+	if (UWorld* World = GetWorld())
+	{
+		// 라이플 스폰
+		EquippedWeapon = World->SpawnActor<AWeaponBase>(WeaponClass);
+
+		AWeaponBase* SpawnedWeapon = World->SpawnActor<AWeaponBase>(WeaponClass);
+		if (SpawnedWeapon)
+		{
+			EquipWeapon(SpawnedWeapon);
+		}
+
+		if (EquippedWeapon)
+		{
+			EquippedWeapon->SetOwner(this);
+
+			EquippedWeapon->AttachToComponent(
+				GetMesh(),
+				FAttachmentTransformRules::SnapToTargetNotIncludingScale,
+				TEXT("WeaponSocket")
+			);
+		}
+	}
 }
 
 void AJHCharacter::Move(const FVector2D& Axis)
@@ -159,7 +207,7 @@ void AJHCharacter::StartSprint()
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
 	// 카메라는 그대로 마우스 회전 허용
-	SpringArm->bUsePawnControlRotation = true; 
+	SpringArmComp->bUsePawnControlRotation = true;
 	
 	UE_LOG(LogTemp, Warning, TEXT("Sprint Mode → Yaw: %s, Orient: %s"),
 		bUseControllerRotationYaw ? TEXT("true") : TEXT("false"),
@@ -176,7 +224,7 @@ void AJHCharacter::StopSprint()
 	GetCharacterMovement()->bOrientRotationToMovement = false;
 }
 
-void AJHCharacter::AimOffset(float DeltaTime)
+void AJHCharacter::CalculateAimOffset(float DeltaTime)
 {
 	FVector Velocity = GetVelocity();
 	Velocity.Z = 0;
@@ -213,7 +261,7 @@ void AJHCharacter::AimOffset(float DeltaTime)
 	AO_Pitch = GetBaseAimRotation().Pitch;
 }
 
-void AJHCharacter::Fire()
+void AJHCharacter::Attack()
 {
 	if (!CanFire()) return;
 
@@ -222,7 +270,7 @@ void AJHCharacter::Fire()
 
 	if (EquippedWeapon)
 	{
-		EquippedWeapon->Use();
+		EquippedWeapon->Attack();
 
 		SetState(ECharacterState::Shooting);
 	}
@@ -299,11 +347,11 @@ void AJHCharacter::TurnInPlace(float DeltaTime)
 	}
 }
 
-void AJHCharacter::GetDamage(float damageAmount)
+void AJHCharacter::ApplyDamages(float damageAmount)
 {
 	// curHealth -= 10.f;
 	// healthPercent = curHealth / maxHealth;
 
-	healthComp->ApplyDamage(damageAmount);
+	HealthComp->ApplyDamage(damageAmount);
 
 }

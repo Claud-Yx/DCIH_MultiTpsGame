@@ -1,4 +1,5 @@
 #include "JH/Components/HealthComponent.h"
+#include "JH/Character/JHCharacter.h"
 
 UHealthComponent::UHealthComponent()
 {

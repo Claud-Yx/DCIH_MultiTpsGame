@@ -7,12 +7,15 @@
 class USkeletalMeshComponent;
 class APawn;
 
-// 파일로 따로
+// 파일로 따로 // 값만 알고 나머지는 외부에서 보내줌
 // ============================================
 UENUM(BlueprintType)
 enum class EWeaponState : uint8
 {
-    Idle,
+    UnEquipping,
+    Equipping,
+    Holstering,
+
     Firing,
     Reloading
 };
@@ -24,37 +27,74 @@ class DCIH_MULTITPSGAME_API AWeaponBase : public AActor
 {
     GENERATED_BODY()
 
-protected:
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-    TObjectPtr<class USkeletalMeshComponent> mesh;
-
-    //굳이. 다른 방법
-    UPROPERTY()
-    TWeakObjectPtr<APawn> owningPawn;
-
-    UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "State")
-    EWeaponState weaponState = EWeaponState::Idle;
-
-
-
-
-protected:
-
+public:
     AWeaponBase();
 
+protected:
     virtual void BeginPlay() override;
 
-    
-    UFUNCTION(BlueprintPure, Category = "State")
-    EWeaponState GetWeaponState() const { return weaponState; }
-    
-    void SetWeaponState(EWeaponState newState) { weaponState = newState; }
+
+
+	// ========== Components ==========
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+    TObjectPtr<class USkeletalMeshComponent> MeshComp;
+public:
+	UFUNCTION(BlueprintPure, Category = "Components")
+    FORCEINLINE USkeletalMeshComponent* GetMesh() const { return MeshComp; }
+protected:
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+    TObjectPtr<class USphereComponent> CollisionComp;
+
+
+
+	// ========== State ==========
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State")
+    EWeaponState WeaponState;
 
 public:
-    virtual void SetOwner(AActor* NewOwner) override;
+    UFUNCTION(BlueprintPure, Category = "State")
+    FORCEINLINE EWeaponState GetWeaponState() const { return WeaponState; }
+    void SetWeaponState(EWeaponState newState) { WeaponState = newState; }
+
+
+
+	// ========== Owners ==========
+protected:
+    UPROPERTY()
+    TWeakObjectPtr<class ACharacter> OwnerCharacter;
+
+    // UPROPERTY()
+    // TWeakObjectPtr<class AController> OwnerController;
+
+
+
+	// ========== Functions ==========
+public:
+    UFUNCTION(BlueprintCallable, Category = "Weapon")
+    virtual void Equip(ACharacter* Character);
 
     UFUNCTION(BlueprintCallable, Category = "Weapon")
-    virtual void Use() PURE_VIRTUAL(AWeaponBase::Use, );
+    virtual void UnEquip();
 
-	FORCEINLINE USkeletalMeshComponent* GetMesh() const { return mesh; }
+    UFUNCTION(BlueprintCallable, Category = "Weapon")
+    virtual void Drop();
+
+    //UFUNCTION(BlueprintCallable, Category = "Weapon")
+    //virtual void Attack();
+    virtual void Attack() PURE_VIRTUAL(AWeaponBase::Attack, );
+
+
+
+	// ========== Attach&Detach ==========
+protected:
+    void AttachWeaponToSocket(const FName& SocketName);
+    void DetachWeapon();
+    void EnablePhysics(bool bEnable);
+
+
+
+    // virtual void SetOwner(AActor* NewOwner) override;
+
+    // virtual void Attack() {unimplemented();}
+
 };

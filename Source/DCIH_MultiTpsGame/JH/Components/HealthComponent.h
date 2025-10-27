@@ -5,6 +5,7 @@
 #include "HealthComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHealthChangedSig, float, Current, float, Max);
+// 다이나믹 붙으면 조금 더 무거움
 
 UCLASS( ClassGroup=(HealthComponent), meta=(BlueprintSpawnableComponent) )
 class DCIH_MULTITPSGAME_API UHealthComponent : public UActorComponent

@@ -35,7 +35,7 @@ private:
     void OnJumpCompleted();
     void OnSprintStarted();
     void OnSprintCompleted();
-    void OnFire();
+    void OnAttack();
 
 
 
