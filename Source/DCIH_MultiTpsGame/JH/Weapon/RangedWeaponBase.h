@@ -14,7 +14,11 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+public:
+	virtual void Attack() override { Fire(); }
 
+	UFUNCTION(BlueprintCallable, Category = "Fire")
+	virtual void Fire();
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Socket")
@@ -65,11 +69,9 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Reload")
 	void FinishReload();
 
-
-
-public:
-	virtual void Attack() override { Fire(); }
-
 	UFUNCTION(BlueprintCallable, Category = "Fire")
-	virtual void Fire();
+	void ApplyRecoil();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
+	TSubclassOf<UCameraShakeBase> RecoilShake;
 };

@@ -87,6 +87,9 @@ void ARangedWeaponBase::Fire()
 		Reload();
 		return;
 	}
+	ApplyRecoil();
+	CurAmmo = FMath::Max(CurAmmo - 1, 0);
+
 }
 
 void ARangedWeaponBase::Reload()
@@ -116,6 +119,22 @@ void ARangedWeaponBase::FinishReload()
 	//}
 }
 
+void ARangedWeaponBase::ApplyRecoil()
+{
+	if (APlayerController* PC = Cast<APlayerController>(OwnerCharacter->GetController()))
+	{
+		if (RecoilShake)
+		{
+			PC->ClientStartCameraShake(RecoilShake);
+		}
+		else
+		{
+			// 간단한 반동 입력
+			PC->AddPitchInput(FMath::FRandRange(-1.5f, -3.0f));
+			PC->AddYawInput(FMath::FRandRange(-0.5f, 0.5f));
+		}
+	}
+}
 
 
 //// 인자 없이 그냥

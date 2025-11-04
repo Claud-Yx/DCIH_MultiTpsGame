@@ -226,12 +226,13 @@ void AJHCharacter::StopSprint()
 
 void AJHCharacter::CalculateAimOffset(float DeltaTime)
 {
-	FVector Velocity = GetVelocity();
-	Velocity.Z = 0;
+	 FVector Velocity = GetVelocity();
+	 Velocity.Z = 0;
 	float Speed = Velocity.Size();
-	bool bIsInAir = GetCharacterMovement()->IsFalling();
+	// bool bIsInAir = GetCharacterMovement()->IsFalling();
 
-	if (Speed == 0.f && !bIsInAir) // 정지 상태
+	//if (Speed == 0.f && !bIsInAir) // 정지 상태
+	if (CurrentState == ECharacterState::Idle || (CurrentState == ECharacterState::Shooting && Speed == 0.f))
 	{
 		FRotator CurrentAimRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
 		FRotator DeltaAimRotation = UKismetMathLibrary::NormalizedDeltaRotator(StartingAimRotation, CurrentAimRotation);
@@ -317,11 +318,11 @@ void AJHCharacter::TurnInPlace(float DeltaTime)
 
 	if (AO_Yaw > 90.f)
 	{
-		// TurningInPlace = ETurnInPlace::ETIP_Right;
+		TurningInPlace = ETurnInPlace::ETIP_Right;
 	}
 	else if (AO_Yaw<-90.f)
 	{
-		// TurningInPlace = ETurnInPlace::ETIP_Left;
+		TurningInPlace = ETurnInPlace::ETIP_Left;
 	}
 
 	if (TurningInPlace != ETurnInPlace::ETIP_NotTurning)
@@ -354,4 +355,9 @@ void AJHCharacter::ApplyDamages(float damageAmount)
 
 	HealthComp->ApplyDamage(damageAmount);
 
+}
+
+void AJHCharacter::Heal(float healAmount)
+{
+	HealthComp->Heal(healAmount);
 }

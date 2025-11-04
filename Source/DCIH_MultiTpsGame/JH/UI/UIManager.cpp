@@ -23,8 +23,6 @@ void UUIManager::InitMainHUD(APlayerController* Controller)
 	MainHUD->AddToViewport();
 }
 
-
-
 void UUIManager::OnHealthChanged(float Current, float Max)
 {
     MainHUD->UpdateHealthBar(Current, Max);

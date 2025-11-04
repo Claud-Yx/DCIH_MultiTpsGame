@@ -43,7 +43,6 @@ void AWeaponBase::Equip(ACharacter* Character)
     }
 }
 
-
 void AWeaponBase::AttachWeaponToSocket(const FName& SocketName)
 {
     if (!OwnerCharacter.Get() || !MeshComp) return;
@@ -72,13 +71,13 @@ void AWeaponBase::AttachWeaponToSocket(const FName& SocketName)
 //     }
 // }
 
-
 void AWeaponBase::UnEquip()
 {
     SetWeaponState(EWeaponState::UnEquipping);
     OwnerCharacter = nullptr;
     // OwnerController = nullptr;
 }
+
 void AWeaponBase::Drop()
 {
     SetWeaponState(EWeaponState::UnEquipping);
@@ -94,7 +93,6 @@ void AWeaponBase::Drop()
     OwnerCharacter = nullptr;
     // OwnerController = nullptr;
 }
-
 
 void AWeaponBase::DetachWeapon()
 {

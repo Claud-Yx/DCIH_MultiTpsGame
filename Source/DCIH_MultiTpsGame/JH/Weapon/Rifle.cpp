@@ -6,12 +6,12 @@ ARifle::ARifle()
 {
     TraceRange = 20000.f;
 
-    CurAmmo = 30;
+    CurAmmo = 300;
     MaxAmmo = 30;
     Damage = 30.f;
-    FireRate = 0.3f;
+    FireRate = 0.1f;
     LastFireTime = -FireRate; // 처음엔 바로 발사 가능하도록 초기화
-    ReloadTime = 2.0f;
+    ReloadTime = 1.0f;
 }
 
 void ARifle::Fire()
@@ -36,5 +36,4 @@ void ARifle::Fire()
     DrawDebugLine(GetWorld(), MuzzleLoc, AimPoint, FColor::Cyan, false, 2.f, 0, 1.5f);
     DrawDebugPoint(GetWorld(), AimPoint, 10.f, FColor::Red, false, 2.f);
 
-    CurAmmo = FMath::Max(CurAmmo - 1, 0);
 }
