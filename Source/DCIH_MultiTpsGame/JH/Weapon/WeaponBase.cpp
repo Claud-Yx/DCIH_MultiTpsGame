@@ -7,6 +7,10 @@
 
 AWeaponBase::AWeaponBase()
 {
+    // PrimaryActorTick.bCanEverTick = true;
+
+
+
     MeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
     SetRootComponent(MeshComp);
 
@@ -25,6 +29,11 @@ void AWeaponBase::BeginPlay()
 {
     Super::BeginPlay();
 }
+
+// void AWeaponBase::Tick(float DeltaTime)
+// {
+// 	// Super::Tick(DeltaTime);
+// }
 
 void AWeaponBase::Equip(ACharacter* Character)
 {

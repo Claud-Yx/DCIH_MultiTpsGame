@@ -4,6 +4,8 @@
 
 ARifle::ARifle()
 {
+    // PrimaryActorTick.bCanEverTick = true;
+
     TraceRange = 20000.f;
 
     CurAmmo = 300;
@@ -13,6 +15,11 @@ ARifle::ARifle()
     LastFireTime = -FireRate; // 처음엔 바로 발사 가능하도록 초기화
     ReloadTime = 1.0f;
 }
+
+//void ARifle::Tick(float DeltaTime)
+//{
+//    Super::Tick(DeltaTime);
+//}
 
 void ARifle::Fire()
 {

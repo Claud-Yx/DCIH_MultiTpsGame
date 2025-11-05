@@ -11,6 +11,8 @@ class DCIH_MULTITPSGAME_API ARifle : public ARangedWeaponBase
 
 public:
 	ARifle();
+public:
+	// virtual void Tick(float DeltaTime) override;
 
 	virtual void Fire() override;
 protected:

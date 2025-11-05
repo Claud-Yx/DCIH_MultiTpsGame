@@ -313,8 +313,8 @@ void AJHCharacter::ApplySpeed(float NewSpeed)
 
 void AJHCharacter::TurnInPlace(float DeltaTime)
 {
-	UE_LOG(LogTemp, Warning, TEXT("AO_Yaw : %f"), AO_Yaw);
-	UE_LOG(LogTemp, Warning, TEXT("TurningInPlace : %d"), (uint8)TurningInPlace);
+	// UE_LOG(LogTemp, Warning, TEXT("AO_Yaw : %f"), AO_Yaw);
+	// UE_LOG(LogTemp, Warning, TEXT("TurningInPlace : %d"), (uint8)TurningInPlace);
 
 	if (AO_Yaw > 90.f)
 	{

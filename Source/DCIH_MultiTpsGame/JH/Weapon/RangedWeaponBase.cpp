@@ -13,6 +13,9 @@
 
 ARangedWeaponBase::ARangedWeaponBase()
 {
+	// PrimaryActorTick.bCanEverTick = true; 
+	// SetActorTickEnabled(true);
+
 	MuzzleSocketName = "Muzzle";
 	TraceChannel = ECC_Visibility;
 }
@@ -21,6 +24,13 @@ void ARangedWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
 }
+
+// void ARangedWeaponBase::Tick(float DeltaTime)
+// {
+// 	// Super::Tick(DeltaTime);
+// 
+// 	RecoilRecovery(DeltaTime);
+// }
 
 FVector ARangedWeaponBase::GetMuzzleLocation() const
 {
@@ -87,9 +97,10 @@ void ARangedWeaponBase::Fire()
 		Reload();
 		return;
 	}
-	ApplyRecoil();
-	CurAmmo = FMath::Max(CurAmmo - 1, 0);
 
+	ApplyRecoil();
+
+	CurAmmo = FMath::Max(CurAmmo - 1, 0);
 }
 
 void ARangedWeaponBase::Reload()
@@ -121,19 +132,68 @@ void ARangedWeaponBase::FinishReload()
 
 void ARangedWeaponBase::ApplyRecoil()
 {
-	if (APlayerController* PC = Cast<APlayerController>(OwnerCharacter->GetController()))
+	float VerticalRecoil = FMath::RandRange(RecoilVerticalMin, RecoilVerticalMax);
+	float HorizontalRecoil = FMath::RandRange(RecoilHorizontalMin, RecoilHorizontalMax);
+
+	// 목표 반동값 누적
+	RecoilValue.Y += VerticalRecoil;
+	RecoilValue.X += HorizontalRecoil;
+
+
+	if (APlayerController* PC = Cast<APlayerController>(OwnerCharacter->GetInstigatorController()))
 	{
-		if (RecoilShake)
-		{
-			PC->ClientStartCameraShake(RecoilShake);
-		}
-		else
-		{
-			// 간단한 반동 입력
-			PC->AddPitchInput(FMath::FRandRange(-1.5f, -3.0f));
-			PC->AddYawInput(FMath::FRandRange(-0.5f, 0.5f));
-		}
+		PastRotation = PC->GetControlRotation();
+
+		PC->AddPitchInput(-VerticalRecoil);
+		PC->AddYawInput(HorizontalRecoil);
 	}
+
+
+
+	//if (APlayerController* PC = Cast<APlayerController>(OwnerCharacter->GetController()))
+	//{
+	//	//if (RecoilShake)
+	//	//{
+	//	//	// PC->ClientStartCameraShake(RecoilShake);
+	//	//}
+	//	//else
+	//	{
+	//		// 간단한 반동 입력
+	//		PC->AddPitchInput(FMath::FRandRange(-1.5f, -3.0f));
+	//		PC->AddYawInput(FMath::FRandRange(-0.5f, 0.5f));
+	//	}
+	//}
+}
+
+void ARangedWeaponBase::RecoilRecovery(float DeltaTime)
+{
+	//RecoilValue = FMath::Vector2DInterpTo(
+	//	RecoilValue,
+	//	FVector2D::ZeroVector,
+	//	DeltaTime,
+	//	RecoilRecoverySpeed
+	//);
+
+	//if (!OwnerCharacter.IsValid()) return;
+
+	//APlayerController* PC = Cast<APlayerController>(OwnerCharacter->GetInstigatorController());
+	//if (PC && !CurrentRecoil.IsNearlyZero(0.01f))
+	//{
+	//	// 반동 반대 방향으로 복구
+	//	PC->AddPitchInput(CurrentRecoil.Y * DeltaTime * RecoilRecoverySpeed * 0.1f);
+	//	PC->AddYawInput(-CurrentRecoil.X * DeltaTime * RecoilRecoverySpeed * 0.1f);
+	//}
+
+	APlayerController* PC = Cast<APlayerController>(OwnerCharacter->GetInstigatorController());
+	if (!PC) return;
+
+	// 현재 회전값 가져오기
+	FRotator CurrentRot = PC->GetControlRotation();
+
+	// 부드럽게 회전 복귀
+	FRotator NewRot = FMath::RInterpTo(CurrentRot, PastRotation, DeltaTime, RecoilRecoverySpeed);
+
+	PC->SetControlRotation(NewRot);
 }
 
 
