@@ -4,6 +4,36 @@
 #include "JH/Weapon/WeaponBase.h"
 #include "RangedWeaponBase.generated.h"
 
+
+
+USTRUCT(BlueprintType)
+struct FRecoilConfig
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, Category = "Recoil")
+	float RecoilVerticalMin;
+	UPROPERTY(EditDefaultsOnly, Category = "Recoil")
+	float RecoilVerticalMax;
+	UPROPERTY(EditDefaultsOnly, Category = "Recoil")
+	float RecoilHorizontalMin;
+	UPROPERTY(EditDefaultsOnly, Category = "Recoil")
+	float RecoilHorizontalMax;
+
+	// 반동 복귀 속도
+	UPROPERTY(EditDefaultsOnly, Category = "Recoil")
+	float RecoilRecoverySpeed;
+
+	float CurrentRecoilVertical = 0.f;
+	// float CurrentRecoilHorizontal = 0.f;
+
+	//// 현재 누적된 반동량
+	//FVector2D RecoilValue;
+
+	//FRotator PastRotation;
+
+};
+
 UCLASS(Abstract)
 class DCIH_MULTITPSGAME_API ARangedWeaponBase : public AWeaponBase
 {
@@ -13,11 +43,11 @@ public:
 	ARangedWeaponBase();
 protected:
 	virtual void BeginPlay() override;
-// public:
-// 	 virtual void Tick(float DeltaTime) override;
-
-
 public:
+	virtual void Tick(float DeltaTime) override;
+
+
+protected:
 	virtual void Attack() override { Fire(); }
 
 	UFUNCTION(BlueprintCallable, Category = "Fire")
@@ -31,7 +61,7 @@ protected:
 	FVector GetAimPoint() const;
 
 	UFUNCTION(BlueprintPure, Category = "Fire")
-	bool CanFire() const;
+	bool CanFire();
 
 	UFUNCTION(BlueprintCallable, Category = "Reload")
 	void Reload();
@@ -44,6 +74,13 @@ protected:
 
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void RecoilRecovery(float DeltaTime);
+
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void ApplyDamage(const FHitResult& Hit, const FVector& ShotDir);
+
+
+	//UFUNCTION(BlueprintCallable, Category = "Fire")
+	//void 
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Socket")
@@ -77,21 +114,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
 	TSubclassOf<UCameraShakeBase> RecoilShake;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Recoil")
-	float RecoilVerticalMin = -0.2f;
-	UPROPERTY(EditDefaultsOnly, Category = "Recoil")
-	float RecoilVerticalMax = 0.2f;
-	UPROPERTY(EditDefaultsOnly, Category = "Recoil")
-	float RecoilHorizontalMin = -0.2f;
-	UPROPERTY(EditDefaultsOnly, Category = "Recoil")
-	float RecoilHorizontalMax = 0.2f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Recoil")
+	FRecoilConfig RecoilConfig;
 
-	// 반동 복귀 속도
-	UPROPERTY(EditDefaultsOnly, Category = "Recoil")
-	float RecoilRecoverySpeed = 5.0f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Fire")
+	bool bCanFire;
 
-	// 현재 누적된 반동량
-	FVector2D RecoilValue;
 
-	FRotator PastRotation;
+
+	float LastControlPitch = 0.f;
+
 };

@@ -208,10 +208,6 @@ void AJHCharacter::StartSprint()
 
 	// 카메라는 그대로 마우스 회전 허용
 	SpringArmComp->bUsePawnControlRotation = true;
-	
-	UE_LOG(LogTemp, Warning, TEXT("Sprint Mode → Yaw: %s, Orient: %s"),
-		bUseControllerRotationYaw ? TEXT("true") : TEXT("false"),
-		GetCharacterMovement()->bOrientRotationToMovement ? TEXT("true") : TEXT("false"));
 }
 
 void AJHCharacter::StopSprint()

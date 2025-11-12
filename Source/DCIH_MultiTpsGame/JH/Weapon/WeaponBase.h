@@ -2,23 +2,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "JH/Enum/E_WeaponState.h"
 #include "WeaponBase.generated.h"
 
 class USkeletalMeshComponent;
 class APawn;
-
-// 파일로 따로 // 값만 알고 나머지는 외부에서 보내줌
-// ============================================
-UENUM(BlueprintType)
-enum class EWeaponState : uint8
-{
-    UnEquipping,
-    Equipping,
-    Holstering,
-
-    Firing,
-    Reloading
-};
 
 // ============================================
 
@@ -32,8 +20,6 @@ public:
 
 protected:
     virtual void BeginPlay() override;
-public:
-    // virtual void Tick(float DeltaTime) override;
 
 
 	// ========== Components ==========
@@ -61,11 +47,11 @@ public:
 
 	// ========== Owners ==========
 protected:
-    UPROPERTY()
-    TWeakObjectPtr<class ACharacter> OwnerCharacter;
+	UPROPERTY()
+	TWeakObjectPtr<class ACharacter> OwnerCharacter;
 
-    // UPROPERTY()
-    // TWeakObjectPtr<class AController> OwnerController;
+	UPROPERTY()
+	TWeakObjectPtr<class APlayerController> OwnerController;
 
 
 

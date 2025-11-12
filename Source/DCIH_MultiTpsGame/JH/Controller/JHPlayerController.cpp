@@ -116,7 +116,7 @@ void AJHPlayerController::BindHealthComponentToUI()
 	if (UHealthComponent* HealthComp = CachedCharacter->FindComponentByClass<UHealthComponent>())
 	{
 		// HealthComponent의 OnHealthChanged 이벤트에 UIManager의 OnHealthChanged 함수를 바인딩
-		HealthComp->OnHealthChanged.AddDynamic(UIManager, &UUIManager::OnHealthChanged);
+		HealthComp->OnHealthChanged.AddUniqueDynamic(UIManager, &UUIManager::OnHealthChanged);
 
 		UIManager->OnHealthChanged(HealthComp->GetCurrentHealth(), HealthComp->GetMaxHealth());
 	}

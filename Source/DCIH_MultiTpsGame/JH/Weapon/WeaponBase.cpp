@@ -7,9 +7,7 @@
 
 AWeaponBase::AWeaponBase()
 {
-    // PrimaryActorTick.bCanEverTick = true;
-
-
+    PrimaryActorTick.bCanEverTick = true;
 
     MeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
     SetRootComponent(MeshComp);
@@ -30,17 +28,14 @@ void AWeaponBase::BeginPlay()
     Super::BeginPlay();
 }
 
-// void AWeaponBase::Tick(float DeltaTime)
-// {
-// 	// Super::Tick(DeltaTime);
-// }
-
 void AWeaponBase::Equip(ACharacter* Character)
 {
     if (!Character) return;
 
     OwnerCharacter = Character;
-    //OwnerController = Character->GetController();
+    SetOwner(Character);
+    
+    OwnerController = Cast<APlayerController>(Character->GetController());
 
     SetWeaponState(EWeaponState::Equipping);
     AttachWeaponToSocket(FName("WeaponSocket"));
@@ -50,6 +45,8 @@ void AWeaponBase::Equip(ACharacter* Character)
     {
         CollisionComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     }
+
+    // SetActorTickEnabled(true);
 }
 
 void AWeaponBase::AttachWeaponToSocket(const FName& SocketName)
@@ -84,7 +81,7 @@ void AWeaponBase::UnEquip()
 {
     SetWeaponState(EWeaponState::UnEquipping);
     OwnerCharacter = nullptr;
-    // OwnerController = nullptr;
+    OwnerController = nullptr;
 }
 
 void AWeaponBase::Drop()
@@ -100,7 +97,7 @@ void AWeaponBase::Drop()
     }
 
     OwnerCharacter = nullptr;
-    // OwnerController = nullptr;
+    OwnerController = nullptr;
 }
 
 void AWeaponBase::DetachWeapon()

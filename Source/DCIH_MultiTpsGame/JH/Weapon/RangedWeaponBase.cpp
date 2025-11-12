@@ -13,8 +13,7 @@
 
 ARangedWeaponBase::ARangedWeaponBase()
 {
-	// PrimaryActorTick.bCanEverTick = true; 
-	// SetActorTickEnabled(true);
+	PrimaryActorTick.bCanEverTick = true;
 
 	MuzzleSocketName = "Muzzle";
 	TraceChannel = ECC_Visibility;
@@ -23,14 +22,22 @@ ARangedWeaponBase::ARangedWeaponBase()
 void ARangedWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
+	SetActorTickEnabled(true);
+
+
+
+	//// 초기 Pitch 값 설정
+	//if (OwnerCharacter.IsValid())
+	//{
+	//	LastControlPitch 
+	//		= OwnerController->GetControlRotation().Pitch;
+	//}
 }
 
-// void ARangedWeaponBase::Tick(float DeltaTime)
-// {
-// 	// Super::Tick(DeltaTime);
-// 
-// 	RecoilRecovery(DeltaTime);
-// }
+void ARangedWeaponBase::Tick(float DeltaTime)
+{
+	RecoilRecovery(DeltaTime);
+}
 
 FVector ARangedWeaponBase::GetMuzzleLocation() const
 {
@@ -46,15 +53,15 @@ FVector ARangedWeaponBase::GetAimPoint() const
 	FVector camStartLoc;
 	FRotator camRot;
 
-	OwnerCharacter.Get()->GetController()->GetPlayerViewPoint(camStartLoc, camRot);
+	OwnerController->GetPlayerViewPoint(camStartLoc, camRot);
 
-	if (const ACharacter* P = OwnerCharacter.Get())
+	/*if (const ACharacter* P = OwnerCharacter.Get())
 	{
 		if (AController* C = P->GetController())
 		{
 			C->GetPlayerViewPoint(camStartLoc, camRot);
 		}
-	}
+	}*/
 	const FVector camEndLoc = camStartLoc + camRot.Vector() * TraceRange;
 
 
@@ -84,22 +91,37 @@ FVector ARangedWeaponBase::GetAimPoint() const
 	return camEndLoc;
 }
 
-bool ARangedWeaponBase::CanFire() const
+bool ARangedWeaponBase::CanFire()
 {
-	return 
-		(WeaponState == EWeaponState::Equipping || WeaponState == EWeaponState::Firing) ;
+	if (WeaponState != EWeaponState::Equipping &&
+		WeaponState != EWeaponState::Firing)
+	{
+		return false;
+	}
+
+	//const float CurrentTime = GetWorld()->GetTimeSeconds();
+	//const float Elapsed = CurrentTime - LastFireTime;
+
+	//if (Elapsed < FireRate)
+	//{
+	//	return false;
+	//}
+
+	return true;
+
 }
 
 void ARangedWeaponBase::Fire()
 {
-	if(CurAmmo<=0)
-	{
-		Reload();
-		return;
-	}
+	//if (!CanFire()) return;
+
+	//if (CurAmmo <= 0)
+	//{
+	//	Reload();
+	//	return;
+	//}
 
 	ApplyRecoil();
-
 	CurAmmo = FMath::Max(CurAmmo - 1, 0);
 }
 
@@ -107,7 +129,7 @@ void ARangedWeaponBase::Reload()
 {
 	if (GetWeaponState() == EWeaponState::Reloading)
 		return;
-	
+
 	SetWeaponState(EWeaponState::Reloading);
 
 	GetWorld()->GetTimerManager().SetTimer(
@@ -124,81 +146,59 @@ void ARangedWeaponBase::FinishReload()
 	CurAmmo = MaxAmmo;
 	SetWeaponState(EWeaponState::Equipping);
 
-	//if (UWorld* World = GetWorld())
-	//{
-	//	World->GetTimerManager().ClearTimer(ReloadTimerHandle);
-	//}
+	if (UWorld* World = GetWorld())
+	{
+		World->GetTimerManager().ClearTimer(ReloadTimerHandle);
+	}
 }
 
 void ARangedWeaponBase::ApplyRecoil()
 {
-	float VerticalRecoil = FMath::RandRange(RecoilVerticalMin, RecoilVerticalMax);
-	float HorizontalRecoil = FMath::RandRange(RecoilHorizontalMin, RecoilHorizontalMax);
+	if (!OwnerCharacter.IsValid())
+		return;
 
-	// 목표 반동값 누적
-	RecoilValue.Y += VerticalRecoil;
-	RecoilValue.X += HorizontalRecoil;
+	float VerticalRecoil = FMath::RandRange(RecoilConfig.RecoilVerticalMin, RecoilConfig.RecoilVerticalMax);
+	float HorizontalRecoil = FMath::RandRange(RecoilConfig.RecoilHorizontalMin, RecoilConfig.RecoilHorizontalMax);
 
+	RecoilConfig.CurrentRecoilVertical += VerticalRecoil;
 
-	if (APlayerController* PC = Cast<APlayerController>(OwnerCharacter->GetInstigatorController()))
-	{
-		PastRotation = PC->GetControlRotation();
+	OwnerController->AddPitchInput(-VerticalRecoil);
+	OwnerController->AddYawInput(HorizontalRecoil);
 
-		PC->AddPitchInput(-VerticalRecoil);
-		PC->AddYawInput(HorizontalRecoil);
-	}
+	// LastControlPitch = PC->GetControlRotation().Pitch;
+	// PC->ClientStopCameraShake(RecoilShake);
 
-
-
-	//if (APlayerController* PC = Cast<APlayerController>(OwnerCharacter->GetController()))
-	//{
-	//	//if (RecoilShake)
-	//	//{
-	//	//	// PC->ClientStartCameraShake(RecoilShake);
-	//	//}
-	//	//else
-	//	{
-	//		// 간단한 반동 입력
-	//		PC->AddPitchInput(FMath::FRandRange(-1.5f, -3.0f));
-	//		PC->AddYawInput(FMath::FRandRange(-0.5f, 0.5f));
-	//	}
-	//}
 }
 
 void ARangedWeaponBase::RecoilRecovery(float DeltaTime)
 {
-	//RecoilValue = FMath::Vector2DInterpTo(
-	//	RecoilValue,
-	//	FVector2D::ZeroVector,
-	//	DeltaTime,
-	//	RecoilRecoverySpeed
-	//);
+	if (!OwnerCharacter.IsValid())
+		return;    
 
-	//if (!OwnerCharacter.IsValid()) return;
+	float VertRecovery = FMath::Min(
+		RecoilConfig.CurrentRecoilVertical,
+		RecoilConfig.CurrentRecoilVertical * DeltaTime * RecoilConfig.RecoilRecoverySpeed
+	);
 
-	//APlayerController* PC = Cast<APlayerController>(OwnerCharacter->GetInstigatorController());
-	//if (PC && !CurrentRecoil.IsNearlyZero(0.01f))
-	//{
-	//	// 반동 반대 방향으로 복구
-	//	PC->AddPitchInput(CurrentRecoil.Y * DeltaTime * RecoilRecoverySpeed * 0.1f);
-	//	PC->AddYawInput(-CurrentRecoil.X * DeltaTime * RecoilRecoverySpeed * 0.1f);
-	//}
+	OwnerController->AddPitchInput(VertRecovery);
+	RecoilConfig.CurrentRecoilVertical -= VertRecovery;
 
-	APlayerController* PC = Cast<APlayerController>(OwnerCharacter->GetInstigatorController());
-	if (!PC) return;
-
-	// 현재 회전값 가져오기
-	FRotator CurrentRot = PC->GetControlRotation();
-
-	// 부드럽게 회전 복귀
-	FRotator NewRot = FMath::RInterpTo(CurrentRot, PastRotation, DeltaTime, RecoilRecoverySpeed);
-
-	PC->SetControlRotation(NewRot);
+	//// 5. 다음 프레임을 위해 현재 Pitch 저장 (자동 회복 적용 후)
+	//LastControlPitch = OwnerController->GetControlRotation().Pitch;
 }
 
+void ARangedWeaponBase::ApplyDamage(const FHitResult& Hit, const FVector& ShotDir)
+{
+	if (!Hit.GetActor()) return;
 
-//// 인자 없이 그냥
-//FVector ARangedWeaponBase::GetShotDirection() const
-//{
-//	return (GetAimPoint() - GetMuzzleLocation()).GetSafeNormal();
-//}
+	UGameplayStatics::ApplyPointDamage(
+		Hit.GetActor(),
+		Damage,
+		ShotDir,
+		Hit,
+		OwnerController.Get(),
+		this,
+		UDamageType::StaticClass()
+
+	);
+}
