@@ -124,4 +124,6 @@ protected:
 
 	float LastControlPitch = 0.f;
 
+	UPROPERTY(BlueprintReadOnly)
+	bool bLastFireSuccess = false;	// 부모 통과하고 자식이 쏘는 오류
 };

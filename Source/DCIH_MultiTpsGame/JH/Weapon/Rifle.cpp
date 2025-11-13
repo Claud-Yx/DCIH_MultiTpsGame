@@ -31,40 +31,23 @@ void ARifle::Tick(float Deltatime)
 // 위의 건 통과 못하고 밑에만 통과해서 쏘는 경우가 있음
 void ARifle::Fire()
 {
-	if (!CanFire()) return;
 
-	if (CurAmmo <= 0)
-	{
-		Reload();
-		return;
-	}
-
-	float currentTime = GetWorld()->GetTimeSeconds();
-
-	if (currentTime - LastFireTime < FireRate)
-	{
-		return;
-	}
-
-	LastFireTime = currentTime; // 마지막 발사 시간 업데이트
 
     Super::Fire();
 
+    if (!bLastFireSuccess) return;
+
+	HitScan();
     //const FVector MuzzleLoc = GetMuzzleLocation();
     //const FVector AimPoint = GetAimPoint();
 
     //// 그냥 시각화만 해줌 (부모에서 이미 계산해준 값 이용)
     //DrawDebugLine(GetWorld(), MuzzleLoc, AimPoint, FColor::Cyan, false, 2.f, 0, 1.5f);
     //DrawDebugPoint(GetWorld(), AimPoint, 10.f, FColor::Red, false, 2.f);
+}
 
-
-
-
-    const FVector MuzzleLoc = GetMuzzleLocation();
-    const FVector AimPoint = GetAimPoint();
-
-    const FVector ShotDir = (AimPoint - MuzzleLoc).GetSafeNormal();
-
+void ARifle::HitScan()
+{
     FCollisionQueryParams TraceParams(SCENE_QUERY_STAT(RifleTrace), true, this);
 
     if (OwnerCharacter.IsValid())
@@ -76,28 +59,38 @@ void ARifle::Fire()
     {
         TraceParams.AddIgnoredComponent(MeshComp.Get());
     }
+
     FHitResult Hit;
     const bool bHit = GetWorld()->LineTraceSingleByChannel(
         Hit,
-        MuzzleLoc,
-        AimPoint,
+        GetMuzzleLocation(),
+        GetAimPoint(),
         TraceChannel,
         TraceParams
     );
+    const FVector ShotDir = (GetAimPoint() - GetMuzzleLocation()).GetSafeNormal();
+
+    if (bHit) {
+        ApplyDamage(Hit, ShotDir);
+
+    }
 
 
+	DrawDebugTrace(ShotDir, Hit, bHit);
 
-    DrawDebugLine(GetWorld(), MuzzleLoc, AimPoint, FColor::Cyan, false, 2.f, 0, 1.5f);
+}
 
+void ARifle::DrawDebugTrace(const FVector& ShotDir, const FHitResult& Hit, const bool bHit) const
+{
+
+    DrawDebugLine(GetWorld(), GetMuzzleLocation(), GetAimPoint(), FColor::Green, false, 2.f, 0, 1.5f);
 
     if (bHit && Hit.bBlockingHit)
     {
         DrawDebugPoint(GetWorld(), Hit.ImpactPoint, 8.f, FColor::Red, false, 2.f);
-
-        ApplyDamage(Hit, ShotDir);
     }
     else
     {
-        DrawDebugPoint(GetWorld(), AimPoint, 6.f, FColor::Blue, false, 2.f);
+        DrawDebugPoint(GetWorld(), GetAimPoint(), 6.f, FColor::Blue, false, 2.f);
     }
 }

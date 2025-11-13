@@ -98,7 +98,14 @@ bool ARangedWeaponBase::CanFire()
 	{
 		return false;
 	}
+	float currentTime = GetWorld()->GetTimeSeconds();
 
+	if (currentTime - LastFireTime < FireRate)
+	{
+		return false;
+	}
+
+	LastFireTime = currentTime; // 마지막 발사 시간 업데이트
 	//const float CurrentTime = GetWorld()->GetTimeSeconds();
 	//const float Elapsed = CurrentTime - LastFireTime;
 
@@ -120,9 +127,28 @@ void ARangedWeaponBase::Fire()
 	//	Reload();
 	//	return;
 	//}
+	bLastFireSuccess = false;
 
+	if (!CanFire()) return;
+
+	if (CurAmmo <= 0)
+	{
+		Reload();
+		return;
+	}
+
+	//float currentTime = GetWorld()->GetTimeSeconds();
+
+	//if (currentTime - LastFireTime < FireRate)
+	//{
+	//	return;
+	//}
+
+	//LastFireTime = currentTime; // 마지막 발사 시간 업데이트
 	ApplyRecoil();
 	CurAmmo = FMath::Max(CurAmmo - 1, 0);
+
+	bLastFireSuccess = true;
 }
 
 void ARangedWeaponBase::Reload()
@@ -187,7 +213,7 @@ void ARangedWeaponBase::RecoilRecovery(float DeltaTime)
 	//LastControlPitch = OwnerController->GetControlRotation().Pitch;
 }
 
-void ARangedWeaponBase::ApplyDamage(const FHitResult& Hit, const FVector& ShotDir)
+void ARangedWeaponBase::ApplyDamage(const FHitResult& Hit,const FVector& ShotDir)
 {
 	if (!Hit.GetActor()) return;
 
