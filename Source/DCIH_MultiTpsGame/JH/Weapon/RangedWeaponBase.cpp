@@ -35,13 +35,17 @@ void ARangedWeaponBase::BeginPlay()
 
 void ARangedWeaponBase::Tick(float DeltaTime)
 {
-	if (!bOwnerValid) {
-		if (OwnerCharacter.IsValid()) {
-			MouseControllPitch = OwnerController->GetControlRotation().Pitch;
-		}
-		bOwnerValid = true;
+	//if (!bOwnerValid) {
+	//	if (OwnerCharacter.IsValid()) {
+	//		MouseControllPitch = OwnerController->GetControlRotation().Pitch;
+	//	}
+	//	bOwnerValid = true;
+	//}
+
+	if (RecoilConfig.CurrentRecoilVertical >= RecoilConfig.RecoilHorizontalMin) {
+		RecoilRecovery(DeltaTime);
 	}
-	RecoilRecovery(DeltaTime);
+
 }
 
 FVector ARangedWeaponBase::GetMuzzleLocation() const
