@@ -31,19 +31,11 @@ void ARifle::Tick(float Deltatime)
 // 위의 건 통과 못하고 밑에만 통과해서 쏘는 경우가 있음
 void ARifle::Fire()
 {
-
-
     Super::Fire();
 
     if (!bLastFireSuccess) return;
 
 	HitScan();
-    //const FVector MuzzleLoc = GetMuzzleLocation();
-    //const FVector AimPoint = GetAimPoint();
-
-    //// 그냥 시각화만 해줌 (부모에서 이미 계산해준 값 이용)
-    //DrawDebugLine(GetWorld(), MuzzleLoc, AimPoint, FColor::Cyan, false, 2.f, 0, 1.5f);
-    //DrawDebugPoint(GetWorld(), AimPoint, 10.f, FColor::Red, false, 2.f);
 }
 
 void ARifle::HitScan()
@@ -80,17 +72,17 @@ void ARifle::HitScan()
 
 }
 
-void ARifle::DrawDebugTrace(const FVector& ShotDir, const FHitResult& Hit, const bool bHit) const
-{
-
-    DrawDebugLine(GetWorld(), GetMuzzleLocation(), GetAimPoint(), FColor::Green, false, 2.f, 0, 1.5f);
-
-    if (bHit && Hit.bBlockingHit)
-    {
-        DrawDebugPoint(GetWorld(), Hit.ImpactPoint, 8.f, FColor::Red, false, 2.f);
-    }
-    else
-    {
-        DrawDebugPoint(GetWorld(), GetAimPoint(), 6.f, FColor::Blue, false, 2.f);
-    }
-}
+//void ARifle::DrawDebugTrace(const FVector& ShotDir, const FHitResult& Hit, const bool bHit) const
+//{
+//
+//    DrawDebugLine(GetWorld(), GetMuzzleLocation(), GetAimPoint(), FColor::Green, false, 2.f, 0, 1.5f);
+//
+//    if (bHit && Hit.bBlockingHit)
+//    {
+//        DrawDebugPoint(GetWorld(), Hit.ImpactPoint, 8.f, FColor::Red, false, 2.f);
+//    }
+//    else
+//    {
+//        DrawDebugPoint(GetWorld(), GetAimPoint(), 6.f, FColor::Blue, false, 2.f);
+//    }
+//}

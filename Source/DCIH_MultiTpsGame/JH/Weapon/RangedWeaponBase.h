@@ -122,8 +122,18 @@ protected:
 
 
 
-	float LastControlPitch = 0.f;
+	
+	// float GetMouseControllPitch(float DeltaTime) const { return MouseControllPitch; }
+
 
 	UPROPERTY(BlueprintReadOnly)
 	bool bLastFireSuccess = false;	// 부모 통과하고 자식이 쏘는 오류
+
+	UFUNCTION(BlueprintCallable, Category = "Fire")
+	void DrawDebugTrace(const FVector& ShotDir, const FHitResult& Hit, const bool bHit) const;
+	
+	float MouseControllPitch = 0.f;
+
+	bool bOwnerValid = false;
+
 };

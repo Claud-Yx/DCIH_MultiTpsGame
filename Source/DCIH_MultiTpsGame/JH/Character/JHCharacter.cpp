@@ -183,6 +183,8 @@ void AJHCharacter::Look(const FVector2D& Axis)
 {
 	if (Axis.X != 0.f) AddControllerYawInput(Axis.X);
 	if (Axis.Y != 0.f) AddControllerPitchInput(-Axis.Y);
+
+
 }
 
 void AJHCharacter::StartJump()

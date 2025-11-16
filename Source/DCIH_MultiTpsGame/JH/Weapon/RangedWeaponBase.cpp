@@ -8,7 +8,7 @@
 #include "Engine/World.h"
 #include "TimerManager.h"
 #include "DrawDebugHelpers.h"
-
+#include <JH/Controller/JHPlayerController.h>
 
 
 ARangedWeaponBase::ARangedWeaponBase()
@@ -25,7 +25,6 @@ void ARangedWeaponBase::BeginPlay()
 	SetActorTickEnabled(true);
 
 
-
 	//// 초기 Pitch 값 설정
 	//if (OwnerCharacter.IsValid())
 	//{
@@ -36,6 +35,12 @@ void ARangedWeaponBase::BeginPlay()
 
 void ARangedWeaponBase::Tick(float DeltaTime)
 {
+	if (!bOwnerValid) {
+		if (OwnerCharacter.IsValid()) {
+			MouseControllPitch = OwnerController->GetControlRotation().Pitch;
+		}
+		bOwnerValid = true;
+	}
 	RecoilRecovery(DeltaTime);
 }
 
@@ -127,6 +132,7 @@ void ARangedWeaponBase::Fire()
 	//	Reload();
 	//	return;
 	//}
+	WeaponState = EWeaponState::Firing;
 	bLastFireSuccess = false;
 
 	if (!CanFire()) return;
@@ -149,6 +155,8 @@ void ARangedWeaponBase::Fire()
 	CurAmmo = FMath::Max(CurAmmo - 1, 0);
 
 	bLastFireSuccess = true;
+	WeaponState = EWeaponState::Equipping;
+
 }
 
 void ARangedWeaponBase::Reload()
@@ -182,7 +190,7 @@ void ARangedWeaponBase::ApplyRecoil()
 {
 	if (!OwnerCharacter.IsValid())
 		return;
-
+	
 	float VerticalRecoil = FMath::RandRange(RecoilConfig.RecoilVerticalMin, RecoilConfig.RecoilVerticalMax);
 	float HorizontalRecoil = FMath::RandRange(RecoilConfig.RecoilHorizontalMin, RecoilConfig.RecoilHorizontalMax);
 
@@ -191,26 +199,21 @@ void ARangedWeaponBase::ApplyRecoil()
 	OwnerController->AddPitchInput(-VerticalRecoil);
 	OwnerController->AddYawInput(HorizontalRecoil);
 
-	// LastControlPitch = PC->GetControlRotation().Pitch;
-	// PC->ClientStopCameraShake(RecoilShake);
-
 }
 
 void ARangedWeaponBase::RecoilRecovery(float DeltaTime)
 {
 	if (!OwnerCharacter.IsValid())
-		return;    
-
+		return;
+	
 	float VertRecovery = FMath::Min(
 		RecoilConfig.CurrentRecoilVertical,
-		RecoilConfig.CurrentRecoilVertical * DeltaTime * RecoilConfig.RecoilRecoverySpeed
+		(RecoilConfig.CurrentRecoilVertical) * DeltaTime * RecoilConfig.RecoilRecoverySpeed
 	);
 
 	OwnerController->AddPitchInput(VertRecovery);
-	RecoilConfig.CurrentRecoilVertical -= VertRecovery;
 
-	//// 5. 다음 프레임을 위해 현재 Pitch 저장 (자동 회복 적용 후)
-	//LastControlPitch = OwnerController->GetControlRotation().Pitch;
+	RecoilConfig.CurrentRecoilVertical -= VertRecovery;
 }
 
 void ARangedWeaponBase::ApplyDamage(const FHitResult& Hit,const FVector& ShotDir)
@@ -227,4 +230,19 @@ void ARangedWeaponBase::ApplyDamage(const FHitResult& Hit,const FVector& ShotDir
 		UDamageType::StaticClass()
 
 	);
+}
+
+void ARangedWeaponBase::DrawDebugTrace(const FVector& ShotDir, const FHitResult& Hit, const bool bHit) const
+{
+
+	DrawDebugLine(GetWorld(), GetMuzzleLocation(), GetAimPoint(), FColor::Green, false, 2.f, 0, 1.5f);
+
+	if (bHit && Hit.bBlockingHit)
+	{
+		DrawDebugPoint(GetWorld(), Hit.ImpactPoint, 8.f, FColor::Red, false, 2.f);
+	}
+	else
+	{
+		DrawDebugPoint(GetWorld(), GetAimPoint(), 6.f, FColor::Blue, false, 2.f);
+	}
 }

@@ -18,8 +18,6 @@ AJHPlayerController::AJHPlayerController()
 	// UIManager = CreateDefaultSubObject <UIManager>(TEXT("UIManager"));
 }
 
-
-
 void AJHPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -81,8 +79,6 @@ void AJHPlayerController::SetupInputComponent()
 		}
 	}
 }
-
-
 
 void AJHPlayerController::CacheCharacter()
 {
