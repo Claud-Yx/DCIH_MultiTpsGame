@@ -94,7 +94,7 @@ void AJHPlayerController::InitializeUIManager()
 	if (!UIManagerClass) return;
 
 	UIManager = NewObject<UUIManager>(this, UIManagerClass);
-	UIManager->RegisterComponent(); //  ½ÇÁ¦ ¿ùµå¿¡ µî·ÏµÊ
+	UIManager->RegisterComponent(); //  ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½å¿¡ ï¿½ï¿½Ïµï¿½
 	if (UIManager)
 	{
 		UIManager->Init(this);
@@ -111,7 +111,7 @@ void AJHPlayerController::BindHealthComponentToUI()
 	// if(CacheCharacter->healthComp)
 	if (UHealthComponent* HealthComp = CachedCharacter->FindComponentByClass<UHealthComponent>())
 	{
-		// HealthComponentÀÇ OnHealthChanged ÀÌº¥Æ®¿¡ UIManagerÀÇ OnHealthChanged ÇÔ¼ö¸¦ ¹ÙÀÎµù
+		// HealthComponentï¿½ï¿½ OnHealthChanged ï¿½Ìºï¿½Æ®ï¿½ï¿½ UIManagerï¿½ï¿½ OnHealthChanged ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Îµï¿½
 		HealthComp->OnHealthChanged.AddUniqueDynamic(UIManager, &UUIManager::OnHealthChanged);
 
 		UIManager->OnHealthChanged(HealthComp->GetCurrentHealth(), HealthComp->GetMaxHealth());
@@ -147,6 +147,10 @@ void AJHPlayerController::OnMove(const FInputActionValue& Value)
 
 void AJHPlayerController::OnLook(const FInputActionValue& Value)
 {
+	FVector2D Look = Value.Get<FVector2D>();
+
+	MousePitch += Look.Y;
+
 	if (CachedCharacter.IsValid())
 		CachedCharacter->Look(Value.Get<FVector2D>());
 }

@@ -59,7 +59,7 @@ void AJHCharacter::Tick(float DeltaTime)
 
 	// UE_LOG(LogTemp, Warning, TEXT("Velocity SizeSquared : %f"), GetVelocity().Size());
 
-	// Ãâ·Â
+	// ï¿½ï¿½ï¿½
 	//FString StateName = UEnum::GetValueAsString(CurrentState);
 	//UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("State : %s"), *StateName));
 
@@ -68,7 +68,7 @@ void AJHCharacter::Tick(float DeltaTime)
 void AJHCharacter::InitializeCharacter()
 {
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SKM(
-		TEXT("/Script/Engine.SkeletalMesh'/Game/JHFolder/MyAsset/SKM_Soldier.SKM_Soldier'")); // ½ÇÁ¦ °æ·Î·Î ±³Ã¼
+		TEXT("/Script/Engine.SkeletalMesh'/Game/JHFolder/MyAsset/SKM_Soldier.SKM_Soldier'")); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Î·ï¿½ ï¿½ï¿½Ã¼
 	if (SKM.Succeeded())
 		GetMesh()->SetSkeletalMesh(SKM.Object);
 
@@ -76,8 +76,8 @@ void AJHCharacter::InitializeCharacter()
 	GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	bUseControllerRotationYaw = true;   // ÄÁÆ®·Ñ·¯ È¸Àü »ç¿ë
-	GetCharacterMovement()->bOrientRotationToMovement = false; // ÀÌµ¿ ¹æÇâÀ¸·Î È¸Àü
+	bUseControllerRotationYaw = true;   // ï¿½ï¿½Æ®ï¿½Ñ·ï¿½ È¸ï¿½ï¿½ ï¿½ï¿½ï¿½
+	GetCharacterMovement()->bOrientRotationToMovement = false; // ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 540.f, 0.f);
 
 	ApplySpeed(WalkSpeed);
@@ -96,7 +96,7 @@ void AJHCharacter::InitializeCamera()
 
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	CameraComp->SetupAttachment(SpringArmComp, USpringArmComponent::SocketName);
-	// Camera->bUsePawnControlRotation = false; // Ä«¸Þ¶ó´Â ºÕ¸¸ µû¶ó°¨
+	// Camera->bUsePawnControlRotation = false; // Ä«ï¿½Þ¶ï¿½ï¿½ ï¿½Õ¸ï¿½ ï¿½ï¿½ï¿½ï¿½
 }
 
 void AJHCharacter::EquipWeapon(AWeaponBase* Weapon)
@@ -133,7 +133,7 @@ void AJHCharacter::InitializeWeapon()
 {
 	if (UWorld* World = GetWorld())
 	{
-		// ¶óÀÌÇÃ ½ºÆù
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		EquippedWeapon = World->SpawnActor<AWeaponBase>(WeaponClass);
 
 		AWeaponBase* SpawnedWeapon = World->SpawnActor<AWeaponBase>(WeaponClass);
@@ -204,11 +204,11 @@ void AJHCharacter::StartSprint()
 	ApplySpeed(SprintSpeed);
 	SetState(ECharacterState::Running);
 
-	// ÄÁÆ®·Ñ·¯ Yaw´Â ¹«½Ã, Ä³¸¯ÅÍ´Â ÀÌµ¿ ¹æÇâÀ¸·Î È¸Àü, 
+	// ï¿½ï¿½Æ®ï¿½Ñ·ï¿½ Yawï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, Ä³ï¿½ï¿½ï¿½Í´ï¿½ ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½, 
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
-	// Ä«¸Þ¶ó´Â ±×´ë·Î ¸¶¿ì½º È¸Àü Çã¿ë
+	// Ä«ï¿½Þ¶ï¿½ï¿½ ï¿½×´ï¿½ï¿½ ï¿½ï¿½ï¿½ì½º È¸ï¿½ï¿½ ï¿½ï¿½ï¿½
 	SpringArmComp->bUsePawnControlRotation = true;
 }
 
@@ -217,7 +217,7 @@ void AJHCharacter::StopSprint()
 	ApplySpeed(WalkSpeed);
 	SetState(ECharacterState::Idle);
 
-	// ´Ù½Ã Ä³¸¯ÅÍ°¡ ¸¶¿ì½º ¹æÇâ µû¶ó È¸Àü
+	// ï¿½Ù½ï¿½ Ä³ï¿½ï¿½ï¿½Í°ï¿½ ï¿½ï¿½ï¿½ì½º ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½
 	bUseControllerRotationYaw = true;
 	GetCharacterMovement()->bOrientRotationToMovement = false;
 }
@@ -229,7 +229,7 @@ void AJHCharacter::CalculateAimOffset(float DeltaTime)
 	float Speed = Velocity.Size();
 	// bool bIsInAir = GetCharacterMovement()->IsFalling();
 
-	//if (Speed == 0.f && !bIsInAir) // Á¤Áö »óÅÂ
+	//if (Speed == 0.f && !bIsInAir) // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	if (CurrentState == ECharacterState::Idle || (CurrentState == ECharacterState::Shooting && Speed == 0.f))
 	{
 		FRotator CurrentAimRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
@@ -240,7 +240,7 @@ void AJHCharacter::CalculateAimOffset(float DeltaTime)
 			InterpAO_Yaw = AO_Yaw;
 		}
 		bUseControllerRotationYaw = false;
-		// GetCharacterMovement()->bOrientRotationToMovement = false; // ÀÌµ¿ ¹æÇâÀ¸·Î È¸Àü
+		// GetCharacterMovement()->bOrientRotationToMovement = false; // ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½
 		TurnInPlace(DeltaTime);
 	}
 
@@ -250,7 +250,7 @@ void AJHCharacter::CalculateAimOffset(float DeltaTime)
 		StartingAimRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
 		AO_Yaw = 0.f;
 		bUseControllerRotationYaw = true;
-		//GetCharacterMovement()->bOrientRotationToMovement = true; // ÀÌµ¿ ¹æÇâÀ¸·Î È¸Àü
+		//GetCharacterMovement()->bOrientRotationToMovement = true; // ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½
 	}
 	else if (CurrentState == ECharacterState::Running) 
 	{
@@ -285,7 +285,7 @@ void AJHCharacter::SetState(ECharacterState NewState)
 
 bool AJHCharacter::CanFire() const
 {
-	// Àü¿ª ÄÁÅ×ÀÌ³Ê
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì³ï¿½
 	static const TSet<ECharacterState> FireAllowedStates =
 	{
 		ECharacterState::Idle,

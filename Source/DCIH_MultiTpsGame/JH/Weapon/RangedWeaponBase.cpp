@@ -25,7 +25,7 @@ void ARangedWeaponBase::BeginPlay()
 	SetActorTickEnabled(true);
 
 
-	//// ÃÊ±â Pitch °ª ¼³Á¤
+	//// ï¿½Ê±ï¿½ Pitch ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	//if (OwnerCharacter.IsValid())
 	//{
 	//	LastControlPitch 
@@ -41,9 +41,10 @@ void ARangedWeaponBase::Tick(float DeltaTime)
 	//	}
 	//	bOwnerValid = true;
 	//}
+	RecoilRecovery(DeltaTime);
 
 	if (RecoilConfig.CurrentRecoilVertical >= RecoilConfig.RecoilHorizontalMin) {
-		RecoilRecovery(DeltaTime);
+		// RecoilRecovery(DeltaTime);	
 	}
 
 }
@@ -114,7 +115,7 @@ bool ARangedWeaponBase::CanFire()
 		return false;
 	}
 
-	LastFireTime = currentTime; // ¸¶Áö¸· ¹ß»ç ½Ã°£ ¾÷µ¥ÀÌÆ®
+	LastFireTime = currentTime; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß»ï¿½ ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 	//const float CurrentTime = GetWorld()->GetTimeSeconds();
 	//const float Elapsed = CurrentTime - LastFireTime;
 
@@ -154,7 +155,7 @@ void ARangedWeaponBase::Fire()
 	//	return;
 	//}
 
-	//LastFireTime = currentTime; // ¸¶Áö¸· ¹ß»ç ½Ã°£ ¾÷µ¥ÀÌÆ®
+	//LastFireTime = currentTime; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß»ï¿½ ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 	ApplyRecoil();
 	CurAmmo = FMath::Max(CurAmmo - 1, 0);
 
@@ -209,15 +210,39 @@ void ARangedWeaponBase::RecoilRecovery(float DeltaTime)
 {
 	if (!OwnerCharacter.IsValid())
 		return;
-	
-	float VertRecovery = FMath::Min(
-		RecoilConfig.CurrentRecoilVertical,
-		(RecoilConfig.CurrentRecoilVertical) * DeltaTime * RecoilConfig.RecoilRecoverySpeed
-	);
 
-	OwnerController->AddPitchInput(VertRecovery);
+	AJHPlayerController* PC = Cast<AJHPlayerController>(OwnerController.Get());
 
-	RecoilConfig.CurrentRecoilVertical -= VertRecovery;
+	float PlayerDownInput = PC->MousePitch;
+	UE_LOG(LogTemp, Warning, TEXT("RecoilRecovery PlayerDownInput = %f"), PlayerDownInput);
+
+	float RecoilLeft = RecoilConfig.CurrentRecoilVertical + PlayerDownInput;
+	UE_LOG(LogTemp, Warning, TEXT("RecoilLeft = %f"), RecoilLeft);
+
+	if (RecoilLeft <= 0.1f) {
+		RecoilConfig.CurrentRecoilVertical = 0.f;
+		PC->MousePitch = 0.f;
+		return;
+	}
+
+	float RecoverAmount = RecoilLeft * DeltaTime * RecoilConfig.RecoilRecoverySpeed;
+
+	RecoverAmount = FMath::Min(RecoverAmount, RecoilLeft);
+
+	OwnerController->AddPitchInput(RecoverAmount);
+
+
+	RecoilConfig.CurrentRecoilVertical -= RecoverAmount;
+
+
+	//float VertRecovery = FMath::Min(
+	//	RecoilConfig.CurrentRecoilVertical,
+	//	(RecoilConfig.CurrentRecoilVertical) * DeltaTime * RecoilConfig.RecoilRecoverySpeed
+	//);
+
+	//OwnerController->AddPitchInput(VertRecovery);
+
+	//RecoilConfig.CurrentRecoilVertical -= VertRecovery;
 }
 
 void ARangedWeaponBase::ApplyDamage(const FHitResult& Hit,const FVector& ShotDir)

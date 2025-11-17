@@ -67,4 +67,8 @@ private:
 
     UPROPERTY(EditDefaultsOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UInputAction> IA_Fire;
+
+
+public:
+    float MousePitch = 0.f;
 };
