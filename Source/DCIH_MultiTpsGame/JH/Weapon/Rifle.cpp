@@ -1,7 +1,7 @@
 #include "JH/Weapon/Rifle.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
-#include "GameFramework/Character.h"        
+#include "GameFramework/Character.h"
 
 ARifle::ARifle()
 {

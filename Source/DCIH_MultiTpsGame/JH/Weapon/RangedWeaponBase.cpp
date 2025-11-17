@@ -10,7 +10,6 @@
 #include "DrawDebugHelpers.h"
 #include <JH/Controller/JHPlayerController.h>
 
-
 ARangedWeaponBase::ARangedWeaponBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -23,30 +22,11 @@ void ARangedWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
 	SetActorTickEnabled(true);
-
-
-	//// �ʱ� Pitch �� ����
-	//if (OwnerCharacter.IsValid())
-	//{
-	//	LastControlPitch 
-	//		= OwnerController->GetControlRotation().Pitch;
-	//}
 }
 
 void ARangedWeaponBase::Tick(float DeltaTime)
 {
-	//if (!bOwnerValid) {
-	//	if (OwnerCharacter.IsValid()) {
-	//		MouseControllPitch = OwnerController->GetControlRotation().Pitch;
-	//	}
-	//	bOwnerValid = true;
-	//}
 	RecoilRecovery(DeltaTime);
-
-	if (RecoilConfig.CurrentRecoilVertical >= RecoilConfig.RecoilHorizontalMin) {
-		// RecoilRecovery(DeltaTime);	
-	}
-
 }
 
 FVector ARangedWeaponBase::GetMuzzleLocation() const
@@ -203,33 +183,37 @@ void ARangedWeaponBase::ApplyRecoil()
 
 	OwnerController->AddPitchInput(-VerticalRecoil);
 	OwnerController->AddYawInput(HorizontalRecoil);
-
+	
+	UE_LOG(LogTemp, Warning, TEXT("CurrentRecoilVertical : %f"), RecoilConfig.CurrentRecoilVertical);
 }
 
 void ARangedWeaponBase::RecoilRecovery(float DeltaTime)
 {
+	if (RecoilConfig.CurrentRecoilVertical <= 0.01f)
+		return;
+
 	if (!OwnerCharacter.IsValid())
 		return;
 
-	AJHPlayerController* PC = Cast<AJHPlayerController>(OwnerController.Get());
+	JHController = Cast<AJHPlayerController>(OwnerController.Get());
 
-	float PlayerDownInput = PC->MousePitch;
-	UE_LOG(LogTemp, Warning, TEXT("RecoilRecovery PlayerDownInput = %f"), PlayerDownInput);
+	float PlayerDownInput = JHController->MousePitch;
+	UE_LOG(LogTemp, Warning, TEXT("PlayerDownInput: %f"), PlayerDownInput);
 
-	float RecoilLeft = RecoilConfig.CurrentRecoilVertical + PlayerDownInput;
-	UE_LOG(LogTemp, Warning, TEXT("RecoilLeft = %f"), RecoilLeft);
+	float TotalRecovery = RecoilConfig.CurrentRecoilVertical + PlayerDownInput;
+	UE_LOG(LogTemp, Warning, TEXT("TotalRecovery: %f"), TotalRecovery);
 
-	if (RecoilLeft <= 0.1f) {
+	if (TotalRecovery < RecoilConfig.RecoilVerticalMin) {
 		RecoilConfig.CurrentRecoilVertical = 0.f;
-		PC->MousePitch = 0.f;
+		JHController->MousePitch = 0.f;
 		return;
 	}
 
-	float RecoverAmount = RecoilLeft * DeltaTime * RecoilConfig.RecoilRecoverySpeed;
+	float RecoverAmount = TotalRecovery * DeltaTime * RecoilConfig.RecoilRecoverySpeed;
 
-	RecoverAmount = FMath::Min(RecoverAmount, RecoilLeft);
+	RecoverAmount = FMath::Min(RecoverAmount, TotalRecovery);
 
-	OwnerController->AddPitchInput(RecoverAmount);
+	JHController->AddPitchInput(RecoverAmount);
 
 
 	RecoilConfig.CurrentRecoilVertical -= RecoverAmount;

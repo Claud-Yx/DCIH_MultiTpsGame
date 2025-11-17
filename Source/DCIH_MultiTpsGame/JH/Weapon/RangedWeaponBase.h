@@ -136,4 +136,6 @@ protected:
 
 	bool bOwnerValid = false;
 
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr <class AJHPlayerController> JHController;
 };
