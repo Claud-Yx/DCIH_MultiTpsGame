@@ -18,6 +18,6 @@ private:
 
 public:
     UFUNCTION()
-    void UpdateHealthBar(float Current, float Max);
+    void Update(float Current, float Max);
 	
 };
