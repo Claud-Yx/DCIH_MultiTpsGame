@@ -11,7 +11,7 @@ void UHealthWidget::NativeConstruct()
     }
 }
 
-void UHealthWidget::UpdateHealthBar(float Current, float Max)
+void UHealthWidget::Update(float Current, float Max)
 {
     if (!PB_HealthBar || Max <= 0.f) return;
 

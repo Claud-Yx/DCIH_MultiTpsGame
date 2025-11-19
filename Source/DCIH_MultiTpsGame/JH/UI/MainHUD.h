@@ -10,13 +10,26 @@ UCLASS()
 class DCIH_MULTITPSGAME_API UMainHUD : public UUserWidget
 {
 	GENERATED_BODY()
+
 public:
+	UFUNCTION()
+	void Init();
+
 	UFUNCTION(BlueprintCallable, Category = "HUD")
 	void UpdateHealthBar(float CurrentHealth, float MaxHealth);
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UHealthWidget> WBP_CharacterHealthWidget;
-
 	//UPROPERTY(meta = (BindWidget))
 	//TObjectPtr<class UStaminaWidget> WBP_StaminaWidget
+
+
+	UPROPERTY()
+	TWeakObjectPtr<class ACharacter> OwnerCharacter;
+
+	UFUNCTION()
+	void BindHealthComponentToUI();
+
+	UPROPERTY()
+	TWeakObjectPtr<class UHealthComponent> CachedHealthComp;
 };

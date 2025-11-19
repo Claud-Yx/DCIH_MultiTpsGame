@@ -16,19 +16,16 @@ class DCIH_MULTITPSGAME_API AJHPlayerController : public APlayerController
 
 public:
     AJHPlayerController();
-
 protected:
-    virtual void BeginPlay() override;
     virtual void OnPossess(APawn* InPawn) override;
+    virtual void BeginPlay() override;
     virtual void SetupInputComponent() override;
 
 private:
-    void CacheCharacter();
-	void InitializeUIManager();
-    void BindHealthComponentToUI();
-    
-    // ===== Input Callbacks =====
     void AddDefaultMappingContext();
+	void InitializeUIManager();
+    // void BindHealthComponentToUI();
+
     void OnMove(const FInputActionValue& Value);
     void OnLook(const FInputActionValue& Value);
     void OnJumpStarted();
@@ -36,39 +33,37 @@ private:
     void OnSprintStarted();
     void OnSprintCompleted();
     void OnAttack();
+    
 
-
-
-private:
-    TWeakObjectPtr<AJHCharacter> CachedCharacter;
-
-	// ===== UI =====
-    UPROPERTY()
-    TObjectPtr<class UUIManager> UIManager;
-
-    UPROPERTY(EditDefaultsOnly, Category = "UI")
-    TSubclassOf<class UUIManager> UIManagerClass;
-
-    //===== Input =====
-    UPROPERTY(EditDefaultsOnly, Category = "Input|Mapping", meta = (AllowPrivateAccess = "true"))
-    TObjectPtr<UInputMappingContext> IMC_Default;
-
-    UPROPERTY(EditDefaultsOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
-    TObjectPtr<UInputAction> IA_Move;
-
-    UPROPERTY(EditDefaultsOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
-    TObjectPtr<UInputAction> IA_Look;
-
-    UPROPERTY(EditDefaultsOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
-    TObjectPtr<UInputAction> IA_Jump;
-
-    UPROPERTY(EditDefaultsOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
-    TObjectPtr<UInputAction> IA_Sprint;
-
-    UPROPERTY(EditDefaultsOnly, Category = "Input|Actions", meta = (AllowPrivateAccess = "true"))
-    TObjectPtr<UInputAction> IA_Fire;
 
 
 public:
     float MousePitch = 0.f;
+
+private:
+    TWeakObjectPtr<AJHCharacter> CachedCharacter;
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+    TSubclassOf<class UUIManager> UIManagerClass;
+
+    UPROPERTY(EditDefaultsOnly, Category ="UI")
+    TObjectPtr<class UUIManager> UIManager;
+    
+    UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UInputMappingContext> IMC_Default;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UInputAction> IA_Move;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UInputAction> IA_Look;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UInputAction> IA_Jump;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UInputAction> IA_Sprint;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UInputAction> IA_Fire;
 };

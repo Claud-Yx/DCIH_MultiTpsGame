@@ -68,6 +68,7 @@ void ARifle::HitScan()
     }
 
 
+
 	DrawDebugTrace(ShotDir, Hit, bHit);
 
 }

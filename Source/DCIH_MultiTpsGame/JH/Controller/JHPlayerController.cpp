@@ -11,11 +11,21 @@
 
 AJHPlayerController::AJHPlayerController()
 {
-	bShowMouseCursor = false;
-	bEnableClickEvents = false;
-	bEnableMouseOverEvents = false;
 
-	// UIManager = CreateDefaultSubObject <UIManager>(TEXT("UIManager"));
+}
+
+// Called Before BeginPlay
+void AJHPlayerController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
+
+	if (!CachedCharacter.IsValid()) {
+		CachedCharacter = Cast<AJHCharacter>(InPawn);
+	}
+
+	InitializeUIManager();
+
+	// BindHealthComponentToUI();
 }
 
 void AJHPlayerController::BeginPlay()
@@ -25,18 +35,6 @@ void AJHPlayerController::BeginPlay()
 	AddDefaultMappingContext();
 
 	// InitializeUIManager();
-
-}
-
-void AJHPlayerController::OnPossess(APawn* InPawn)
-{
-	Super::OnPossess(InPawn);
-	// AddDefaultMappingContext();
-	CacheCharacter();
-
-	InitializeUIManager();
-
-	BindHealthComponentToUI();
 
 }
 
@@ -80,51 +78,6 @@ void AJHPlayerController::SetupInputComponent()
 	}
 }
 
-void AJHPlayerController::CacheCharacter()
-{
-	if (CachedCharacter.IsValid()) return;
-
-	CachedCharacter = Cast<AJHCharacter>(GetPawn());
-}
-
-void AJHPlayerController::InitializeUIManager()
-{
-	if (UIManager) return;
-
-	if (!UIManagerClass) return;
-
-	UIManager = NewObject<UUIManager>(this, UIManagerClass);
-	UIManager->RegisterComponent(); //  ���� ���忡 ��ϵ�
-	if (UIManager)
-	{
-		UIManager->Init(this);
-
-		// BindHealthComponentToUI();
-	}
-
-}
-
-void AJHPlayerController::BindHealthComponentToUI()
-{
-	if (!UIManager || !CachedCharacter.IsValid()) return;
-
-	// if(CacheCharacter->healthComp)
-	if (UHealthComponent* HealthComp = CachedCharacter->FindComponentByClass<UHealthComponent>())
-	{
-		// HealthComponent�� OnHealthChanged �̺�Ʈ�� UIManager�� OnHealthChanged �Լ��� ���ε�
-		HealthComp->OnHealthChanged.AddUniqueDynamic(UIManager, &UUIManager::OnHealthChanged);
-
-		UIManager->OnHealthChanged(HealthComp->GetCurrentHealth(), HealthComp->GetMaxHealth());
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT(" Failed to find HealthComponent on character."));
-	}
-}
-
-
-
-// ====== Input Callbacks =====
 void AJHPlayerController::AddDefaultMappingContext()
 {
 	if (!IMC_Default) return;
@@ -138,6 +91,35 @@ void AJHPlayerController::AddDefaultMappingContext()
 		}
 	}
 }
+
+void AJHPlayerController::InitializeUIManager()
+{
+	if (UIManager) return;
+	if (!UIManagerClass) return;
+
+	UIManager = NewObject<UUIManager>(this, UIManagerClass);
+	UIManager->Init(this);
+}
+
+// void AJHPlayerController::BindHealthComponentToUI()
+// {
+// 	if (!UIManager || !CachedCharacter.IsValid()) return;
+// 
+// 	if (UHealthComponent* HealthComp = CachedCharacter->FindComponentByClass<UHealthComponent>())
+// 	{
+// 		HealthComp->OnHealthChanged.AddUniqueDynamic(UIManager, &UUIManager::OnHealthChanged);
+// 
+// 		UIManager->OnHealthChanged(HealthComp->GetCurrentHealth(), HealthComp->GetMaxHealth());
+// 	}
+// 	else
+// 	{
+// 		UE_LOG(LogTemp, Error, TEXT(" Failed to find HealthComponent on character."));
+// 	}
+// }
+
+
+
+
 
 void AJHPlayerController::OnMove(const FInputActionValue& Value)
 {

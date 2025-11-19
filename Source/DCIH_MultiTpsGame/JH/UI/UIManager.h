@@ -5,7 +5,7 @@
 #include "UIManager.generated.h"
 
 UCLASS(BlueprintType, Blueprintable)
-class DCIH_MULTITPSGAME_API UUIManager : public UActorComponent
+class DCIH_MULTITPSGAME_API UUIManager : public UObject
 {
 	GENERATED_BODY()
 	
@@ -13,12 +13,10 @@ public:
 	UUIManager();
 
     void Init (APlayerController* Controller);
-	
-	// private:
 	void InitMainHUD(APlayerController* Controller);
 
-	UFUNCTION(BlueprintCallable, Category = "UI")
-    void OnHealthChanged(float Current, float Max);
+	//UFUNCTION(BlueprintCallable, Category = "UI")
+ //   void OnHealthChanged(float Current, float Max);
 
 	// void OnSatminaChanged(float Current, float Max);
 
