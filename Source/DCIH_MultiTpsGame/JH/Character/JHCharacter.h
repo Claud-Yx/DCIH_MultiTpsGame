@@ -4,10 +4,12 @@
 #include "GameFramework/Character.h"
 #include "JH/Enum/E_CharacterState.h"
 #include "JH/Enum/E_TurnInPlace.h"
+#include "JH/UI/Interface/StatUpdatable.h"
 #include "JHCharacter.generated.h"
 
 UCLASS()
-class DCIH_MULTITPSGAME_API AJHCharacter : public ACharacter
+class DCIH_MULTITPSGAME_API AJHCharacter : 
+	public ACharacter, public IStatUpdatable
 {
 	GENERATED_BODY()
 
@@ -31,7 +33,9 @@ private:
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<class UHealthComponent> HealthComp;
-
+public:
+	virtual UHealthComponent* GetHealthComponent() override { return HealthComp; }
+	virtual void HealthUpdate(float Current, float Max) override {}
 
 	//========= Input ==========
 public:

@@ -7,32 +7,24 @@
 UCLASS(BlueprintType, Blueprintable)
 class DCIH_MULTITPSGAME_API UUIManager : public UObject
 {
+	/// <summary>
+	/// ActorComponent를 사용하는게 좋음
+	/// BP와 연동을 위해
+	/// </summary>
+	
 	GENERATED_BODY()
 	
 public:	
 	UUIManager();
 
     void Init (APlayerController* Controller);
-	void InitMainHUD(APlayerController* Controller);
-
-	//UFUNCTION(BlueprintCallable, Category = "UI")
- //   void OnHealthChanged(float Current, float Max);
-
-	// void OnSatminaChanged(float Current, float Max);
-
-    // void OnAmmoChanged(int32 CurrentAmmo, int32 MaxAmmo);
-
-    // UFUNCTION(BlueprintCallable, Category = "UI")
-    // void ToggleInventory();
 
 private:
-	UPROPERTY(EditDefaultsOnly, Category = "UI")
-	TWeakObjectPtr<APlayerController> OwningPlayerController;
+	void InitMainHUD(APlayerController* Controller);
 
     UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSubclassOf<class UMainHUD> MainHUDClass;
 
-protected:
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UMainHUD> MainHUD;
 };
