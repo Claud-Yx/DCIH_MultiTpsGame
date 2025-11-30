@@ -44,6 +44,11 @@ void AJHCharacter::BeginPlay()
 	StartingAimRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
 	
 	InitializeWeapon();
+
+	if (HealthComp)
+	{
+		HealthComp->OnHealthChanged.AddDynamic(this, &AJHCharacter::HandleHealthChanged);
+	}
 }
 
 void AJHCharacter::Tick(float DeltaTime)
@@ -154,6 +159,8 @@ void AJHCharacter::InitializeWeapon()
 		}
 	}
 }
+
+
 
 void AJHCharacter::Move(const FVector2D& Axis)
 {
@@ -358,4 +365,25 @@ void AJHCharacter::ApplyDamages(float damageAmount)
 void AJHCharacter::Heal(float healAmount)
 {
 	HealthComp->Heal(healAmount);
+}
+
+
+float AJHCharacter::GetCurrentHealth_Implementation()
+{
+	return HealthComp->GetCurrentHealth();
+}
+
+float AJHCharacter::GetMaxHealth_Implementation()
+{
+	return HealthComp->GetMaxHealth();
+}
+
+FOnProviderHealthChanged& AJHCharacter::GetOnHealthChangedDelegate()
+{
+	return ProviderHealthEvent;
+}
+
+void AJHCharacter::HandleHealthChanged(float Cur, float Max)
+{
+	ProviderHealthEvent.Broadcast(Cur, Max);
 }

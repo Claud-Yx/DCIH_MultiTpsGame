@@ -18,9 +18,17 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+
+
 public:
-	UPROPERTY(BlueprintAssignable, Category = "Health")
-	FOnHealthChangedSig OnHealthChanged;
+	UFUNCTION(BlueprintPure, Category = "Health")
+	FORCEINLINE float GetCurrentHealth() const { return CurHealth; }
+
+	UFUNCTION(BlueprintPure, Category = "Health")
+	FORCEINLINE float GetMaxHealth() const { return MaxHealth; }
+	
+	UFUNCTION(BlueprintPure, Category = "Health")
+	float GetHealthRatio() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Health")
 	void ApplyDamage(float damageAmount);
@@ -28,20 +36,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Health")
 	void Heal(float healAmount);
 
-	UFUNCTION(BlueprintPure, Category = "Health")
-	float GetHealthRatio() const;
-
-	UFUNCTION(BlueprintPure, Category = "Health")
-	float GetCurrentHealth() const { return CurHealth; }
-	UFUNCTION(BlueprintPure, Category = "Health")
-	float GetMaxHealth() const { return MaxHealth; }
+	UPROPERTY(BlueprintAssignable, Category = "Health")
+	FOnHealthChangedSig OnHealthChanged;
 
 protected:
-	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Health")
-	float MaxHealth = 100.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	float MaxHealth;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
-	float CurHealth = 100.f;
+	float CurHealth;
 
 private:
 	void BroadcastHealth();

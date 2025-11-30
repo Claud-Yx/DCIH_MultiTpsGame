@@ -16,4 +16,6 @@ void UHealthWidget::Update(float Current, float Max)
     if (!PB_HealthBar || Max <= 0.f) return;
 
     PB_HealthBar->SetPercent(Current / Max);
+
+	UE_LOG(LogTemp, Warning, TEXT(" HealthWidget Update: %f / %f"), Current, Max);
 }

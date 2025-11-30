@@ -4,12 +4,15 @@
 #include "GameFramework/Character.h"
 #include "JH/Enum/E_CharacterState.h"
 #include "JH/Enum/E_TurnInPlace.h"
-#include "JH/UI/Interface/StatUpdatable.h"
+#include "JH/UI/Interface/HealthProviderInterface.h"
 #include "JHCharacter.generated.h"
 
 UCLASS()
-class DCIH_MULTITPSGAME_API AJHCharacter : 
-	public ACharacter, public IStatUpdatable
+class DCIH_MULTITPSGAME_API AJHCharacter 
+	: 
+	public ACharacter, 
+	public IHealthProviderInterface
+
 {
 	GENERATED_BODY()
 
@@ -22,7 +25,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 
-
+	
 	// ========== Component ==========
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
@@ -33,9 +36,9 @@ private:
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<class UHealthComponent> HealthComp;
-public:
-	virtual UHealthComponent* GetHealthComponent() override { return HealthComp; }
-	virtual void HealthUpdate(float Current, float Max) override {}
+// public:
+//	virtual UHealthComponent* GetHealthComponent_Implementation() override;
+//	virtual void HealthUpdate(float Current, float Max) override {}
 
 	//========= Input ==========
 public:
@@ -154,4 +157,24 @@ private:
 	void InitializeCamera();
 	void InitializeWeapon();
 	// void InitializeHealth();
+
+
+
+
+
+	public:
+		// 인터페이스 구현
+		UFUNCTION()
+		virtual float GetCurrentHealth_Implementation() override;
+		UFUNCTION()
+		virtual float GetMaxHealth_Implementation() override;
+		UFUNCTION()
+		virtual FOnProviderHealthChanged& GetOnHealthChangedDelegate() override;
+		// HealthComponent에서 발생한 이벤트를 ProviderEvent로 전달
+		UFUNCTION()
+		void HandleHealthChanged(float Cur, float Max);
+private:
+	// UI로 전달되는 ProviderEvent
+	UPROPERTY()
+	FOnProviderHealthChanged ProviderHealthEvent;
 };

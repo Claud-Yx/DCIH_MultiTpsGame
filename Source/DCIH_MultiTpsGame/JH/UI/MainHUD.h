@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "Interface/StatUpdatable.h"
+#include "Interface/HealthProviderInterface.h"
 #include "MainHUD.generated.h"
 
 UCLASS()
@@ -15,6 +15,7 @@ public:
 	UFUNCTION()
 	void Init();
 
+	UFUNCTION()
 	void UpdateHealthBar(float CurrentHealth, float MaxHealth);
 
 	// UFUNCTION(BlueprintCallable, Category = "HUD")
@@ -26,6 +27,7 @@ protected:
 
 
 private:
+	UFUNCTION()
 	void BindHealthComponentToUI();
 
 	// UPROPERTY()

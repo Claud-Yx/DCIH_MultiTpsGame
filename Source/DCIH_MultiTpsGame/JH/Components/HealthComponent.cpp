@@ -4,6 +4,9 @@
 UHealthComponent::UHealthComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
+
+	MaxHealth = 100.f;
+	CurHealth = 100.f;
 }
 
 void UHealthComponent::BeginPlay()

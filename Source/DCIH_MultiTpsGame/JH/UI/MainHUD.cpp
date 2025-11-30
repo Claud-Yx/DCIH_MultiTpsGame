@@ -1,40 +1,80 @@
 #include "JH/UI/MainHUD.h"
 #include "JH/UI/HealthWidget.h"
-#include "JH/Components/HealthComponent.h"
-#include "JH/UI/Interface/StatUpdatable.h"
+// #include "JH/Components/HealthComponent.h"
+#include "JH/UI/Interface/HealthProviderInterface.h"
+#include "Kismet/KismetSystemLibrary.h"      // PrintString
 
 void UMainHUD::Init()
 {
 	// OwnerCharacter = Cast<AJHCharacter>(GetOwningPlayer()->GetPawn());
-	if (WBP_CharacterHealthWidget) {
-		BindHealthComponentToUI();
-	}
+	//if (WBP_CharacterHealthWidget) {
+	BindHealthComponentToUI();
+	//}
 }
 
 void UMainHUD::UpdateHealthBar(float CurrentHealth, float MaxHealth)
 {
-	if (WBP_CharacterHealthWidget)
-	{
-		WBP_CharacterHealthWidget->Update(CurrentHealth, MaxHealth);
-	}
+	//if (WBP_CharacterHealthWidget)
+	//{
+	WBP_CharacterHealthWidget->Update(CurrentHealth, MaxHealth);
+	//}
+
+	UKismetSystemLibrary::PrintString(this, TEXT("Execute4"));
+
 }
 
 void UMainHUD::BindHealthComponentToUI()
 {
+	//APawn* Pawn = GetOwningPlayerPawn();
+
+	//Pawn->GetClass()->ImplementsInterface(UHealthProviderInterface::StaticClass());
+
+	//UHealthComponent * HealthComp = IHealthProviderInterface::Execute_GetHealthComponent(Pawn);
+
+	//HealthComp->OnHealthChanged.AddDynamic(this, &UMainHUD::UpdateHealthBar);
+
+	//UpdateHealthBar(HealthComp->GetCurrentHealth(), HealthComp->GetMaxHealth());
+
+
+
+	// APawn* Pawn = GetOwningPlayerPawn();
+	// if (!Pawn) return;
+	   
+	// if (!Pawn->GetClass()->ImplementsInterface(UHealthProviderInterface::StaticClass()))
+	// 	return;
+	   
+	// // 인터페이스 이벤트 구독
+	// IHealthProviderInterface::Execute_GetOnHealthChangedDelegate(Pawn)
+	// 	.AddDynamic(this, &UMainHUD::UpdateHealthBar);
+	   
+	// // 초기 업데이트
+	// UpdateHealthBar(
+	// 	IHealthProviderInterface::Execute_GetCurrentHealth(Pawn),
+	// 	IHealthProviderInterface::Execute_GetMaxHealth(Pawn)
+	// );
+
 	APawn* Pawn = GetOwningPlayerPawn();
-	if (!Pawn) return;
 
-	IStatUpdatable* StatObj = Cast<IStatUpdatable>(Pawn);
-	if (!StatObj) return;
+	Pawn->GetClass()->ImplementsInterface(UHealthProviderInterface::StaticClass());
+	
 
-	UHealthComponent* HealthComp = StatObj->GetHealthComponent();
-	if (!HealthComp) return;
+	IHealthProviderInterface* HealthProvider = Cast<IHealthProviderInterface>(Pawn);
 
-	HealthComp->OnHealthChanged.AddDynamic(this, &UMainHUD::UpdateHealthBar);
+	FOnProviderHealthChanged& HealthDelegate = HealthProvider->GetOnHealthChangedDelegate();
 
-	UpdateHealthBar(HealthComp->GetCurrentHealth(), HealthComp->GetMaxHealth());
+	HealthDelegate.AddDynamic(this, &UMainHUD::UpdateHealthBar);
+
+	float CurrentHealth = HealthProvider->Execute_GetCurrentHealth(Pawn);
+	float MaxHealth = HealthProvider->Execute_GetMaxHealth(Pawn);
+
+	UpdateHealthBar(CurrentHealth, MaxHealth);
+
+
+
+
 
 }
+
 
 
 
