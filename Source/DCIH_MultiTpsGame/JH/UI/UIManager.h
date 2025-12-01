@@ -1,16 +1,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h" // AActor ´ë½Å UObject
+#include "UObject/NoExportTypes.h" // AActor ï¿½ï¿½ï¿½ UObject
 #include "UIManager.generated.h"
 
 UCLASS(BlueprintType, Blueprintable)
 class DCIH_MULTITPSGAME_API UUIManager : public UObject
 {
-	/// <summary>
-	/// ActorComponent¸¦ »ç¿ëÇÏ´Â°Ô ÁÁÀ½
-	/// BP¿Í ¿¬µ¿À» À§ÇØ
-	/// </summary>
 	
 	GENERATED_BODY()
 	
@@ -19,6 +15,9 @@ public:
 
     void Init (APlayerController* Controller);
 
+	UFUNCTION(BlueprintCallable, Category = "UI")
+	void BindHealthToTarget(AActor* TargetActor);
+	
 private:
 	void InitMainHUD(APlayerController* Controller);
 
@@ -27,4 +26,7 @@ private:
 
     UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UMainHUD> MainHUD;
+
+	UPROPERTY()
+	TWeakObjectPtr<AActor> CurrentActor;
 };

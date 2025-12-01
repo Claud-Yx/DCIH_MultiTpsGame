@@ -25,14 +25,14 @@ void UHealthComponent::ApplyDamage(float DamageAmount)
 {
 	CurHealth = FMath::Clamp(CurHealth - DamageAmount, 0.f, MaxHealth);
 	
-	// Ã¼·Â º¯°æ ºê·ÎµåÄ³½ºÆÃ
+	// Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Îµï¿½Ä³ï¿½ï¿½ï¿½ï¿½
 	BroadcastHealth();
 }
 
 void UHealthComponent::Heal(float HealAmount)
 {
 	CurHealth = FMath::Clamp(CurHealth + HealAmount, 0.f, MaxHealth);
-	// Ã¼·Â º¯°æ ¾Ë¸²
+	// Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ë¸ï¿½
 	BroadcastHealth();
 }
 

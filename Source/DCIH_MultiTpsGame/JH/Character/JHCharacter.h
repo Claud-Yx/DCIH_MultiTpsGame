@@ -162,19 +162,16 @@ private:
 
 
 
-	public:
-		// 인터페이스 구현
-		UFUNCTION()
-		virtual float GetCurrentHealth_Implementation() override;
-		UFUNCTION()
-		virtual float GetMaxHealth_Implementation() override;
-		UFUNCTION()
-		virtual FOnProviderHealthChanged& GetOnHealthChangedDelegate() override;
-		// HealthComponent에서 발생한 이벤트를 ProviderEvent로 전달
-		UFUNCTION()
-		void HandleHealthChanged(float Cur, float Max);
+public:
+	UFUNCTION()
+	virtual float GetCurrentHealth_Implementation() override;
+	UFUNCTION()
+	virtual float GetMaxHealth_Implementation() override;
+	UFUNCTION()
+	virtual FOnProviderHealthChanged& GetOnHealthChangedDelegate() override;
+	UFUNCTION()
+	void HandleHealthChanged(float Cur, float Max);
 private:
-	// UI로 전달되는 ProviderEvent
 	UPROPERTY()
 	FOnProviderHealthChanged ProviderHealthEvent;
 };

@@ -17,7 +17,7 @@ class DCIH_MULTITPSGAME_API IHealthProviderInterface
 	GENERATED_BODY()
 
 public:
-	// UI°¡ Ã¼·Â °ªÀ» ¾ò±â À§ÇÑ Getter
+	// UIï¿½ï¿½ Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Getter
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	float GetCurrentHealth();
 
