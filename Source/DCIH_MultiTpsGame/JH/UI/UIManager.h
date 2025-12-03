@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h" // AActor ��� UObject
+#include "UObject/NoExportTypes.h"
 #include "UIManager.generated.h"
 
 UCLASS(BlueprintType, Blueprintable)

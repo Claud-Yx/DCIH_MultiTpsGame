@@ -13,7 +13,7 @@ void UUIManager::Init(APlayerController* Controller)
 
 	if (Controller)
 	{
-		BindHealthToTarget(Controller->GetPawn());
+		BindHealthToTarget(Controller->GetPawn());	// ÀÌÁ¤µµ?
 	}
 }
 
@@ -23,24 +23,26 @@ void UUIManager::BindHealthToTarget(AActor* TargetActor)
 
 	//// DisConnect previous connected target
 	//if (CurrentActor.IsValid())
- //   {
- //       if (CurrentActor->GetClass()->ImplementsInterface(UHealthProviderInterface::StaticClass()))
- //       {
- //           IHealthProviderInterface* OldInterface = Cast<IHealthProviderInterface>(CurrentActor.Get());
- //           if (OldInterface)
- //           {
- //               OldInterface->GetOnHealthChangedDelegate().RemoveDynamic(MainHUD, &UMainHUD::UpdateHealthBar);
- //           }
- //       }
- //   }
+	//   {
+	//       if (CurrentActor->GetClass()->ImplementsInterface(UHealthProviderInterface::StaticClass()))
+	//       {
+	//           IHealthProviderInterface* OldInterface = Cast<IHealthProviderInterface>(CurrentActor.Get());
+	//           if (OldInterface)
+	//           {
+	//               OldInterface->GetOnHealthChangedDelegate().RemoveDynamic(MainHUD, &UMainHUD::UpdateHealthBar);
+	//           }
+	//       }
+	//   }
+
+
 
 	// Check Has Interface
 	if (TargetActor->GetClass()->ImplementsInterface(UHealthProviderInterface::StaticClass()))
 	{
-		IHealthProviderInterface* NewInterface = Cast<IHealthProviderInterface>(TargetActor);
+		IHealthProviderInterface* Provider = Cast<IHealthProviderInterface>(TargetActor);
 
-		if (NewInterface) {
-			NewInterface->GetOnHealthChangedDelegate().AddDynamic(MainHUD, &UMainHUD::UpdateHealthBar);
+		if (Provider) {
+			Provider->GetHealthChangedDelegate().AddDynamic(MainHUD, &UMainHUD::UpdateHealthBar);
 
 			float Cur = IHealthProviderInterface::Execute_GetCurrentHealth(TargetActor);
 			float Max = IHealthProviderInterface::Execute_GetMaxHealth(TargetActor);
@@ -56,5 +58,5 @@ void UUIManager::InitMainHUD(APlayerController* Controller)
     MainHUD = CreateWidget<UMainHUD>(Controller, MainHUDClass);
 	MainHUD->AddToViewport();
 
-	MainHUD->Init();
+	// MainHUD->Init();
 }

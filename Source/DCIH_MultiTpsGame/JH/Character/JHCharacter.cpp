@@ -47,7 +47,7 @@ void AJHCharacter::BeginPlay()
 
 	if (HealthComp)
 	{
-		HealthComp->OnHealthChanged.AddDynamic(this, &AJHCharacter::HandleHealthChanged);
+		// HealthComp->OnHealthChanged.AddDynamic(this, &AJHCharacter::HandleHealthChanged);
 	}
 }
 
@@ -353,7 +353,7 @@ void AJHCharacter::TurnInPlace(float DeltaTime)
 	}
 }
 
-void AJHCharacter::ApplyDamages(float damageAmount)
+void AJHCharacter::TakeDamage(float damageAmount)
 {
 	// curHealth -= 10.f;
 	// healthPercent = curHealth / maxHealth;
@@ -362,7 +362,7 @@ void AJHCharacter::ApplyDamages(float damageAmount)
 
 }
 
-void AJHCharacter::Heal(float healAmount)
+void AJHCharacter::ApplyHeal(float healAmount)
 {
 	HealthComp->Heal(healAmount);
 }
@@ -378,12 +378,13 @@ float AJHCharacter::GetMaxHealth_Implementation()
 	return HealthComp->GetMaxHealth();
 }
 
-FOnProviderHealthChanged& AJHCharacter::GetOnHealthChangedDelegate()
+FOnHealthChanged& AJHCharacter::GetHealthChangedDelegate()
 {
-	return ProviderHealthEvent;
+	// return HealthComp->OnHealthChanged;
+	return HealthComp->GetHealthChangedDelegate();
 }
 
-void AJHCharacter::HandleHealthChanged(float Cur, float Max)
-{
-	ProviderHealthEvent.Broadcast(Cur, Max);
-}
+//void AJHCharacter::HandleHealthChanged(float Cur, float Max)
+//{
+//	ProviderHealthEvent.Broadcast(Cur, Max);
+//}

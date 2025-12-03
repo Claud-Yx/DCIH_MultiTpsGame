@@ -57,6 +57,7 @@ protected:
 
 	// ========== Functions ==========
 public:
+    // 캐릭터에서 처리
     UFUNCTION(BlueprintCallable, Category = "Weapon")
     virtual void Equip(ACharacter* Character);
 

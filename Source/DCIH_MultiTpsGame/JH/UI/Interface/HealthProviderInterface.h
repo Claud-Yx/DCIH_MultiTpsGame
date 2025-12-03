@@ -2,9 +2,11 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
+#include "JH/Delegates/HealthDelegate.h" // Delegate
+
 #include "HealthProviderInterface.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnProviderHealthChanged, float, Current, float, Max);
+// DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnProviderHealthChanged, float, Current, float, Max);
 
 UINTERFACE(MinimalAPI)
 class UHealthProviderInterface : public UInterface
@@ -17,12 +19,14 @@ class DCIH_MULTITPSGAME_API IHealthProviderInterface
 	GENERATED_BODY()
 
 public:
-	// UIï¿½ï¿½ Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Getter
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	float GetCurrentHealth();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	float GetMaxHealth();
 
-	virtual FOnProviderHealthChanged& GetOnHealthChangedDelegate() = 0;
+	// virtual FOnProviderHealthChanged& GetOnHealthChangedDelegate() = 0;
+
+	// HealthComponentÀÇ µ¨¸®°ÔÀÌÆ®¸¦ ±×´ë·Î ³Ñ°ÜÁÜ
+	virtual FOnHealthChanged& GetHealthChangedDelegate() = 0;
 };

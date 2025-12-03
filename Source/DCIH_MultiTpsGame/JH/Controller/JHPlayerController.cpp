@@ -101,24 +101,6 @@ void AJHPlayerController::InitializeUIManager()
 	UIManager->Init(this);
 }
 
-// void AJHPlayerController::BindHealthComponentToUI()
-// {
-// 	if (!UIManager || !CachedCharacter.IsValid()) return;
-// 
-// 	if (UHealthComponent* HealthComp = CachedCharacter->FindComponentByClass<UHealthComponent>())
-// 	{
-// 		HealthComp->OnHealthChanged.AddUniqueDynamic(UIManager, &UUIManager::OnHealthChanged);
-// 
-// 		UIManager->OnHealthChanged(HealthComp->GetCurrentHealth(), HealthComp->GetMaxHealth());
-// 	}
-// 	else
-// 	{
-// 		UE_LOG(LogTemp, Error, TEXT(" Failed to find HealthComponent on character."));
-// 	}
-// }
-
-
-
 
 
 void AJHPlayerController::OnMove(const FInputActionValue& Value)

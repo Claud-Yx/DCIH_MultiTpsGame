@@ -2,9 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "JH/Delegates/HealthDelegate.h" // Delegate
 #include "HealthComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHealthChangedSig, float, Current, float, Max);
+// DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHealthChangedSig, float, Current, float, Max);
 // 다이나믹 붙으면 조금 더 무거움
 
 UCLASS( )
@@ -36,9 +37,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Health")
 	void Heal(float healAmount);
 
-	UPROPERTY(BlueprintAssignable, Category = "Health")
-	FOnHealthChangedSig OnHealthChanged;
+	UPROPERTY(BlueprintAssignable, Category = "Delegate")
+	FOnHealthChanged OnHealthChanged;
 
+	UFUNCTION()
+	FOnHealthChanged& GetHealthChangedDelegate() { return OnHealthChanged; }
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	float MaxHealth;

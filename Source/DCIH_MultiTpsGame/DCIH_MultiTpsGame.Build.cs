@@ -10,8 +10,8 @@ public class DCIH_MultiTpsGame : ModuleRules
 
 		PublicIncludePaths.AddRange(new string[] { 
 			"DCIH_MultiTpsGame", 
-			"DCIH_MultiTpsGame/Game" 
-		});
+			"DCIH_MultiTpsGame/Game"
+        });
 
 		PublicDependencyModuleNames.AddRange(new string[] { 
 			"Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "UMG" });
