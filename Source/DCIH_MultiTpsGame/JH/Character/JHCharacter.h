@@ -67,7 +67,7 @@ protected:
 private:
 	void InitializeCharacter();
 	void InitializeCamera();
-	void InitializeWeapon();
+	void InitializeWeapon(); 
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class USpringArmComponent> SpringArmComp;
@@ -75,7 +75,7 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UCameraComponent> CameraComp;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UHealthComponent> HealthComp;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
@@ -103,10 +103,10 @@ private:
 	UFUNCTION(BlueprintCallable, Category = "Health")
 	void ApplyHeal(float HealAmount);
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Movement", meta = (ClampMin = "150.0", ClampMax = "1200.0"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
 	float WalkSpeed;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Movement", meta = (ClampMin = "150.0", ClampMax = "1600.0"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
 	float SprintSpeed;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<class AWeaponBase> WeaponClass;
@@ -116,9 +116,9 @@ private:
 
 	FRotator StartingAimRotation;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Aim Offset", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(BlueprintReadOnly, Category = "Aim Offset", meta = (AllowPrivateAccess = "true"))
 	float AO_Yaw;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Aim Offset", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(BlueprintReadOnly, Category = "Aim Offset", meta = (AllowPrivateAccess = "true"))
 	float AO_Pitch;
 
 	float InterpAO_Yaw;

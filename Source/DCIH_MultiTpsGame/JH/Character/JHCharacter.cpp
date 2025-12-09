@@ -49,6 +49,8 @@ void AJHCharacter::BeginPlay()
 	{
 		// HealthComp->OnHealthChanged.AddDynamic(this, &AJHCharacter::HandleHealthChanged);
 	}
+
+	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 }
 
 void AJHCharacter::Tick(float DeltaTime)

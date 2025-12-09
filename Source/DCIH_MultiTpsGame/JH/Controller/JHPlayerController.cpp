@@ -11,7 +11,8 @@
 
 AJHPlayerController::AJHPlayerController()
 {
-
+	UIManager = CreateDefaultSubobject<UUIManager>(TEXT("UIManager"));
+	// Go to BP and set UIManagerClass to BP_UIManager
 }
 
 // Called Before BeginPlay
@@ -23,8 +24,7 @@ void AJHPlayerController::OnPossess(APawn* InPawn)
 		CachedCharacter = Cast<AJHCharacter>(InPawn);
 	}
 
-	InitializeUIManager();
-
+	// InitializeUIManager();
 	// BindHealthComponentToUI();
 }
 
@@ -33,6 +33,8 @@ void AJHPlayerController::BeginPlay()
 	Super::BeginPlay();
 
 	AddDefaultMappingContext();
+	InitializeUIManager();
+	// InitializeUIManager();
 
 	// InitializeUIManager();
 
@@ -94,11 +96,13 @@ void AJHPlayerController::AddDefaultMappingContext()
 
 void AJHPlayerController::InitializeUIManager()
 {
-	if (UIManager) return;
-	if (!UIManagerClass) return;
+	// if (!UIManager) return;
+	// if (!UIManagerClass) return;
 
-	UIManager = NewObject<UUIManager>(this, UIManagerClass);
-	UIManager->Init(this);
+	// UIManager = NewObject<UUIManager>(this, UIManagerClass);
+	UIManager->Init();
+
+	// UIManager->Init(this);
 }
 
 

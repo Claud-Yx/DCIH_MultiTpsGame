@@ -1,20 +1,32 @@
 #include "JH/UI/UIManager.h"
+#include "GameFramework/PlayerController.h"
 #include "JH/UI/MainHUD.h"
 #include "JH/UI/Interface/HealthProviderInterface.h"
 
 UUIManager::UUIManager()
 {
-
+	PrimaryComponentTick.bCanEverTick = false;
 }
 
-void UUIManager::Init(APlayerController* Controller)
+void UUIManager::BeginPlay()
 {
-	InitMainHUD(Controller);
+	Super::BeginPlay();
+}
 
-	if (Controller)
+void UUIManager::Init()
+{
+	APlayerController* PC = Cast<APlayerController>(GetOwner());
+	if (PC)
 	{
-		BindHealthToTarget(Controller->GetPawn());	// 이정도?
+		InitMainHUD(PC);
 	}
+}
+
+
+void UUIManager::InitMainHUD(APlayerController* Controller)
+{
+	CreateMainHUD(Controller);
+	BindHealthToTarget(Controller->GetPawn());
 }
 
 void UUIManager::BindHealthToTarget(AActor* TargetActor)
@@ -36,12 +48,21 @@ void UUIManager::BindHealthToTarget(AActor* TargetActor)
 
 
 
+
+
+	/*if(TargetActor->Implements<UHealthProviderInterface>())*/
+
+
+
+
+
 	// Check Has Interface
 	if (TargetActor->GetClass()->ImplementsInterface(UHealthProviderInterface::StaticClass()))
 	{
 		IHealthProviderInterface* Provider = Cast<IHealthProviderInterface>(TargetActor);
 
 		if (Provider) {
+			// 주의 : 바인딩 제거 해야함
 			Provider->GetHealthChangedDelegate().AddDynamic(MainHUD, &UMainHUD::UpdateHealthBar);
 
 			float Cur = IHealthProviderInterface::Execute_GetCurrentHealth(TargetActor);
@@ -52,7 +73,7 @@ void UUIManager::BindHealthToTarget(AActor* TargetActor)
 	}
 }
 
-void UUIManager::InitMainHUD(APlayerController* Controller)
+void UUIManager::CreateMainHUD(APlayerController* Controller)
 {
     if (!MainHUDClass) return;
     MainHUD = CreateWidget<UMainHUD>(Controller, MainHUDClass);
