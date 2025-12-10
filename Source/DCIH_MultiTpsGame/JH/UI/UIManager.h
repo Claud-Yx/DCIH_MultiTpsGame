@@ -22,6 +22,9 @@ private:
 	UFUNCTION(BlueprintCallable, Category = "UI")
 	void BindHealthToTarget(AActor* TargetActor);
 
+	UFUNCTION()
+	void BindAmmoToUI(AActor* TargetActor);
+
 	void CreateMainHUD(APlayerController* Controller);
 
 private:

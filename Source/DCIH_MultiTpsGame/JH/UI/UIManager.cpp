@@ -2,6 +2,7 @@
 #include "GameFramework/PlayerController.h"
 #include "JH/UI/MainHUD.h"
 #include "JH/UI/Interface/HealthProviderInterface.h"
+#include "JH/UI/Interface/AmmoUIInterface.h"
 
 UUIManager::UUIManager()
 {
@@ -19,6 +20,7 @@ void UUIManager::Init()
 	if (PC)
 	{
 		InitMainHUD(PC);
+
 	}
 }
 
@@ -27,6 +29,8 @@ void UUIManager::InitMainHUD(APlayerController* Controller)
 {
 	CreateMainHUD(Controller);
 	BindHealthToTarget(Controller->GetPawn());
+
+	BindAmmoToUI(Controller->GetPawn()->GetEquippedWeapon();)
 }
 
 void UUIManager::BindHealthToTarget(AActor* TargetActor)
@@ -69,6 +73,21 @@ void UUIManager::BindHealthToTarget(AActor* TargetActor)
 			float Max = IHealthProviderInterface::Execute_GetMaxHealth(TargetActor);
 
 			MainHUD->UpdateHealthBar(Cur, Max);
+		}
+	}
+}
+
+void UUIManager::BindAmmoToUI(AActor* TargetActor)
+{
+	if (TargetActor->GetClass()->ImplementsInterface(UAmmoUIInterface::StaticClass()))
+	{
+		IAmmoUIInterface* Provider = Cast<IAmmoUIInterface>(TargetActor);
+		if (Provider) {
+			// 주의 : 바인딩 제거 해야함
+			Provider->GetAmmoChangedDelegate().AddDynamic(MainHUD, &UMainHUD::);
+			int32 Cur = IAmmoUIInterface::Execute_GetCurrentAmmo(TargetActor);
+			int32 Max = IAmmoUIInterface::Execute_GetMaxAmmo(TargetActor);
+			// MainHUD->UpdateAmmo(Cur, Max);
 		}
 	}
 }

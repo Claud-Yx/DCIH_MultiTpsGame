@@ -151,6 +151,7 @@ void ARangedWeaponBase::Reload()
 
 	SetWeaponState(EWeaponState::Reloading);
 
+
 	GetWorld()->GetTimerManager().SetTimer(
 		ReloadTimerHandle,
 		this,
@@ -164,6 +165,7 @@ void ARangedWeaponBase::FinishReload()
 {
 	CurAmmo = MaxAmmo;
 	SetWeaponState(EWeaponState::Equipping);
+	AmmoChangedDelegate.Broadcast(CurAmmo, MaxAmmo);
 
 	if (UWorld* World = GetWorld())
 	{
@@ -243,6 +245,23 @@ void ARangedWeaponBase::ApplyDamage(const FHitResult& Hit,const FVector& ShotDir
 		UDamageType::StaticClass()
 
 	);
+}
+
+int32 ARangedWeaponBase::GerCurrentAmmo_Implementation()
+{
+	return CurAmmo;
+}
+
+int32 ARangedWeaponBase::GerMaxAmmo_Implementation()
+{
+	return MaxAmmo;
+}
+
+void ARangedWeaponBase::ConsumeAmmo(int32 Amount)
+{
+	CurAmmo = FMath::Clamp(CurAmmo - Amount, 0, MaxAmmo);
+
+	AmmoChangedDelegate.Broadcast(CurAmmo, MaxAmmo);
 }
 
 void ARangedWeaponBase::DrawDebugTrace(const FVector& ShotDir, const FHitResult& Hit, const bool bHit) const

@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "JH/Weapon/WeaponBase.h"
+#include "JH/UI/Interface/AmmoUIInterface.h"
 #include "RangedWeaponBase.generated.h"
 
 
@@ -35,7 +36,10 @@ struct FRecoilConfig
 };
 
 UCLASS(Abstract)
-class DCIH_MULTITPSGAME_API ARangedWeaponBase : public AWeaponBase
+class DCIH_MULTITPSGAME_API ARangedWeaponBase 
+	: 
+	public AWeaponBase,
+	public IAmmoUIInterface
 {
 	GENERATED_BODY()
 
@@ -102,6 +106,17 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ammo")
 	int32 MaxAmmo;
+
+	FOnAmmoChanged AmmoChangedDelegate;
+
+public:
+	virtual int32 GerCurrentAmmo_Implementation() override;
+	virtual int32 GerMaxAmmo_Implementation() override;
+
+	virtual FOnAmmoChanged& GetAmmoChangedDelegate() override { return AmmoChangedDelegate; }
+
+	void ConsumeAmmo(int32 Amount);
+protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage")
 	float Damage;
