@@ -15,6 +15,8 @@ public:
 	virtual void BeginPlay() override;
 	UFUNCTION(BlueprintCallable, Category = "UI")
 	void Init();
+	void RegisterUIObject(AActor* Target);
+	void CreateMainHUD(APlayerController* Controller);
 
 private:
 	void InitMainHUD(class APlayerController* Controller);
@@ -23,9 +25,8 @@ private:
 	void BindHealthToTarget(AActor* TargetActor);
 
 	UFUNCTION()
-	void BindAmmoToUI(AActor* TargetActor);
+	void BindAmmoToTarget(AActor* TargetActor);
 
-	void CreateMainHUD(APlayerController* Controller);
 
 private:
 	UPROPERTY()
@@ -39,4 +40,5 @@ private:
 
 	UPROPERTY()
 	TWeakObjectPtr<AActor> CurrentActor;
+
 };

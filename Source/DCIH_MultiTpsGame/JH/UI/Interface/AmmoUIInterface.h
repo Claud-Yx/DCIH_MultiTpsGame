@@ -7,8 +7,7 @@
 
 #include "AmmoUIInterface.generated.h"
 
-DECLARE_MULTICAST_DELEGATE_TwoParams(FOnAmmoChanged, int32,int32)
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAmmoChanged, int32, Current, int32, Max);
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
 class UAmmoUIInterface : public UInterface
@@ -25,10 +24,11 @@ class DCIH_MULTITPSGAME_API IAmmoUIInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	
-	virtual int32 GerCurrentAmmo() const = 0;
-	virtual int32 GetMaxAmmo() const = 0;
+	UFUNCTION(BlueprintNativeEvent)
+	int32 GetCurrentAmmo() const;
+	UFUNCTION(BlueprintNativeEvent)
+	int32 GetMaxAmmo() const;
+
 
 	virtual FOnAmmoChanged& GetAmmoChangedDelegate() = 0;
-	
 };

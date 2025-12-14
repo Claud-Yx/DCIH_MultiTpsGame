@@ -137,7 +137,9 @@ void ARangedWeaponBase::Fire()
 
 	//LastFireTime = currentTime; // ������ �߻� �ð� ������Ʈ
 	ApplyRecoil();
-	CurAmmo = FMath::Max(CurAmmo - 1, 0);
+	
+	ConsumeAmmo(1);
+	// CurAmmo = FMath::Max(CurAmmo - 1, 0);
 
 	bLastFireSuccess = true;
 	WeaponState = EWeaponState::Equipping;
@@ -186,7 +188,7 @@ void ARangedWeaponBase::ApplyRecoil()
 	OwnerController->AddPitchInput(-VerticalRecoil);
 	OwnerController->AddYawInput(HorizontalRecoil);
 	
-	UE_LOG(LogTemp, Warning, TEXT("CurrentRecoilVertical : %f"), RecoilConfig.CurrentRecoilVertical);
+	// UE_LOG(LogTemp, Warning, TEXT("CurrentRecoilVertical : %f"), RecoilConfig.CurrentRecoilVertical);
 }
 
 void ARangedWeaponBase::RecoilRecovery(float DeltaTime)
@@ -200,10 +202,10 @@ void ARangedWeaponBase::RecoilRecovery(float DeltaTime)
 	JHController = Cast<AJHPlayerController>(OwnerController.Get());
 
 	float PlayerDownInput = JHController->MousePitch;
-	UE_LOG(LogTemp, Warning, TEXT("PlayerDownInput: %f"), PlayerDownInput);
+	// UE_LOG(LogTemp, Warning, TEXT("PlayerDownInput: %f"), PlayerDownInput);
 
 	float TotalRecovery = RecoilConfig.CurrentRecoilVertical + PlayerDownInput;
-	UE_LOG(LogTemp, Warning, TEXT("TotalRecovery: %f"), TotalRecovery);
+	// UE_LOG(LogTemp, Warning, TEXT("TotalRecovery: %f"), TotalRecovery);
 
 	if (TotalRecovery < RecoilConfig.RecoilVerticalMin) {
 		RecoilConfig.CurrentRecoilVertical = 0.f;
@@ -245,16 +247,6 @@ void ARangedWeaponBase::ApplyDamage(const FHitResult& Hit,const FVector& ShotDir
 		UDamageType::StaticClass()
 
 	);
-}
-
-int32 ARangedWeaponBase::GerCurrentAmmo_Implementation()
-{
-	return CurAmmo;
-}
-
-int32 ARangedWeaponBase::GerMaxAmmo_Implementation()
-{
-	return MaxAmmo;
 }
 
 void ARangedWeaponBase::ConsumeAmmo(int32 Amount)

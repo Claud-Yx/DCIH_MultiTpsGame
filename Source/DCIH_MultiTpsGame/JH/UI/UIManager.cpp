@@ -20,7 +20,6 @@ void UUIManager::Init()
 	if (PC)
 	{
 		InitMainHUD(PC);
-
 	}
 }
 
@@ -28,9 +27,9 @@ void UUIManager::Init()
 void UUIManager::InitMainHUD(APlayerController* Controller)
 {
 	CreateMainHUD(Controller);
-	BindHealthToTarget(Controller->GetPawn());
+	// BindHealthToTarget(Controller->GetPawn());
 
-	BindAmmoToUI(Controller->GetPawn()->GetEquippedWeapon();)
+	// BindAmmoToUI(Controller->GetPawn()->GetEquippedWeapon();)
 }
 
 void UUIManager::BindHealthToTarget(AActor* TargetActor)
@@ -49,20 +48,10 @@ void UUIManager::BindHealthToTarget(AActor* TargetActor)
 	//           }
 	//       }
 	//   }
-
-
-
-
-
 	/*if(TargetActor->Implements<UHealthProviderInterface>())*/
-
-
-
-
-
 	// Check Has Interface
-	if (TargetActor->GetClass()->ImplementsInterface(UHealthProviderInterface::StaticClass()))
-	{
+	//if (TargetActor->GetClass()->ImplementsInterface(UHealthProviderInterface::StaticClass()))
+	//{
 		IHealthProviderInterface* Provider = Cast<IHealthProviderInterface>(TargetActor);
 
 		if (Provider) {
@@ -74,22 +63,25 @@ void UUIManager::BindHealthToTarget(AActor* TargetActor)
 
 			MainHUD->UpdateHealthBar(Cur, Max);
 		}
-	}
+	//}
 }
 
-void UUIManager::BindAmmoToUI(AActor* TargetActor)
+void UUIManager::BindAmmoToTarget(AActor* TargetActor)
 {
-	if (TargetActor->GetClass()->ImplementsInterface(UAmmoUIInterface::StaticClass()))
-	{
+	//if (TargetActor->GetClass()->ImplementsInterface(UAmmoUIInterface::StaticClass()))
+	//{
 		IAmmoUIInterface* Provider = Cast<IAmmoUIInterface>(TargetActor);
 		if (Provider) {
 			// 주의 : 바인딩 제거 해야함
-			Provider->GetAmmoChangedDelegate().AddDynamic(MainHUD, &UMainHUD::);
+			Provider->GetAmmoChangedDelegate().AddDynamic(MainHUD, &UMainHUD::UpdateAmmoText);
 			int32 Cur = IAmmoUIInterface::Execute_GetCurrentAmmo(TargetActor);
 			int32 Max = IAmmoUIInterface::Execute_GetMaxAmmo(TargetActor);
+			MainHUD->UpdateAmmoText(Cur, Max);
+
 			// MainHUD->UpdateAmmo(Cur, Max);
+
 		}
-	}
+	//}
 }
 
 void UUIManager::CreateMainHUD(APlayerController* Controller)
@@ -99,4 +91,18 @@ void UUIManager::CreateMainHUD(APlayerController* Controller)
 	MainHUD->AddToViewport();
 
 	// MainHUD->Init();
+}
+
+void UUIManager::RegisterUIObject(AActor* Target)
+{
+	if (Target->GetClass()->ImplementsInterface(UHealthProviderInterface::StaticClass()))
+	{
+		BindHealthToTarget(Target);
+	}
+
+	if (Target->GetClass()->ImplementsInterface(UAmmoUIInterface::StaticClass()))
+	{
+		BindAmmoToTarget(Target);
+		UE_LOG(LogTemp, Warning, TEXT("UIManager:: RegisterUIObject - AmmoUIInterface Implemented"));
+	}
 }

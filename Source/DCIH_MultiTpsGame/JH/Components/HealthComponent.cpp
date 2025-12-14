@@ -43,7 +43,7 @@ float UHealthComponent::GetHealthRatio() const
 
 void UHealthComponent::BroadcastHealth()
 {
-	UE_LOG(LogTemp, Warning, TEXT(" BroadcastHealth: %f / %f"), CurHealth, MaxHealth);
+	// UE_LOG(LogTemp, Warning, TEXT(" BroadcastHealth: %f / %f"), CurHealth, MaxHealth);
 
 	OnHealthChanged.Broadcast(CurHealth, MaxHealth);
 }

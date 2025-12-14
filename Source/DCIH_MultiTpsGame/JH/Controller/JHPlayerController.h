@@ -40,6 +40,8 @@ private:
 public:
     float MousePitch = 0.f;
 
+	class UUIManager* GetUIManager() const { return UIManager; }
+
 private:
     TWeakObjectPtr<AJHCharacter> CachedCharacter;
 
@@ -48,6 +50,8 @@ private:
 
     UPROPERTY(EditDefaultsOnly, Category ="UI")
     TObjectPtr<class UUIManager> UIManager;
+
+
     
     UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UInputMappingContext> IMC_Default;
@@ -66,4 +70,11 @@ private:
 
     UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UInputAction> IA_Fire;
+
+
+
+
+    void HandleWeaponEquipped(class AWeaponBase* Weapon);
+
+
 };

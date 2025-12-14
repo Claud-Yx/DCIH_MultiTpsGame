@@ -9,6 +9,8 @@
 
 #include "JHCharacter.generated.h"
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnWeaponEquipped, AWeaponBase*);
+
 UCLASS()
 class DCIH_MULTITPSGAME_API AJHCharacter 
 	: 
@@ -20,6 +22,17 @@ class DCIH_MULTITPSGAME_API AJHCharacter
 
 public:
 	AJHCharacter();
+
+
+
+
+
+
+
+
+
+	FOnWeaponEquipped OnWeaponEquipped;
+
 
 	UFUNCTION(BlueprintCallable, Category = "Input")
 	void Move(const FVector2D& Axis);
@@ -98,7 +111,7 @@ private:
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void DropWeapon();
 	UFUNCTION(BlueprintCallable, Category = "Health")
-	void TakeDamage(float DamageAmount);
+	void HandleDamage(float DamageAmount);
 
 	UFUNCTION(BlueprintCallable, Category = "Health")
 	void ApplyHeal(float HealAmount);

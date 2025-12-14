@@ -6,7 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "JH/UI/UIManager.h"
 #include "JH/Components/HealthComponent.h"
-
+#include "JH/Weapon/WeaponBase.h"
 
 
 AJHPlayerController::AJHPlayerController()
@@ -23,9 +23,18 @@ void AJHPlayerController::OnPossess(APawn* InPawn)
 	if (!CachedCharacter.IsValid()) {
 		CachedCharacter = Cast<AJHCharacter>(InPawn);
 	}
-
+	if (CachedCharacter.IsValid())
+	{
+		CachedCharacter->OnWeaponEquipped.AddUObject(
+			this, &AJHPlayerController::HandleWeaponEquipped
+		);
+	}
 	// InitializeUIManager();
 	// BindHealthComponentToUI();
+}
+void AJHPlayerController::HandleWeaponEquipped(AWeaponBase* Weapon)
+{
+	UIManager->RegisterUIObject(Weapon);
 }
 
 void AJHPlayerController::BeginPlay()
@@ -94,13 +103,29 @@ void AJHPlayerController::AddDefaultMappingContext()
 	}
 }
 
-void AJHPlayerController::InitializeUIManager()
+void AJHPlayerController::InitializeUIManager() // Actor 타입의 오브젝트 UI 연결
 {
 	// if (!UIManager) return;
 	// if (!UIManagerClass) return;
 
 	// UIManager = NewObject<UUIManager>(this, UIManagerClass);
 	UIManager->Init();
+
+
+
+	// 연결 하고 싶은 것 가져와서 UIManager에 등록
+	if (CachedCharacter.IsValid())
+	{
+		// 어떤 캐릭터든 상관없이 UIManager는 인터페이스만 본다
+		UIManager->RegisterUIObject(CachedCharacter.Get());
+
+		// 캐릭터가 어떤 무기를 들고 있든 그대로 전달
+		if (AActor* Weapon = Cast<AActor>(CachedCharacter->GetEquippedWeapon()))
+		{
+			UIManager->RegisterUIObject(Weapon);
+		}
+	}
+	// UIManager->ResgisterUIObject(CachedCharacter->);
 
 	// UIManager->Init(this);
 }

@@ -8,8 +8,13 @@
 #include "JH/Components/HealthComponent.h"
 #include "JH/Animation/KJHCharacterAnim.h"
 #include "JH/UI/UIManager.h"
+
+
+
 #include "Kismet/KismetMathLibrary.h"
 
+
+#include "JH/Controller/JHPlayerController.h"
 
 
 
@@ -118,6 +123,13 @@ void AJHCharacter::EquipWeapon(AWeaponBase* Weapon)
 
 	EquippedWeapon = Weapon;
 	EquippedWeapon->Equip(this);
+
+	OnWeaponEquipped.Broadcast(Weapon); // "무기 장착됨" 사실만 알림
+
+	//if (AJHPlayerController* PC = Cast<AJHPlayerController>(GetController()))
+	//{
+	//	PC->GetUIManager()->RegisterUIObject(Weapon);
+	//}
 }
 
 void AJHCharacter::UnEquipWeapon()
@@ -355,7 +367,7 @@ void AJHCharacter::TurnInPlace(float DeltaTime)
 	}
 }
 
-void AJHCharacter::TakeDamage(float damageAmount)
+void AJHCharacter::HandleDamage(float damageAmount)
 {
 	// curHealth -= 10.f;
 	// healthPercent = curHealth / maxHealth;

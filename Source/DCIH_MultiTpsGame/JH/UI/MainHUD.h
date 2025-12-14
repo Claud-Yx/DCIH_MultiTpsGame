@@ -17,7 +17,13 @@ public:
 	UFUNCTION()
 	void UpdateHealthBar(float CurrentHealth, float MaxHealth);
 
+	UFUNCTION()
+	void UpdateAmmoText(int32 CurAmmo, int32 MaxAmmo);
+
 protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UHealthWidget> WBP_CharacterHealthWidget;
+
+	UPROPERTY(meta =(BindWidget))
+	TObjectPtr<class UAmmoWidget> WBP_AmmoWidget;
 };

@@ -101,6 +101,17 @@ protected:
 	float LastFireTime;
 	FTimerHandle FireTimerHandle;
 
+
+
+
+
+
+
+
+
+
+
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ammo")
 	int32 CurAmmo;
 
@@ -110,11 +121,18 @@ protected:
 	FOnAmmoChanged AmmoChangedDelegate;
 
 public:
-	virtual int32 GerCurrentAmmo_Implementation() override;
-	virtual int32 GerMaxAmmo_Implementation() override;
-
+	virtual int32 GetCurrentAmmo_Implementation() const override { return CurAmmo; }
+	virtual int32 GetMaxAmmo_Implementation() const override { return MaxAmmo; }
 	virtual FOnAmmoChanged& GetAmmoChangedDelegate() override { return AmmoChangedDelegate; }
-
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	void ConsumeAmmo(int32 Amount);
 protected:
 
