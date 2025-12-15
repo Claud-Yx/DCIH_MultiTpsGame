@@ -16,10 +16,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "UI")
 	void Init();
 	void RegisterUIObject(AActor* Target);
-	void CreateMainHUD(APlayerController* Controller);
+	void CreateMainHUD();
 
 private:
-	void InitMainHUD(class APlayerController* Controller);
+	// void InitMainHUD(class APlayerController* Controller);
 	
 	UFUNCTION(BlueprintCallable, Category = "UI")
 	void BindHealthToTarget(AActor* TargetActor);
@@ -41,4 +41,7 @@ private:
 	UPROPERTY()
 	TWeakObjectPtr<AActor> CurrentActor;
 
+private:
+	TWeakObjectPtr<AActor> CurrentHealthTarget;
+	TWeakObjectPtr<AActor> CurrentAmmoTarget;
 };

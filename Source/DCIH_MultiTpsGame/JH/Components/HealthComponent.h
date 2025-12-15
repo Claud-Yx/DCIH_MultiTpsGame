@@ -6,7 +6,7 @@
 #include "HealthComponent.generated.h"
 
 // DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHealthChangedSig, float, Current, float, Max);
-// ´ÙÀÌ³ª¹Í ºÙÀ¸¸é Á¶±Ý ´õ ¹«°Å¿ò
+// ï¿½ï¿½ï¿½Ì³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Å¿ï¿½
 
 UCLASS( )
 class DCIH_MULTITPSGAME_API UHealthComponent : public UActorComponent

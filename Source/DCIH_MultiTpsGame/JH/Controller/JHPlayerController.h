@@ -23,7 +23,7 @@ protected:
 
 private:
     void AddDefaultMappingContext();
-	void InitializeUIManager();
+	// void InitializeUIManager();
     // void BindHealthComponentToUI();
 
     void OnMove(const FInputActionValue& Value);

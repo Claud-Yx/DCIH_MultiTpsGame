@@ -27,6 +27,6 @@ public:
 
 	// virtual FOnProviderHealthChanged& GetOnHealthChangedDelegate() = 0;
 
-	// HealthComponentÀÇ µ¨¸®°ÔÀÌÆ®¸¦ ±×´ë·Î ³Ñ°ÜÁÜ
+	// HealthComponentï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½×´ï¿½ï¿½ ï¿½Ñ°ï¿½ï¿½ï¿½
 	virtual FOnHealthChanged& GetHealthChangedDelegate() = 0;
 };

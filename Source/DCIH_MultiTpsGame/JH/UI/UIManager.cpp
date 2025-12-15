@@ -16,25 +16,24 @@ void UUIManager::BeginPlay()
 
 void UUIManager::Init()
 {
-	APlayerController* PC = Cast<APlayerController>(GetOwner());
-	if (PC)
+	OwningController = Cast<APlayerController>(GetOwner());
+	if (OwningController.IsValid())
 	{
-		InitMainHUD(PC);
+		CreateMainHUD();
 	}
 }
 
-
-void UUIManager::InitMainHUD(APlayerController* Controller)
-{
-	CreateMainHUD(Controller);
-	// BindHealthToTarget(Controller->GetPawn());
-
-	// BindAmmoToUI(Controller->GetPawn()->GetEquippedWeapon();)
-}
+//void UUIManager::InitMainHUD(APlayerController* Controller)
+//{
+//	CreateMainHUD(Controller);
+//	// BindHealthToTarget(Controller->GetPawn());
+//
+//	// BindAmmoToUI(Controller->GetPawn()->GetEquippedWeapon();)
+//}
 
 void UUIManager::BindHealthToTarget(AActor* TargetActor)
 {
-    if (!MainHUD || !TargetActor) return;
+	if (!MainHUD || !TargetActor) return;
 
 	//// DisConnect previous connected target
 	//if (CurrentActor.IsValid())
@@ -52,42 +51,64 @@ void UUIManager::BindHealthToTarget(AActor* TargetActor)
 	// Check Has Interface
 	//if (TargetActor->GetClass()->ImplementsInterface(UHealthProviderInterface::StaticClass()))
 	//{
-		IHealthProviderInterface* Provider = Cast<IHealthProviderInterface>(TargetActor);
 
-		if (Provider) {
-			// ¡÷¿« : πŸ¿Œµ˘ ¡¶∞≈ «ÿæﬂ«‘
-			Provider->GetHealthChangedDelegate().AddDynamic(MainHUD, &UMainHUD::UpdateHealthBar);
-
-			float Cur = IHealthProviderInterface::Execute_GetCurrentHealth(TargetActor);
-			float Max = IHealthProviderInterface::Execute_GetMaxHealth(TargetActor);
-
-			MainHUD->UpdateHealthBar(Cur, Max);
+	if (CurrentHealthTarget.IsValid())
+	{
+		if (IHealthProviderInterface* OldProvider =
+			Cast<IHealthProviderInterface>(CurrentHealthTarget.Get()))
+		{
+			OldProvider->GetHealthChangedDelegate()
+				.RemoveDynamic(MainHUD, &UMainHUD::UpdateHealthBar);
 		}
-	//}
+	}
+
+	IHealthProviderInterface* Provider = Cast<IHealthProviderInterface>(TargetActor);
+
+	if (Provider) 
+	{
+		Provider->GetHealthChangedDelegate().AddDynamic(MainHUD, &UMainHUD::UpdateHealthBar);
+
+		CurrentHealthTarget = TargetActor;
+
+		float Cur = IHealthProviderInterface::Execute_GetCurrentHealth(TargetActor);
+		float Max = IHealthProviderInterface::Execute_GetMaxHealth(TargetActor);
+
+		MainHUD->UpdateHealthBar(Cur, Max);
+	}
 }
 
 void UUIManager::BindAmmoToTarget(AActor* TargetActor)
 {
-	//if (TargetActor->GetClass()->ImplementsInterface(UAmmoUIInterface::StaticClass()))
-	//{
-		IAmmoUIInterface* Provider = Cast<IAmmoUIInterface>(TargetActor);
-		if (Provider) {
-			// ¡÷¿« : πŸ¿Œµ˘ ¡¶∞≈ «ÿæﬂ«‘
-			Provider->GetAmmoChangedDelegate().AddDynamic(MainHUD, &UMainHUD::UpdateAmmoText);
-			int32 Cur = IAmmoUIInterface::Execute_GetCurrentAmmo(TargetActor);
-			int32 Max = IAmmoUIInterface::Execute_GetMaxAmmo(TargetActor);
-			MainHUD->UpdateAmmoText(Cur, Max);
 
-			// MainHUD->UpdateAmmo(Cur, Max);
-
+	// 1Ô∏è‚É£ Ïù¥Ï†Ñ Ammo Î∞îÏù∏Îî© Ìï¥Ï†ú
+	if (CurrentAmmoTarget.IsValid())
+	{
+		if (IAmmoUIInterface* OldProvider =
+			Cast<IAmmoUIInterface>(CurrentAmmoTarget.Get()))
+		{
+			OldProvider->GetAmmoChangedDelegate()
+				.RemoveDynamic(MainHUD, &UMainHUD::UpdateAmmoText);
 		}
-	//}
+	}
+
+	IAmmoUIInterface* Provider = Cast<IAmmoUIInterface>(TargetActor);
+	if (Provider) 
+	{
+		Provider->GetAmmoChangedDelegate().AddDynamic(MainHUD, &UMainHUD::UpdateAmmoText);
+
+		CurrentAmmoTarget = TargetActor;
+
+		int32 Cur = IAmmoUIInterface::Execute_GetCurrentAmmo(TargetActor);
+		int32 Max = IAmmoUIInterface::Execute_GetMaxAmmo(TargetActor);
+
+		MainHUD->UpdateAmmoText(Cur, Max);
+	}
 }
 
-void UUIManager::CreateMainHUD(APlayerController* Controller)
+void UUIManager::CreateMainHUD()
 {
-    if (!MainHUDClass) return;
-    MainHUD = CreateWidget<UMainHUD>(Controller, MainHUDClass);
+	if (!MainHUDClass) return;
+	MainHUD = CreateWidget<UMainHUD>(OwningController.Get(), MainHUDClass);
 	MainHUD->AddToViewport();
 
 	// MainHUD->Init();

@@ -11,8 +11,8 @@
 
 AJHPlayerController::AJHPlayerController()
 {
-	UIManager = CreateDefaultSubobject<UUIManager>(TEXT("UIManager"));
 	// Go to BP and set UIManagerClass to BP_UIManager
+	UIManager = CreateDefaultSubobject<UUIManager>(TEXT("UIManager"));
 }
 
 // Called Before BeginPlay
@@ -23,15 +23,17 @@ void AJHPlayerController::OnPossess(APawn* InPawn)
 	if (!CachedCharacter.IsValid()) {
 		CachedCharacter = Cast<AJHCharacter>(InPawn);
 	}
+
+
+	// If Character Notice Equip, Weapon Recieve
 	if (CachedCharacter.IsValid())
 	{
 		CachedCharacter->OnWeaponEquipped.AddUObject(
 			this, &AJHPlayerController::HandleWeaponEquipped
 		);
 	}
-	// InitializeUIManager();
-	// BindHealthComponentToUI();
 }
+
 void AJHPlayerController::HandleWeaponEquipped(AWeaponBase* Weapon)
 {
 	UIManager->RegisterUIObject(Weapon);
@@ -42,12 +44,38 @@ void AJHPlayerController::BeginPlay()
 	Super::BeginPlay();
 
 	AddDefaultMappingContext();
-	InitializeUIManager();
-	// InitializeUIManager();
 
+	UIManager->Init();
+
+	if (CachedCharacter.IsValid())
+	{
+		UIManager->RegisterUIObject(CachedCharacter.Get());
+	}
+
+	// InitializeUIManager();
+	// InitializeUIManager();
 	// InitializeUIManager();
 
 }
+
+
+//void AJHPlayerController::InitializeUIManager()
+//{
+//	UIManager->Init();
+//
+//	if (CachedCharacter.IsValid())
+//	{
+//		UIManager->RegisterUIObject(CachedCharacter.Get());
+//	}
+//}
+
+
+
+
+
+
+
+
 
 void AJHPlayerController::SetupInputComponent()
 {
@@ -102,35 +130,6 @@ void AJHPlayerController::AddDefaultMappingContext()
 		}
 	}
 }
-
-void AJHPlayerController::InitializeUIManager() // Actor 타입의 오브젝트 UI 연결
-{
-	// if (!UIManager) return;
-	// if (!UIManagerClass) return;
-
-	// UIManager = NewObject<UUIManager>(this, UIManagerClass);
-	UIManager->Init();
-
-
-
-	// 연결 하고 싶은 것 가져와서 UIManager에 등록
-	if (CachedCharacter.IsValid())
-	{
-		// 어떤 캐릭터든 상관없이 UIManager는 인터페이스만 본다
-		UIManager->RegisterUIObject(CachedCharacter.Get());
-
-		// 캐릭터가 어떤 무기를 들고 있든 그대로 전달
-		if (AActor* Weapon = Cast<AActor>(CachedCharacter->GetEquippedWeapon()))
-		{
-			UIManager->RegisterUIObject(Weapon);
-		}
-	}
-	// UIManager->ResgisterUIObject(CachedCharacter->);
-
-	// UIManager->Init(this);
-}
-
-
 
 void AJHPlayerController::OnMove(const FInputActionValue& Value)
 {
