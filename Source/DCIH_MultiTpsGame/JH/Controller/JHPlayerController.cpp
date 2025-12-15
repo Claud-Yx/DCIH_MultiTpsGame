@@ -24,8 +24,16 @@ void AJHPlayerController::OnPossess(APawn* InPawn)
 		CachedCharacter = Cast<AJHCharacter>(InPawn);
 	}
 
+	// UI »ý¼º
+	UIManager->Init();
 
-	// If Character Notice Equip, Weapon Recieve
+	// Ä³¸¯ÅÍ Çï½º UIManager¿¡ µî·Ï
+	if (CachedCharacter.IsValid())
+	{
+		UIManager->RegisterUIObject(CachedCharacter.Get());
+	}
+
+	// ¹«±â È¹µæ½Ã UI¿¡ µî·Ï
 	if (CachedCharacter.IsValid())
 	{
 		CachedCharacter->OnWeaponEquipped.AddUObject(
@@ -34,6 +42,7 @@ void AJHPlayerController::OnPossess(APawn* InPawn)
 	}
 }
 
+// È¹µæÇÑ ¹«±â UI¿¡ µî·Ï
 void AJHPlayerController::HandleWeaponEquipped(AWeaponBase* Weapon)
 {
 	UIManager->RegisterUIObject(Weapon);
@@ -45,12 +54,7 @@ void AJHPlayerController::BeginPlay()
 
 	AddDefaultMappingContext();
 
-	UIManager->Init();
-
-	if (CachedCharacter.IsValid())
-	{
-		UIManager->RegisterUIObject(CachedCharacter.Get());
-	}
+	// If Character Notice Equip, Weapon Recieve
 
 	// InitializeUIManager();
 	// InitializeUIManager();

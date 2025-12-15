@@ -64,7 +64,7 @@ void UUIManager::BindHealthToTarget(AActor* TargetActor)
 
 	IHealthProviderInterface* Provider = Cast<IHealthProviderInterface>(TargetActor);
 
-	if (Provider) 
+	if (Provider)
 	{
 		Provider->GetHealthChangedDelegate().AddDynamic(MainHUD, &UMainHUD::UpdateHealthBar);
 
@@ -108,6 +108,10 @@ void UUIManager::BindAmmoToTarget(AActor* TargetActor)
 void UUIManager::CreateMainHUD()
 {
 	if (!MainHUDClass) return;
+	if (MainHUD) {
+		MainHUD->RemoveFromParent();
+		MainHUD = nullptr;
+	}
 	MainHUD = CreateWidget<UMainHUD>(OwningController.Get(), MainHUDClass);
 	MainHUD->AddToViewport();
 
