@@ -15,18 +15,19 @@ public:
 	virtual void BeginPlay() override;
 	UFUNCTION(BlueprintCallable, Category = "UI")
 	void Init();
-	void RegisterUIObject(AActor* Target);
+	void RegisterUIObject(UObject* Target);
 	void CreateMainHUD();
 
 private:
 	// void InitMainHUD(class APlayerController* Controller);
 	
 	UFUNCTION(BlueprintCallable, Category = "UI")
-	void BindHealthToTarget(AActor* TargetActor);
+	void BindHealthToTarget(UObject* Target);
 
 	UFUNCTION()
-	void BindAmmoToTarget(AActor* TargetActor);
+	void BindAmmoToTarget(UObject* Target);
 
+	void BindStaminaToUI(UObject* Target);
 
 private:
 	UPROPERTY()
@@ -42,6 +43,7 @@ private:
 	TWeakObjectPtr<AActor> CurrentActor;
 
 private:
-	TWeakObjectPtr<AActor> CurrentHealthTarget;
-	TWeakObjectPtr<AActor> CurrentAmmoTarget;
+	TWeakObjectPtr<UObject> CurrentHealthTarget;
+	TWeakObjectPtr<UObject> CurrentAmmoTarget;
+	TWeakObjectPtr<UObject> CurrentStaminaTarget;
 };

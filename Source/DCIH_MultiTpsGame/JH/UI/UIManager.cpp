@@ -3,6 +3,7 @@
 #include "JH/UI/MainHUD.h"
 #include "JH/UI/Interface/HealthProviderInterface.h"
 #include "JH/UI/Interface/AmmoUIInterface.h"
+#include "JH/UI/Interface/StaminaUIInterface.h"
 
 UUIManager::UUIManager()
 {
@@ -31,9 +32,9 @@ void UUIManager::Init()
 //	// BindAmmoToUI(Controller->GetPawn()->GetEquippedWeapon();)
 //}
 
-void UUIManager::BindHealthToTarget(AActor* TargetActor)
+void UUIManager::BindHealthToTarget(UObject* Target)
 {
-	if (!MainHUD || !TargetActor) return;
+	if (!MainHUD || !Target) return;
 
 	//// DisConnect previous connected target
 	//if (CurrentActor.IsValid())
@@ -62,22 +63,22 @@ void UUIManager::BindHealthToTarget(AActor* TargetActor)
 		}
 	}
 
-	IHealthProviderInterface* Provider = Cast<IHealthProviderInterface>(TargetActor);
+	IHealthProviderInterface* Provider = Cast<IHealthProviderInterface>(Target);
 
 	if (Provider)
 	{
 		Provider->GetHealthChangedDelegate().AddDynamic(MainHUD, &UMainHUD::UpdateHealthBar);
 
-		CurrentHealthTarget = TargetActor;
+		CurrentHealthTarget = Target;
 
-		float Cur = IHealthProviderInterface::Execute_GetCurrentHealth(TargetActor);
-		float Max = IHealthProviderInterface::Execute_GetMaxHealth(TargetActor);
+		float Cur = IHealthProviderInterface::Execute_GetCurrentHealth(Target);
+		float Max = IHealthProviderInterface::Execute_GetMaxHealth(Target);
 
 		MainHUD->UpdateHealthBar(Cur, Max);
 	}
 }
 
-void UUIManager::BindAmmoToTarget(AActor* TargetActor)
+void UUIManager::BindAmmoToTarget(UObject* Target)
 {
 
 	// 1️⃣ 이전 Ammo 바인딩 해제
@@ -91,19 +92,49 @@ void UUIManager::BindAmmoToTarget(AActor* TargetActor)
 		}
 	}
 
-	IAmmoUIInterface* Provider = Cast<IAmmoUIInterface>(TargetActor);
+	IAmmoUIInterface* Provider = Cast<IAmmoUIInterface>(Target);
 	if (Provider) 
 	{
 		Provider->GetAmmoChangedDelegate().AddDynamic(MainHUD, &UMainHUD::UpdateAmmoText);
 
-		CurrentAmmoTarget = TargetActor;
+		CurrentAmmoTarget = Target;
 
-		int32 Cur = IAmmoUIInterface::Execute_GetCurrentAmmo(TargetActor);
-		int32 Max = IAmmoUIInterface::Execute_GetMaxAmmo(TargetActor);
+		int32 Cur = IAmmoUIInterface::Execute_GetCurrentAmmo(Target);
+		int32 Max = IAmmoUIInterface::Execute_GetMaxAmmo(Target);
 
 		MainHUD->UpdateAmmoText(Cur, Max);
 	}
 }
+
+void UUIManager::BindStaminaToUI(UObject* Target)
+{
+	if (!MainHUD || !IsValid(Target)) return;
+
+
+	if (CurrentStaminaTarget.IsValid())
+	{
+		if (IStaminaUIInterface* OldProvider =
+			Cast<IStaminaUIInterface>(CurrentStaminaTarget.Get()))
+		{
+			OldProvider->GetStaminaChangedDelegate()
+				.RemoveDynamic(MainHUD, &UMainHUD::UpdateStaminaBar);
+		}
+	}
+
+	IStaminaUIInterface* Provider = Cast<IStaminaUIInterface>(Target);
+	if (!Provider) return;
+
+	Provider->GetStaminaChangedDelegate()
+		.AddDynamic(MainHUD, &UMainHUD::UpdateStaminaBar);
+
+	CurrentStaminaTarget = Target;
+
+	float Cur = IStaminaUIInterface::Execute_GetCurrentStamina(Target);
+	float Max = IStaminaUIInterface::Execute_GetMaxStamina(Target);
+
+	MainHUD->UpdateStaminaBar(Cur, Max);
+}
+
 
 void UUIManager::CreateMainHUD()
 {
@@ -118,13 +149,17 @@ void UUIManager::CreateMainHUD()
 	// MainHUD->Init();
 }
 
-void UUIManager::RegisterUIObject(AActor* Target)
+void UUIManager::RegisterUIObject(UObject* Target)
 {
 	if (Target->GetClass()->ImplementsInterface(UHealthProviderInterface::StaticClass()))
 	{
 		BindHealthToTarget(Target);
 	}
 	
+	if (Target->Implements<UStaminaUIInterface>()) {
+		BindStaminaToUI(Target);
+	}
+
 	// if(Target->Implements<UAmmoUIInterface>())
 	if (Target->GetClass()->ImplementsInterface(UAmmoUIInterface::StaticClass()))
 	{

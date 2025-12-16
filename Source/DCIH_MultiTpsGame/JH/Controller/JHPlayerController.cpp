@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "JH/UI/UIManager.h"
 #include "JH/Components/HealthComponent.h"
+#include "JH/Components/StaminaComponent.h"
 #include "JH/Weapon/WeaponBase.h"
 
 
@@ -28,10 +29,11 @@ void AJHPlayerController::OnPossess(APawn* InPawn)
 	// UI Create
 	UIManager->Init();
 
-	// ĳ���� �ｺ UIManager�� ���
+	// Binding Components in Character to UI
 	if (CachedCharacter.IsValid())
 	{
 		UIManager->RegisterUIObject(CachedCharacter.Get());
+		UIManager->RegisterUIObject(CachedCharacter->GetStaminaComponent());
 	}
 
 	// ���� ȹ��� UI�� ���

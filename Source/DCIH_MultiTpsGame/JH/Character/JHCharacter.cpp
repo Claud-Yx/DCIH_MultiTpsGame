@@ -228,7 +228,7 @@ void AJHCharacter::StartSprint()
 {
 	ApplySpeed(SprintSpeed);
 	SetState(ECharacterState::Running);
-
+	StaminaComp->Consume(5.f);
 	// ��Ʈ�ѷ� Yaw�� ����, ĳ���ʹ� �̵� �������� ȸ��, 
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;

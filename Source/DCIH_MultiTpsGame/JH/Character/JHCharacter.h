@@ -26,7 +26,7 @@ public:
 
 
 
-
+	
 
 
 
@@ -94,6 +94,11 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UStaminaComponent> StaminaComp;
 
+public:
+	UFUNCTION()
+	FORCEINLINE UStaminaComponent* GetStaminaComponent() const { return StaminaComp; };
+
+private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
 	ECharacterState CurrentState;
 
