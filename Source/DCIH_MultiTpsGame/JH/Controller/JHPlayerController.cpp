@@ -24,25 +24,28 @@ void AJHPlayerController::OnPossess(APawn* InPawn)
 		CachedCharacter = Cast<AJHCharacter>(InPawn);
 	}
 
-	// UI »ý¼º
+	// UI ï¿½ï¿½ï¿½ï¿½
+	// UI Create
 	UIManager->Init();
 
-	// Ä³¸¯ÅÍ Çï½º UIManager¿¡ µî·Ï
+	// Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï½º UIManagerï¿½ï¿½ ï¿½ï¿½ï¿½
 	if (CachedCharacter.IsValid())
 	{
 		UIManager->RegisterUIObject(CachedCharacter.Get());
 	}
 
-	// ¹«±â È¹µæ½Ã UI¿¡ µî·Ï
+	// ï¿½ï¿½ï¿½ï¿½ È¹ï¿½ï¿½ï¿½ UIï¿½ï¿½ ï¿½ï¿½ï¿½
+	// Called when Character Equip Weapon
 	if (CachedCharacter.IsValid())
 	{
-		CachedCharacter->OnWeaponEquipped.AddUObject(
-			this, &AJHPlayerController::HandleWeaponEquipped
-		);
+		CachedCharacter->OnWeaponEquipped.
+			AddUObject(this, &AJHPlayerController::HandleWeaponEquipped);
+		// Delegate's Type is WeaponBase
 	}
 }
 
-// È¹µæÇÑ ¹«±â UI¿¡ µî·Ï
+// È¹ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ UIï¿½ï¿½ ï¿½ï¿½ï¿½
+// Reciever's Type is WeaponBase
 void AJHPlayerController::HandleWeaponEquipped(AWeaponBase* Weapon)
 {
 	UIManager->RegisterUIObject(Weapon);
@@ -54,24 +57,7 @@ void AJHPlayerController::BeginPlay()
 
 	AddDefaultMappingContext();
 
-	// If Character Notice Equip, Weapon Recieve
-
-	// InitializeUIManager();
-	// InitializeUIManager();
-	// InitializeUIManager();
-
 }
-
-
-//void AJHPlayerController::InitializeUIManager()
-//{
-//	UIManager->Init();
-//
-//	if (CachedCharacter.IsValid())
-//	{
-//		UIManager->RegisterUIObject(CachedCharacter.Get());
-//	}
-//}
 
 
 

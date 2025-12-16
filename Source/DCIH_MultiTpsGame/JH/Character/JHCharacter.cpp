@@ -6,6 +6,8 @@
 #include "JH/Weapon/WeaponBase.h"
 #include "JH/Weapon/RangedWeaponBase.h"
 #include "JH/Components/HealthComponent.h"
+#include "JH/Components/StaminaComponent.h"
+
 #include "JH/Animation/KJHCharacterAnim.h"
 #include "JH/UI/UIManager.h"
 
@@ -32,6 +34,8 @@ AJHCharacter::AJHCharacter()
 	InitializeCamera();
 
 	HealthComp = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComp"));
+	StaminaComp = CreateDefaultSubobject<UStaminaComponent>(TEXT("StaminaComp"));
+
 
 	WalkSpeed = 400.f;
 	SprintSpeed = 700.f;

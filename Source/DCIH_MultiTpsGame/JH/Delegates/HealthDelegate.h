@@ -9,3 +9,5 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(
     float, Cur,
     float, Max
 );
+
+// Use Dynamic Because MainHUD is UMG

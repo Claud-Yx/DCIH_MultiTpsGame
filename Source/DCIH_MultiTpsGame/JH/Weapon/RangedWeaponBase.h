@@ -21,14 +21,14 @@ struct FRecoilConfig
 	UPROPERTY(EditDefaultsOnly, Category = "Recoil")
 	float RecoilHorizontalMax;
 
-	// ¹Ýµ¿ º¹±Í ¼Óµµ
+	// ï¿½Ýµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Óµï¿½
 	UPROPERTY(EditDefaultsOnly, Category = "Recoil")
 	float RecoilRecoverySpeed;
 
 	float CurrentRecoilVertical = 0.f;
 	// float CurrentRecoilHorizontal = 0.f;
 
-	//// ÇöÀç ´©ÀûµÈ ¹Ýµ¿·®
+	//// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ýµï¿½ï¿½ï¿½
 	//FVector2D RecoilValue;
 
 	//FRotator PastRotation;
@@ -159,7 +159,7 @@ protected:
 
 
 	UPROPERTY(BlueprintReadOnly)
-	bool bLastFireSuccess = false;	// ºÎ¸ð Åë°úÇÏ°í ÀÚ½ÄÀÌ ½î´Â ¿À·ù
+	bool bLastFireSuccess = false;	// ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 	UFUNCTION(BlueprintCallable, Category = "Fire")
 	void DrawDebugTrace(const FVector& ShotDir, const FHitResult& Hit, const bool bHit) const;

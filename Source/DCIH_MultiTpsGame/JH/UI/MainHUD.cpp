@@ -2,6 +2,7 @@
 #include "JH/UI/HealthWidget.h"
 #include "JH/UI/AmmoWidget.h"
 #include "JH/UI/Interface/HealthProviderInterface.h"
+#include "JH/UI/StaminaWidget.h"	
 
 void UMainHUD::Init()
 {
@@ -20,5 +21,13 @@ void UMainHUD::UpdateAmmoText(int32 CurAmmo, int32 MaxAmmo)
 	if (WBP_AmmoWidget)
 	{
 		WBP_AmmoWidget->Update(CurAmmo, MaxAmmo);
+	}
+}
+
+void UMainHUD::UpdateStaminaBar(float Current, float Max)
+{
+	if (WBP_StaminaWidget) 
+	{
+		WBP_StaminaWidget->Update(Current, Max);
 	}
 }

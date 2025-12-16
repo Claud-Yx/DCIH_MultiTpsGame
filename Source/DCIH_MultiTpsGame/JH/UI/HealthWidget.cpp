@@ -19,3 +19,5 @@ void UHealthWidget::Update(float Current, float Max)
 
 	UE_LOG(LogTemp, Warning, TEXT(" HealthWidget Update: %f / %f"), Current, Max);
 }
+
+

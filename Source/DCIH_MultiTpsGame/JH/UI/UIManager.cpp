@@ -124,7 +124,8 @@ void UUIManager::RegisterUIObject(AActor* Target)
 	{
 		BindHealthToTarget(Target);
 	}
-
+	
+	// if(Target->Implements<UAmmoUIInterface>())
 	if (Target->GetClass()->ImplementsInterface(UAmmoUIInterface::StaticClass()))
 	{
 		BindAmmoToTarget(Target);
