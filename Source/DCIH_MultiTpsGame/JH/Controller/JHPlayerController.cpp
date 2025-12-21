@@ -10,7 +10,7 @@
 #include "JH/Weapon/WeaponBase.h"
 
 
-AJHPlayerController::AJHPlayerController()
+AJHPlayerController::AJHPlayerController()    
 {
 	// Go to BP and set UIManagerClass to BP_UIManager
 	UIManager = CreateDefaultSubobject<UUIManager>(TEXT("UIManager"));
@@ -25,7 +25,6 @@ void AJHPlayerController::OnPossess(APawn* InPawn)
 		CachedCharacter = Cast<AJHCharacter>(InPawn);
 	}
 
-	// UI ����
 	// UI Create
 	UIManager->Init();
 
@@ -36,7 +35,6 @@ void AJHPlayerController::OnPossess(APawn* InPawn)
 		UIManager->RegisterUIObject(CachedCharacter->GetStaminaComponent());
 	}
 
-	// ���� ȹ��� UI�� ���
 	// Called when Character Equip Weapon
 	if (CachedCharacter.IsValid())
 	{
@@ -46,7 +44,6 @@ void AJHPlayerController::OnPossess(APawn* InPawn)
 	}
 }
 
-// ȹ���� ���� UI�� ���
 // Reciever's Type is WeaponBase
 void AJHPlayerController::HandleWeaponEquipped(AWeaponBase* Weapon)
 {
@@ -97,7 +94,7 @@ void AJHPlayerController::SetupInputComponent()
 
 		if (ensureMsgf(IA_Jump, TEXT("IA_Jump not assigned")))
 		{
-			EIC->BindAction(IA_Jump, ETriggerEvent::Triggered, this, &AJHPlayerController::OnJumpStarted);
+			EIC->BindAction(IA_Jump, ETriggerEvent::Started, this, &AJHPlayerController::OnJumpStarted);
 			EIC->BindAction(IA_Jump, ETriggerEvent::Completed, this, &AJHPlayerController::OnJumpCompleted);
 			EIC->BindAction(IA_Jump, ETriggerEvent::Canceled, this, &AJHPlayerController::OnJumpCompleted);
 		}
@@ -105,6 +102,12 @@ void AJHPlayerController::SetupInputComponent()
 		if (ensureMsgf(IA_Fire, TEXT("IA_Jump not assigned")))
 		{
 			EIC->BindAction(IA_Fire, ETriggerEvent::Triggered, this, &AJHPlayerController::OnAttack);
+		}
+		
+		if (ensureMsgf(IA_Aim, TEXT("IA_AIM not assigned")))
+		{
+			EIC->BindAction(IA_Aim, ETriggerEvent::Started, this, &AJHPlayerController::OnAimStart);
+			EIC->BindAction(IA_Aim, ETriggerEvent::Completed, this, &AJHPlayerController::OnAimEnd);
 		}
 	}
 }
@@ -167,4 +170,16 @@ void AJHPlayerController::OnAttack()
 {
 	if (CachedCharacter.IsValid())
 		CachedCharacter->Attack();
+}
+
+void AJHPlayerController::OnAimStart()
+{
+	if(CachedCharacter.IsValid())
+		CachedCharacter->AimStart();
+}
+
+void AJHPlayerController::OnAimEnd()
+{
+	if (CachedCharacter.IsValid())
+		CachedCharacter->AimEnd();
 }

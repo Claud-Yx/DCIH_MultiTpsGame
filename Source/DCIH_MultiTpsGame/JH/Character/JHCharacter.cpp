@@ -44,6 +44,8 @@ AJHCharacter::AJHCharacter()
 	AO_Yaw = 0.f;
 	AO_Pitch = 0.f;
 	InterpAO_Yaw = 0.f;
+	DefaultFOV = 90.f;
+	AimFOV = 45.f;
 }
 
 void AJHCharacter::BeginPlay()
@@ -68,10 +70,25 @@ void AJHCharacter::Tick(float DeltaTime)
 
 	CalculateAimOffset(DeltaTime);
 
-	if (GetVelocity().Size() <= 5.f)
+	if (CurrentState == ECharacterState::Running) 
 	{
-		SetState(ECharacterState::Idle);
+		StaminaComp->ConsumePerSecond(DeltaTime);
+		// 스태미너 0이면 즉시 걷기로
+		if (!StaminaComp->CanSprint(0.1f))
+		{
+			StopSprint();
+		}
 	}
+	else if(StaminaComp->GetCurrentStamina_Implementation()<StaminaComp->GetMaxStamina_Implementation())
+	{
+		StaminaComp->RecoverPerSecond(DeltaTime);
+	}
+
+
+	//if (GetVelocity().Size() <= 5.f)
+	//{
+	//	SetState(ECharacterState::Idle);
+	//}
 
 	// UE_LOG(LogTemp, Warning, TEXT("Velocity SizeSquared : %f"), GetVelocity().Size());
 
@@ -215,20 +232,27 @@ void AJHCharacter::Look(const FVector2D& Axis)
 void AJHCharacter::StartJump()
 {
 	Jump();
-	SetState(ECharacterState::Jumping);
+	// SetState(ECharacterState::Jumping);
 }
 
 void AJHCharacter::StopJump()
 {
 	StopJumping();
-	SetState(ECharacterState::Idle);
+	// SetState(ECharacterState::Idle);
 }
 
 void AJHCharacter::StartSprint()
 {
+	if (CurrentState == ECharacterState::Running)
+		return;
+
+	// 스태미너 없으면 못 뜀
+	if (!StaminaComp || !StaminaComp->CanSprint(0.1f))
+		return;
+
 	ApplySpeed(SprintSpeed);
 	SetState(ECharacterState::Running);
-	StaminaComp->Consume(5.f);
+	// StaminaComp->Consume(5.f);
 	// ��Ʈ�ѷ� Yaw�� ����, ĳ���ʹ� �̵� �������� ȸ��, 
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -240,11 +264,14 @@ void AJHCharacter::StartSprint()
 void AJHCharacter::StopSprint()
 {
 	ApplySpeed(WalkSpeed);
-	SetState(ECharacterState::Idle);
+	SetState(ECharacterState::Walking);
 
 	// �ٽ� ĳ���Ͱ� ���콺 ���� ���� ȸ��
 	bUseControllerRotationYaw = true;
 	GetCharacterMovement()->bOrientRotationToMovement = false;
+
+
+
 }
 
 void AJHCharacter::CalculateAimOffset(float DeltaTime)
@@ -298,6 +325,16 @@ void AJHCharacter::Attack()
 
 		SetState(ECharacterState::Shooting);
 	}
+}
+
+void AJHCharacter::AimStart()
+{
+	CameraComp->SetFieldOfView(AimFOV);
+}
+
+void AJHCharacter::AimEnd()
+{
+	CameraComp->SetFieldOfView(DefaultFOV);
 }
 
 void AJHCharacter::SetState(ECharacterState NewState)

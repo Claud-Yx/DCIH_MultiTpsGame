@@ -24,13 +24,6 @@ public:
 	AJHCharacter();
 
 
-
-
-	
-
-
-
-
 	FOnWeaponEquipped OnWeaponEquipped;
 
 
@@ -48,6 +41,17 @@ public:
 	void StopSprint();
 	UFUNCTION(BlueprintCallable, Category = "Input")
 	void Attack();
+
+	UFUNCTION(BlueprintCallable, Category = "Input | Aim")
+	void AimStart();
+	UFUNCTION(BlueprintCallable, Category = "Input | Aim")
+	void AimEnd();
+
+
+
+
+
+
 
 	UFUNCTION(BlueprintCallable, Category = "State")
 	FORCEINLINE ECharacterState GetState() const { return CurrentState; }
@@ -98,7 +102,12 @@ public:
 	UFUNCTION()
 	FORCEINLINE UStaminaComponent* GetStaminaComponent() const { return StaminaComp; };
 
-private:
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Aim | FOV")
+	float DefaultFOV;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Aim | FOV")
+	float AimFOV;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
 	ECharacterState CurrentState;
 

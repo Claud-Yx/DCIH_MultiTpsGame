@@ -33,7 +33,8 @@ private:
     void OnSprintStarted();
     void OnSprintCompleted();
     void OnAttack();
-    
+    void OnAimStart();
+	void OnAimEnd();
     
 
 
@@ -71,7 +72,8 @@ private:
     UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UInputAction> IA_Fire;
 
-
+    UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UInputAction>IA_Aim;
 
 
     void HandleWeaponEquipped(class AWeaponBase* Weapon);

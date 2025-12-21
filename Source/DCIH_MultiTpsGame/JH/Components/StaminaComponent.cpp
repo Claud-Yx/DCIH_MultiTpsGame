@@ -5,36 +5,12 @@ UStaminaComponent::UStaminaComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
 
-}
+	MaxStamina = 100.f;
 
+	CostPerSecond = 10.f;
 
-void UStaminaComponent::BeginPlay()
-{
-	Super::BeginPlay();
-
-	CurrentStamina = MaxStamina;
-}
-
-
-void UStaminaComponent::RecoverTick()
-{
-	CurrentStamina = FMath::Clamp(
-		CurrentStamina + RecoverRate,
-		0.f, MaxStamina
-	);
-
-	OnStaminaChanged.Broadcast(CurrentStamina, MaxStamina);
-
-	if (CurrentStamina >= MaxStamina)
-	{
-		GetWorld()->GetTimerManager().ClearTimer(RecoverTimer);
-	}
-}
-
-void UStaminaComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
+	RecoverCostPerSecond = 10.f;
+	// RecoverDelay = 1.f;
 }
 
 float UStaminaComponent::GetCurrentStamina_Implementation() const
@@ -52,24 +28,74 @@ FOnStaminaChanged& UStaminaComponent::GetStaminaChangedDelegate()
 	return OnStaminaChanged;
 }
 
-bool UStaminaComponent::CanUse(float Cost) const
+
+
+void UStaminaComponent::BeginPlay()
+{
+	Super::BeginPlay();
+
+	CurrentStamina = MaxStamina;
+
+	OnStaminaChanged.Broadcast(CurrentStamina, MaxStamina);
+}
+
+
+void UStaminaComponent::RecoverPerSecond(float DeltaTime)
+{
+	CurrentStamina = FMath::Clamp(
+		CurrentStamina + RecoverCostPerSecond * DeltaTime,
+		0.f, MaxStamina);
+
+	OnStaminaChanged.Broadcast(CurrentStamina, MaxStamina);
+
+	//if (CurrentStamina >= MaxStamina)
+	//{
+	//	GetWorld()->GetTimerManager().ClearTimer(RecoverTimer);
+	//}
+}
+
+
+
+bool UStaminaComponent::CanSprint(float Cost) const
 {
 	return CurrentStamina >= Cost;
 }
 
 void UStaminaComponent::Consume(float Cost)
 {
-	if (!CanUse(Cost)) return;
+	if (!CanSprint(Cost)) return;
 
 	CurrentStamina = FMath::Clamp(CurrentStamina - Cost, 0.f, MaxStamina);
 	OnStaminaChanged.Broadcast(CurrentStamina,MaxStamina);
 
 	GetWorld()->GetTimerManager().ClearTimer(RecoverTimer);
-	GetWorld()->GetTimerManager().SetTimer(
-		RecoverTimer,
-		this,
-		&UStaminaComponent::RecoverTick,
-		0.2f, true, RecoverDelay
-	);
+
+	//GetWorld()->GetTimerManager().SetTimer(
+	//	RecoverTimer,
+	//	this,
+	//	&UStaminaComponent::RecoverPerSecond,
+	//	0.2f, true, RecoverDelay
+	//);
 }
 
+void UStaminaComponent::ConsumePerSecond(float DeltaTime)
+{
+	CurrentStamina = FMath::Clamp(
+		CurrentStamina - CostPerSecond * DeltaTime,
+		0.f, MaxStamina
+	);
+
+	OnStaminaChanged.Broadcast(CurrentStamina, MaxStamina);
+
+	GetWorld()->GetTimerManager().ClearTimer(RecoverTimer);
+}
+
+void UStaminaComponent::StartRecover()
+{
+
+	//GetWorld()->GetTimerManager().SetTimer(
+	//	RecoverTimer,
+	//	this,
+	//	&UStaminaComponent::RecoverTick,
+	//	0.2f, true, RecoverDelay);
+}
