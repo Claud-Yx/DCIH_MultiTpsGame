@@ -85,10 +85,10 @@ void AJHCharacter::Tick(float DeltaTime)
 	}
 
 
-	//if (GetVelocity().Size() <= 5.f)
-	//{
-	//	SetState(ECharacterState::Idle);
-	//}
+	if (GetVelocity().Size() <= 5.f && !GetCharacterMovement()->IsFalling())
+	{
+		SetState(ECharacterState::Idle);
+	}
 
 	// UE_LOG(LogTemp, Warning, TEXT("Velocity SizeSquared : %f"), GetVelocity().Size());
 

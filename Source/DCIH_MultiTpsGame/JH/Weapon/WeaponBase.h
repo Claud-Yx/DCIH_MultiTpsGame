@@ -57,7 +57,7 @@ protected:
 
 	// ========== Functions ==========
 public:
-    // Ä³¸¯ÅÍ¿¡¼­ Ã³¸®
+    // Ä³ï¿½ï¿½ï¿½Í¿ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½
     UFUNCTION(BlueprintCallable, Category = "Weapon")
     virtual void Equip(ACharacter* Character);
 
