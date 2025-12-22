@@ -6,6 +6,7 @@
 #include "JH/Enum/E_TurnInPlace.h"
 #include "JH/UI/Interface/HealthProviderInterface.h"
 #include "JH/Delegates/HealthDelegate.h"//       ?
+#include "JH/Interface/AmmoPickUpInterface.h"
 
 #include "JHCharacter.generated.h"
 
@@ -15,8 +16,8 @@ UCLASS()
 class DCIH_MULTITPSGAME_API AJHCharacter 
 	: 
 	public ACharacter, 
-	public IHealthProviderInterface
-
+	public IHealthProviderInterface,
+	public IAmmoPickUpInterface
 {
 	GENERATED_BODY()
 
@@ -74,6 +75,8 @@ public:
 	virtual float GetMaxHealth_Implementation() override;
 	UFUNCTION()
 	virtual FOnHealthChanged& GetHealthChangedDelegate() override;
+
+	virtual void AddMagazine_Implementation(int32 Count) override;
 
 protected:
 	virtual void BeginPlay() override;

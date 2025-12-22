@@ -439,6 +439,14 @@ FOnHealthChanged& AJHCharacter::GetHealthChangedDelegate()
 	return HealthComp->GetHealthChangedDelegate();
 }
 
+void AJHCharacter::AddMagazine_Implementation(int32 Count)
+{
+	if (ARangedWeaponBase* RangedWeapon = Cast<ARangedWeaponBase>(EquippedWeapon))
+	{
+		RangedWeapon->AddMagazine(Count);
+	}
+}
+
 //void AJHCharacter::HandleHealthChanged(float Cur, float Max)
 //{
 //	ProviderHealthEvent.Broadcast(Cur, Max);

@@ -50,6 +50,8 @@ protected:
 public:
 	virtual void Tick(float DeltaTime) override;
 
+	void AddMagazine(int32 MagazineAmount);
+
 protected:
 	virtual void Attack() override { Fire(); }
 
@@ -109,7 +111,8 @@ protected:
 
 
 
-
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ammo")
+	int32 MagazineNum;
 
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ammo")
@@ -124,7 +127,6 @@ public:
 	virtual int32 GetCurrentAmmo_Implementation() const override { return CurAmmo; }
 	virtual int32 GetMaxAmmo_Implementation() const override { return MaxAmmo; }
 	virtual FOnAmmoChanged& GetAmmoChangedDelegate() override { return AmmoChangedDelegate; }
-	
 	
 	
 	
