@@ -12,7 +12,7 @@
 
 AJHPlayerController::AJHPlayerController()    
 {
-	// Go to BP and set UIManagerClass to BP_UIManager
+	// *** Go to BP and set UIManagerClass to BP_UIManager
 	UIManager = CreateDefaultSubobject<UUIManager>(TEXT("UIManager"));
 }
 
@@ -31,8 +31,9 @@ void AJHPlayerController::OnPossess(APawn* InPawn)
 	// Binding Components in Character to UI
 	if (CachedCharacter.IsValid())
 	{
-		UIManager->RegisterUIObject(CachedCharacter.Get());
-		UIManager->RegisterUIObject(CachedCharacter->GetStaminaComponent());
+		UIManager->RegisterUIObject(CachedCharacter.Get());	// Health
+		UIManager->RegisterUIObject(CachedCharacter->GetStaminaComponent()); // STamina
+		UIManager->RegisterUIObject(CachedCharacter->GetEquippedWeapon()); // Ammo & Magazine
 	}
 
 	// Called when Character Equip Weapon

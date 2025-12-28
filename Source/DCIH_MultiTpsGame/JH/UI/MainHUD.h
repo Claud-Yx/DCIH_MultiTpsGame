@@ -23,6 +23,9 @@ public:
 	UFUNCTION()
 	void UpdateStaminaBar(float Current, float Max);
 
+	 UFUNCTION()
+	 void UpdateMagazineText(int32 MagazineNum);
+
 protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UHealthWidget> WBP_CharacterHealthWidget;
@@ -32,4 +35,8 @@ protected:
 
 	UPROPERTY(meta =(BindWidget))
 	TObjectPtr<class UStaminaWidget> WBP_StaminaWidget;
+
+	 UPROPERTY(meta = (BindWidget))
+	 TObjectPtr<class UMagazineWidget> WBP_MagazineWidget;
+
 };

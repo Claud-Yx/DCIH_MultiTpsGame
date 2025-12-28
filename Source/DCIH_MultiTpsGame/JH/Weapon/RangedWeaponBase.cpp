@@ -16,7 +16,7 @@ ARangedWeaponBase::ARangedWeaponBase()
 
 	MuzzleSocketName = "Muzzle";
 	TraceChannel = ECC_Visibility;
-	MagazineNum = 0;
+	// MagazineNum = 0;
 }
 
 void ARangedWeaponBase::BeginPlay()
@@ -30,10 +30,12 @@ void ARangedWeaponBase::Tick(float DeltaTime)
 	RecoilRecovery(DeltaTime);
 }
 
-void ARangedWeaponBase::AddMagazine(int32 MagazineAmount)
-{
-	MagazineNum = FMath::Max(0, MagazineNum + MagazineAmount);
-}
+//void ARangedWeaponBase::AddMagazine(int32 MagazineAmount)
+//{
+//	MagazineNum = FMath::Max(0, MagazineNum + MagazineAmount);
+//
+//	OnMagazineChanged.Broadcast(MagazineNum);
+//}
 
 FVector ARangedWeaponBase::GetMuzzleLocation() const
 {

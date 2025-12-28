@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "JH/Interface/AmmoPickUpInterface.h"
+#include "JH/Interface/MagazineInterface.h"
 #include "Magazine.generated.h"
 
 UCLASS()
@@ -23,6 +23,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category ="Components")
 	class USkeletalMeshComponent* MeshComp;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category ="AmmoAmount")
-	float AmmoAmount;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category ="AmmoAmount")
+	//float AmmoAmount;
 };

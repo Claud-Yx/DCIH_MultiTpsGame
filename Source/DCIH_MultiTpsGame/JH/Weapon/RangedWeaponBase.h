@@ -6,7 +6,6 @@
 #include "RangedWeaponBase.generated.h"
 
 
-
 USTRUCT(BlueprintType)
 struct FRecoilConfig
 {
@@ -50,7 +49,7 @@ protected:
 public:
 	virtual void Tick(float DeltaTime) override;
 
-	void AddMagazine(int32 MagazineAmount);
+
 
 protected:
 	virtual void Attack() override { Fire(); }
@@ -83,10 +82,6 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void ApplyDamage(const FHitResult& Hit, const FVector& ShotDir);
 
-
-	//UFUNCTION(BlueprintCallable, Category = "Fire")
-	//void 
-
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Socket")
 	FName MuzzleSocketName;
@@ -103,18 +98,7 @@ protected:
 	float LastFireTime;
 	FTimerHandle FireTimerHandle;
 
-
-
-
-
-
-
-
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ammo")
-	int32 MagazineNum;
-
-
+protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ammo")
 	int32 CurAmmo;
 

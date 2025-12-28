@@ -18,9 +18,12 @@ AMagazine::AMagazine()
 
 void AMagazine::NotifyActorBeginOverlap(AActor* OtherActor)
 {
-	if (OtherActor->Implements<UAmmoPickUpInterface>())
+	if (OtherActor->Implements<UMagazineInterface>())
 	{
-		IAmmoPickUpInterface::Execute_AddMagazine(OtherActor, 1);
+		// UAmmoPickUpInterface::Execute_AddMagazine(OtherActor);
+		IMagazineInterface::Execute_AddMagazine(OtherActor);
+		UE_LOG(LogTemp, Warning, TEXT("MagazineNum") );
+
 		Destroy();
 	}
 	// Use Interface And Can Equip Anybody who Overlap

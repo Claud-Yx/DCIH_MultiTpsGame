@@ -29,6 +29,8 @@ private:
 
 	void BindStaminaToUI(UObject* Target);
 
+	void BindMagazineToUI(UObject* Target);
+
 private:
 	UPROPERTY()
 	TWeakObjectPtr<APlayerController> OwningController;
@@ -46,4 +48,5 @@ private:
 	TWeakObjectPtr<UObject> CurrentHealthTarget;
 	TWeakObjectPtr<UObject> CurrentAmmoTarget;
 	TWeakObjectPtr<UObject> CurrentStaminaTarget;
+	TWeakObjectPtr<UObject> CurrentRangedWeaponTarget;
 };

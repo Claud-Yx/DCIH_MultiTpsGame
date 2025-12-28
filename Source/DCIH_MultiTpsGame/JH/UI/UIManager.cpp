@@ -4,6 +4,7 @@
 #include "JH/UI/Interface/HealthProviderInterface.h"
 #include "JH/UI/Interface/AmmoUIInterface.h"
 #include "JH/UI/Interface/StaminaUIInterface.h"
+#include "JH/Interface/MagazineInterface.h"
 
 UUIManager::UUIManager()
 {
@@ -31,6 +32,20 @@ void UUIManager::Init()
 //
 //	// BindAmmoToUI(Controller->GetPawn()->GetEquippedWeapon();)
 //}
+
+void UUIManager::CreateMainHUD()
+{
+	if (!MainHUDClass) return;
+	if (MainHUD) {
+		MainHUD->RemoveFromParent();
+		MainHUD = nullptr;
+	}
+	MainHUD = CreateWidget<UMainHUD>(OwningController.Get(), MainHUDClass);
+	MainHUD->AddToViewport();
+
+	// MainHUD->Init();
+}
+
 
 void UUIManager::BindHealthToTarget(UObject* Target)
 {
@@ -135,22 +150,31 @@ void UUIManager::BindStaminaToUI(UObject* Target)
 	MainHUD->UpdateStaminaBar(Cur, Max);
 }
 
-
-void UUIManager::CreateMainHUD()
+void UUIManager::BindMagazineToUI(UObject* Target)
 {
-	if (!MainHUDClass) return;
-	if (MainHUD) {
-		MainHUD->RemoveFromParent();
-		MainHUD = nullptr;
-	}
-	MainHUD = CreateWidget<UMainHUD>(OwningController.Get(), MainHUDClass);
-	MainHUD->AddToViewport();
 
-	// MainHUD->Init();
+	IMagazineInterface* Provider = Cast<IMagazineInterface>(Target);
+	Provider->GetMagazineChangedDelegate()
+		.AddDynamic(MainHUD, &UMainHUD::UpdateMagazineText);
+
+	//UAmmoPickUpInterface* Provider = Cast<UAmmoPickUpInterface>(Target);
+	//if (!Provider) return;
+
+	//Provider->GetMagazineChangedDelegate()
+	//	.AddDynamic(MainHUD, &UMainHUD::UpdateStaminaBar);
+
 }
+
+
 
 void UUIManager::RegisterUIObject(UObject* Target)
 {
+	if (!IsValid(Target))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("RegisterUIObject: Invalid Target"));
+		return;
+	}
+
 	if (Target->GetClass()->ImplementsInterface(UHealthProviderInterface::StaticClass()))
 	{
 		BindHealthToTarget(Target);
@@ -166,4 +190,14 @@ void UUIManager::RegisterUIObject(UObject* Target)
 		BindAmmoToTarget(Target);
 		UE_LOG(LogTemp, Warning, TEXT("UIManager:: RegisterUIObject - AmmoUIInterface Implemented"));
 	}
+
+	if (Target->Implements<UMagazineInterface>())
+	{
+		BindMagazineToUI(Target);
+	}
+
+	//if (Target->Implements<UAmmoPickUpInterface>())
+	//{
+	//	BindMagazineToUI(Target);
+	//}
 }

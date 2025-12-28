@@ -6,7 +6,7 @@
 #include "JH/Enum/E_TurnInPlace.h"
 #include "JH/UI/Interface/HealthProviderInterface.h"
 #include "JH/Delegates/HealthDelegate.h"//       ?
-#include "JH/Interface/AmmoPickUpInterface.h"
+#include "JH/Interface/MagazineInterface.h"
 
 #include "JHCharacter.generated.h"
 
@@ -17,7 +17,7 @@ class DCIH_MULTITPSGAME_API AJHCharacter
 	: 
 	public ACharacter, 
 	public IHealthProviderInterface,
-	public IAmmoPickUpInterface
+	public IMagazineInterface
 {
 	GENERATED_BODY()
 
@@ -26,6 +26,33 @@ public:
 
 
 	FOnWeaponEquipped OnWeaponEquipped;
+
+
+
+
+
+
+
+
+
+
+	UPROPERTY(BlueprintAssignable)
+	FOnMagazineChanged OnMagazineChanged;
+
+	FOnMagazineChanged& GetMagazineChangedDelegate()
+	{
+		return OnMagazineChanged;
+	}
+
+	virtual void AddMagazine_Implementation() override;
+
+
+
+
+
+
+
+
 
 
 	UFUNCTION(BlueprintCallable, Category = "Input")
@@ -76,7 +103,10 @@ public:
 	UFUNCTION()
 	virtual FOnHealthChanged& GetHealthChangedDelegate() override;
 
-	virtual void AddMagazine_Implementation(int32 Count) override;
+
+
+
+
 
 protected:
 	virtual void BeginPlay() override;
@@ -162,6 +192,14 @@ protected:
 	ETurnInPlace TurningInPlace;
 
 	void TurnInPlace(float DeltaTime);
+
+
+
+
+
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Magazine")
+	int32 MagazineNum;
 
 
 

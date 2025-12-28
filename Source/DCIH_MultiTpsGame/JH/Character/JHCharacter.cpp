@@ -18,8 +18,7 @@
 
 #include "JH/Controller/JHPlayerController.h"
 
-
-
+#include"JH/Weapon/Rifle.h"
 
 #include "JH/Character/JHCharacter.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -46,6 +45,7 @@ AJHCharacter::AJHCharacter()
 	InterpAO_Yaw = 0.f;
 	DefaultFOV = 90.f;
 	AimFOV = 45.f;
+	MagazineNum = 0;
 }
 
 void AJHCharacter::BeginPlay()
@@ -92,6 +92,8 @@ void AJHCharacter::Tick(float DeltaTime)
 
 	// UE_LOG(LogTemp, Warning, TEXT("Velocity SizeSquared : %f"), GetVelocity().Size());
 
+	ARifle* rifle = Cast<ARifle>(EquippedWeapon);
+	// UE_LOG(LogTemp, Warning, TEXT("Stamina : %d"), rifle->MagazineNum);
 	// ���
 	//FString StateName = UEnum::GetValueAsString(CurrentState);
 	//UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("State : %s"), *StateName));
@@ -439,12 +441,20 @@ FOnHealthChanged& AJHCharacter::GetHealthChangedDelegate()
 	return HealthComp->GetHealthChangedDelegate();
 }
 
-void AJHCharacter::AddMagazine_Implementation(int32 Count)
+// When Blueprint calls AddMagazine, this C++ function will be executed
+// When Override this function in Blueprint, the Blueprint version will be executed instead
+void AJHCharacter::AddMagazine_Implementation()
 {
-	if (ARangedWeaponBase* RangedWeapon = Cast<ARangedWeaponBase>(EquippedWeapon))
-	{
-		RangedWeapon->AddMagazine(Count);
-	}
+
+	++MagazineNum;
+	UE_LOG(LogTemp, Warning, TEXT("MagazineNum = %d"), MagazineNum);
+
+	OnMagazineChanged.Broadcast(MagazineNum);
+
+	//if (ARangedWeaponBase* RangedWeapon = Cast<ARangedWeaponBase>(EquippedWeapon))
+	//{
+	//	RangedWeapon->AddMagazine(Count);
+	//}
 }
 
 //void AJHCharacter::HandleHealthChanged(float Cur, float Max)

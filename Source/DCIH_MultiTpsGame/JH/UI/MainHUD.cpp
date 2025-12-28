@@ -2,7 +2,9 @@
 #include "JH/UI/HealthWidget.h"
 #include "JH/UI/AmmoWidget.h"
 #include "JH/UI/Interface/HealthProviderInterface.h"
-#include "JH/UI/StaminaWidget.h"	
+#include "JH/UI/StaminaWidget.h"
+#include "JH/UI/MagazineWidget.h"
+
 
 void UMainHUD::Init()
 {
@@ -31,3 +33,11 @@ void UMainHUD::UpdateStaminaBar(float Current, float Max)
 		WBP_StaminaWidget->Update(Current, Max);
 	}
 }
+
+ void UMainHUD::UpdateMagazineText(int32 MagazineNum)
+ {
+ 	if (WBP_MagazineWidget)
+ 	{
+ 		WBP_MagazineWidget->Update(MagazineNum);
+ 	}
+ }
