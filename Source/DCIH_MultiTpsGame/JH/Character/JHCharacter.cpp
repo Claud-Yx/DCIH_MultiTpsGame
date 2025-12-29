@@ -339,6 +339,28 @@ void AJHCharacter::AimEnd()
 	CameraComp->SetFieldOfView(DefaultFOV);
 }
 
+void AJHCharacter::Reload()
+{
+	if (MagazineNum <= 0) return;
+
+	if (CurrentState == ECharacterState::Reloading) return;
+	if (auto RangedWeapon = Cast<ARangedWeaponBase>(EquippedWeapon))
+	{
+
+		MagazineNum--;
+		OnMagazineChanged.Broadcast(MagazineNum);
+
+		RangedWeapon->Reload();
+		SetState(ECharacterState::Reloading);
+
+	}
+	//if (EquippedWeapon)
+	//{
+	//	auto anim = Cast<UKJHCharacterAnim>(GetMesh()->GetAnimInstance());
+	//	anim->PlayReloadMontage();
+	//}
+}
+
 void AJHCharacter::SetState(ECharacterState NewState)
 {
 	if (CurrentState == NewState) return;
@@ -359,11 +381,6 @@ bool AJHCharacter::CanFire() const
 	return FireAllowedStates.Contains(CurrentState);
 }
 
-void AJHCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-}
 
 void AJHCharacter::ApplySpeed(float NewSpeed)
 {

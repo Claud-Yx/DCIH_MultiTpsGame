@@ -13,9 +13,9 @@
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnWeaponEquipped, AWeaponBase*);
 
 UCLASS()
-class DCIH_MULTITPSGAME_API AJHCharacter 
-	: 
-	public ACharacter, 
+class DCIH_MULTITPSGAME_API AJHCharacter
+	:
+	public ACharacter,
 	public IHealthProviderInterface,
 	public IMagazineInterface
 {
@@ -23,38 +23,51 @@ class DCIH_MULTITPSGAME_API AJHCharacter
 
 public:
 	AJHCharacter();
+protected:
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 
 
+public:	// InterFace
 	FOnWeaponEquipped OnWeaponEquipped;
 
-
-
-
-
-
-
-
-
-
-	UPROPERTY(BlueprintAssignable)
+	UPROPERTY(BlueprintAssignable, Category = "Event")
 	FOnMagazineChanged OnMagazineChanged;
 
-	FOnMagazineChanged& GetMagazineChangedDelegate()
-	{
-		return OnMagazineChanged;
-	}
+	FORCEINLINE virtual FOnMagazineChanged& GetMagazineChangedDelegate() override
+	{return OnMagazineChanged;}
 
 	virtual void AddMagazine_Implementation() override;
 
+	virtual FOnHealthChanged& GetHealthChangedDelegate() override;
+	
+	virtual float GetCurrentHealth_Implementation() override;
+	virtual float GetMaxHealth_Implementation() override;
 
 
 
+public:	// Getter
+	UFUNCTION(BlueprintPure, Category = "State")
+	FORCEINLINE ECharacterState GetState() const { return CurrentState; }
+
+	UFUNCTION(BlueprintPure, Category = "Aim Offset")
+	FORCEINLINE float GetAO_Yaw() const { return AO_Yaw; }
+
+	UFUNCTION(BlueprintPure, Category = "Aim Offset")
+	FORCEINLINE float GetAO_Pitch() const { return AO_Pitch; }
+
+	UFUNCTION(BlueprintPure, Category = "Weapon")
+	FORCEINLINE AWeaponBase* GetEquippedWeapon() { return EquippedWeapon; }
+
+	UFUNCTION(BlueprintPure, Category = "Turn In Place")
+	FORCEINLINE ETurnInPlace GetTurningInPlace() const { return TurningInPlace; }
+
+	UFUNCTION(BlueprintPure, Category = "Stamina")
+	FORCEINLINE UStaminaComponent* GetStaminaComponent() const { return StaminaComp; };
 
 
 
-
-
-
+public:	// Input Action
 	UFUNCTION(BlueprintCallable, Category = "Input")
 	void Move(const FVector2D& Axis);
 	UFUNCTION(BlueprintCallable, Category = "Input")
@@ -74,50 +87,85 @@ public:
 	void AimStart();
 	UFUNCTION(BlueprintCallable, Category = "Input | Aim")
 	void AimEnd();
+	UFUNCTION(BlueprintCallable, Category = "Input | Reload")
+	void Reload();
 
 
+protected:	// Internal Logic
+	UFUNCTION(BlueprintCallable, Category = "State")
+	void SetState(ECharacterState NewState);
 
-
-
-
+	UFUNCTION(BlueprintPure, Category = "State")
+	bool CanFire() const;
 
 	UFUNCTION(BlueprintCallable, Category = "State")
-	FORCEINLINE ECharacterState GetState() const { return CurrentState; }
+	void ApplySpeed(float NewSpeed);
 
-	UFUNCTION(BlueprintPure, Category = "Aim Offset")
-	FORCEINLINE float GetAO_Yaw() const { return AO_Yaw; }
-	
-	UFUNCTION(BlueprintPure, Category = "Aim Offset")
-	FORCEINLINE float GetAO_Pitch() const { return AO_Pitch; }
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void EquipWeapon(AWeaponBase* Weapon);
 
-	UFUNCTION(BlueprintPure, Category = "Weapon")
-	FORCEINLINE AWeaponBase* GetEquippedWeapon() { return EquippedWeapon; }
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void UnEquipWeapon();
 
-	UFUNCTION(BlueprintPure, Category = "Turn In Place")
-	FORCEINLINE ETurnInPlace GetTurningInPlace() const { return TurningInPlace; }
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void DropWeapon();
 
-	UFUNCTION()
-	virtual float GetCurrentHealth_Implementation() override;
-	UFUNCTION()
-	virtual float GetMaxHealth_Implementation() override;
-	UFUNCTION()
-	virtual FOnHealthChanged& GetHealthChangedDelegate() override;
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	void HandleDamage(float DamageAmount);
 
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	void ApplyHeal(float HealAmount);
 
+	void CalculateAimOffset(float DeltaTime);
 
+	void TurnInPlace(float DeltaTime);
 
 
 
 protected:
-	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaTime) override;
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
+	ECharacterState CurrentState;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Aim | FOV")
+	float DefaultFOV;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Aim | FOV")
+	float AimFOV;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
+	float WalkSpeed;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
+	float SprintSpeed;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class AWeaponBase> WeaponClass;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class AWeaponBase> EquippedWeapon;
+
+	FRotator StartingAimRotation;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Aim Offset", meta = (AllowPrivateAccess = "true"))
+	float AO_Yaw;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Aim Offset", meta = (AllowPrivateAccess = "true"))
+	float AO_Pitch;
+
+	float InterpAO_Yaw;
+
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Turn In Place", meta = (AllowPrivateAccess = "true"))
+	ETurnInPlace TurningInPlace;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Magazine")
+	int32 MagazineNum;
 
 
 private:
 	void InitializeCharacter();
 	void InitializeCamera();
-	void InitializeWeapon(); 
+	void InitializeWeapon();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class USpringArmComponent> SpringArmComp;
@@ -130,87 +178,4 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UStaminaComponent> StaminaComp;
-
-public:
-	UFUNCTION()
-	FORCEINLINE UStaminaComponent* GetStaminaComponent() const { return StaminaComp; };
-
-protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Aim | FOV")
-	float DefaultFOV;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Aim | FOV")
-	float AimFOV;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
-	ECharacterState CurrentState;
-
-	UFUNCTION(BlueprintCallable, Category = "State")
-	void SetState(ECharacterState NewState);
-
-	UFUNCTION(BlueprintPure, Category = "State")
-	bool CanFire() const;
-
-	UFUNCTION(BlueprintCallable, Category = "State")
-	void ApplySpeed(float NewSpeed);
-
-	UFUNCTION(BlueprintCallable, Category = "Weapon")
-	void EquipWeapon(AWeaponBase* Weapon);
-	UFUNCTION(BlueprintCallable, Category = "Weapon")
-	void UnEquipWeapon();
-
-	UFUNCTION(BlueprintCallable, Category = "Weapon")
-	void DropWeapon();
-	UFUNCTION(BlueprintCallable, Category = "Health")
-	void HandleDamage(float DamageAmount);
-
-	UFUNCTION(BlueprintCallable, Category = "Health")
-	void ApplyHeal(float HealAmount);
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
-	float WalkSpeed;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
-	float SprintSpeed;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<class AWeaponBase> WeaponClass;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class AWeaponBase> EquippedWeapon;
-
-	FRotator StartingAimRotation;
-
-	UPROPERTY(BlueprintReadOnly, Category = "Aim Offset", meta = (AllowPrivateAccess = "true"))
-	float AO_Yaw;
-	UPROPERTY(BlueprintReadOnly, Category = "Aim Offset", meta = (AllowPrivateAccess = "true"))
-	float AO_Pitch;
-
-	float InterpAO_Yaw;
-
-	void CalculateAimOffset(float DeltaTime);
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Turn In Place", meta = (AllowPrivateAccess = "true"))
-	ETurnInPlace TurningInPlace;
-
-	void TurnInPlace(float DeltaTime);
-
-
-
-
-
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Magazine")
-	int32 MagazineNum;
-
-
-
-
-public:
-	//virtual FOnProviderHealthChanged& GetOnHealthChangedDelegate() override;
-
-
-	//UFUNCTION()
-	//void HandleHealthChanged(float Cur, float Max);
-private:
-	// UPROPERTY()
-	// FOnProviderHealthChanged ProviderHealthEvent;
 };

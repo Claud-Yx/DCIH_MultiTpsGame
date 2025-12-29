@@ -22,7 +22,4 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category ="Components")
 	class USkeletalMeshComponent* MeshComp;
-
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category ="AmmoAmount")
-	//float AmmoAmount;
 };

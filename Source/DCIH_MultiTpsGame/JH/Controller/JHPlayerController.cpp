@@ -32,8 +32,8 @@ void AJHPlayerController::OnPossess(APawn* InPawn)
 	if (CachedCharacter.IsValid())
 	{
 		UIManager->RegisterUIObject(CachedCharacter.Get());	// Health
-		UIManager->RegisterUIObject(CachedCharacter->GetStaminaComponent()); // STamina
-		UIManager->RegisterUIObject(CachedCharacter->GetEquippedWeapon()); // Ammo & Magazine
+		UIManager->RegisterUIObject(CachedCharacter->GetStaminaComponent()); // Stamina
+		UIManager->RegisterUIObject(CachedCharacter->GetEquippedWeapon()); // Ammo
 	}
 
 	// Called when Character Equip Weapon
@@ -110,6 +110,11 @@ void AJHPlayerController::SetupInputComponent()
 			EIC->BindAction(IA_Aim, ETriggerEvent::Started, this, &AJHPlayerController::OnAimStart);
 			EIC->BindAction(IA_Aim, ETriggerEvent::Completed, this, &AJHPlayerController::OnAimEnd);
 		}
+
+		if (ensureMsgf(IA_Aim, TEXT("IA_AIM not assigned")))
+		{
+			EIC->BindAction(IA_Reload, ETriggerEvent::Started, this, &AJHPlayerController::OnReload);
+		}
 	}
 }
 
@@ -183,4 +188,10 @@ void AJHPlayerController::OnAimEnd()
 {
 	if (CachedCharacter.IsValid())
 		CachedCharacter->AimEnd();
+}
+
+void AJHPlayerController::OnReload()
+{
+	if (CachedCharacter.IsValid())
+		CachedCharacter->Reload();
 }

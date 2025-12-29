@@ -49,7 +49,8 @@ protected:
 public:
 	virtual void Tick(float DeltaTime) override;
 
-
+	UFUNCTION(BlueprintCallable, Category = "Reload")
+	void Reload();
 
 protected:
 	virtual void Attack() override { Fire(); }
@@ -67,8 +68,7 @@ protected:
 	UFUNCTION(BlueprintPure, Category = "Fire")
 	bool CanFire();
 
-	UFUNCTION(BlueprintCallable, Category = "Reload")
-	void Reload();
+
 
 	UFUNCTION(BlueprintCallable, Category = "Reload")
 	void FinishReload();

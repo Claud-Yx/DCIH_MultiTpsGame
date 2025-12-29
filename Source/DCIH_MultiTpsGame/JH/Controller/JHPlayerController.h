@@ -35,6 +35,7 @@ private:
     void OnAttack();
     void OnAimStart();
 	void OnAimEnd();
+	void OnReload();
     
 
 
@@ -75,6 +76,8 @@ private:
     UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UInputAction>IA_Aim;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UInputAction>IA_Reload;
 
     void HandleWeaponEquipped(class AWeaponBase* Weapon);
 

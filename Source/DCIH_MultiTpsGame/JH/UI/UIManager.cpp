@@ -47,6 +47,41 @@ void UUIManager::CreateMainHUD()
 }
 
 
+void UUIManager::RegisterUIObject(UObject* Target)
+{
+	if (!IsValid(Target))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("RegisterUIObject: Invalid Target"));
+		return;
+	}
+
+	if (Target->GetClass()->ImplementsInterface(UHealthProviderInterface::StaticClass()))
+	{
+		BindHealthToTarget(Target);
+	}
+	
+	if (Target->Implements<UStaminaUIInterface>()) {
+		BindStaminaToUI(Target);
+	}
+
+	// if(Target->Implements<UAmmoUIInterface>())
+	if (Target->GetClass()->ImplementsInterface(UAmmoUIInterface::StaticClass()))
+	{
+		BindAmmoToTarget(Target);
+		UE_LOG(LogTemp, Warning, TEXT("UIManager:: RegisterUIObject - AmmoUIInterface Implemented"));
+	}
+
+	if (Target->Implements<UMagazineInterface>())
+	{
+		BindMagazineToUI(Target);
+	}
+
+	//if (Target->Implements<UAmmoPickUpInterface>())
+	//{
+	//	BindMagazineToUI(Target);
+	//}
+}
+
 void UUIManager::BindHealthToTarget(UObject* Target)
 {
 	if (!MainHUD || !Target) return;
@@ -91,6 +126,11 @@ void UUIManager::BindHealthToTarget(UObject* Target)
 
 		MainHUD->UpdateHealthBar(Cur, Max);
 	}
+	//else
+	//{
+	//	// 인터페이스가 없으면 숨김
+	//	MainHUD->HealthBarWidget->SetVisibility(ESlateVisibility::Collapsed);
+	//}
 }
 
 void UUIManager::BindAmmoToTarget(UObject* Target)
@@ -163,41 +203,4 @@ void UUIManager::BindMagazineToUI(UObject* Target)
 	//Provider->GetMagazineChangedDelegate()
 	//	.AddDynamic(MainHUD, &UMainHUD::UpdateStaminaBar);
 
-}
-
-
-
-void UUIManager::RegisterUIObject(UObject* Target)
-{
-	if (!IsValid(Target))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("RegisterUIObject: Invalid Target"));
-		return;
-	}
-
-	if (Target->GetClass()->ImplementsInterface(UHealthProviderInterface::StaticClass()))
-	{
-		BindHealthToTarget(Target);
-	}
-	
-	if (Target->Implements<UStaminaUIInterface>()) {
-		BindStaminaToUI(Target);
-	}
-
-	// if(Target->Implements<UAmmoUIInterface>())
-	if (Target->GetClass()->ImplementsInterface(UAmmoUIInterface::StaticClass()))
-	{
-		BindAmmoToTarget(Target);
-		UE_LOG(LogTemp, Warning, TEXT("UIManager:: RegisterUIObject - AmmoUIInterface Implemented"));
-	}
-
-	if (Target->Implements<UMagazineInterface>())
-	{
-		BindMagazineToUI(Target);
-	}
-
-	//if (Target->Implements<UAmmoPickUpInterface>())
-	//{
-	//	BindMagazineToUI(Target);
-	//}
 }
