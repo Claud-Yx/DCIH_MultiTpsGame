@@ -47,6 +47,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "PlayerAnim")
     TObjectPtr<class UAnimMontage> fireMontage;
+
+    UPROPERTY(EditAnywhere, Category = "Montage")
+    TObjectPtr<class UAnimMontage> ReloadMontage;
     
     TObjectPtr<class AWeaponBase> EquippedWeapon;
 
@@ -57,4 +60,6 @@ protected:
 
 public:
 	void PlayFireMontage();
+
+	void PlayReloadMontage();
 };

@@ -88,7 +88,7 @@ public:	// Input Action
 	UFUNCTION(BlueprintCallable, Category = "Input | Aim")
 	void AimEnd();
 	UFUNCTION(BlueprintCallable, Category = "Input | Reload")
-	void Reload();
+	void Reload();	
 
 
 protected:	// Internal Logic

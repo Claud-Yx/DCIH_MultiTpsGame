@@ -85,7 +85,7 @@ void AJHCharacter::Tick(float DeltaTime)
 	}
 
 
-	if (GetVelocity().Size() <= 5.f && !GetCharacterMovement()->IsFalling())
+	if (GetVelocity().Size() <= 5.f && !GetCharacterMovement()->IsFalling() && CurrentState != ECharacterState::Reloading)
 	{
 		SetState(ECharacterState::Idle);
 	}
@@ -344,6 +344,10 @@ void AJHCharacter::Reload()
 	if (MagazineNum <= 0) return;
 
 	if (CurrentState == ECharacterState::Reloading) return;
+
+	auto anim = Cast<UKJHCharacterAnim>(GetMesh()->GetAnimInstance());
+	anim->PlayReloadMontage();
+
 	if (auto RangedWeapon = Cast<ARangedWeaponBase>(EquippedWeapon))
 	{
 

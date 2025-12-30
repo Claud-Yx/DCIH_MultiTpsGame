@@ -70,3 +70,9 @@ void UKJHCharacterAnim::PlayFireMontage()
 {
 	Montage_Play(fireMontage);
 }
+
+void UKJHCharacterAnim::PlayReloadMontage()
+{
+	Montage_Play(ReloadMontage);
+	UE_LOG(LogTemp, Warning, TEXT("Reload Montage Played"));
+}
