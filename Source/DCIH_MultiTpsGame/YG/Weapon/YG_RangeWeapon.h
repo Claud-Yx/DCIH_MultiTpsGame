@@ -13,8 +13,4 @@ UCLASS()
 class DCIH_MULTITPSGAME_API AYG_RangeWeapon : public AYG_Weapon
 {
 	GENERATED_BODY()
-	
-	
-	
-	
 };

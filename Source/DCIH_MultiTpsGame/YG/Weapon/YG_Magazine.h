@@ -13,8 +13,4 @@ UCLASS()
 class DCIH_MULTITPSGAME_API UYG_Magazine : public UObject
 {
 	GENERATED_BODY()
-	
-	
-	
-	
 };

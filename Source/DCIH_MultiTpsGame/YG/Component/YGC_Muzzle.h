@@ -23,8 +23,5 @@ public:
 	void Fire(FYG_MuzzleFireData FireData);
 
 protected:
-	 
-	
-	
 	
 };
