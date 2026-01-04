@@ -115,6 +115,12 @@ void AJHPlayerController::SetupInputComponent()
 		{
 			EIC->BindAction(IA_Reload, ETriggerEvent::Started, this, &AJHPlayerController::OnReload);
 		}
+
+		if (ensureMsgf(IA_Crouch, TEXT("IA_Crouch not assigned")))
+		{
+			EIC->BindAction(IA_Crouch, ETriggerEvent::Started, this, &AJHPlayerController::OnCrouch);
+			EIC->BindAction(IA_Crouch, ETriggerEvent::Completed, this, &AJHPlayerController::OnUnCrouch);
+		}
 	}
 }
 
@@ -194,4 +200,14 @@ void AJHPlayerController::OnReload()
 {
 	if (CachedCharacter.IsValid())
 		CachedCharacter->Reload();
+}
+
+void AJHPlayerController::OnCrouch()
+{
+	CachedCharacter->Crouch();
+}
+
+void AJHPlayerController::OnUnCrouch()
+{
+	CachedCharacter->UnCrouch();
 }

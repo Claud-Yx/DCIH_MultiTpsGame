@@ -12,5 +12,7 @@ void UMagazineWidget::Update(int32 MagazineNum)
 {
 	if (!Text_MagazineNum) return;
 	FString MagazineString = FString::Printf(TEXT("%d"), MagazineNum);
+
 	Text_MagazineNum->SetText(FText::FromString(MagazineString));
+
 }

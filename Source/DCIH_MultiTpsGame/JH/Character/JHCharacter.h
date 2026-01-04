@@ -78,8 +78,13 @@ public:	// Input Action
 	void StopJump();
 	UFUNCTION(BlueprintCallable, Category = "Input")
 	void StartSprint();
+
 	UFUNCTION(BlueprintCallable, Category = "Input")
 	void StopSprint();
+
+	virtual void Crouch(bool bClientSimulation = false) override;
+	virtual void UnCrouch(bool bClientSimulation = false) override;
+
 	UFUNCTION(BlueprintCallable, Category = "Input")
 	void Attack();
 

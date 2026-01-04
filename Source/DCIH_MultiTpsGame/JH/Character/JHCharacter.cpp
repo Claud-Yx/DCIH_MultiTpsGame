@@ -276,6 +276,22 @@ void AJHCharacter::StopSprint()
 
 }
 
+void AJHCharacter::Crouch(bool bClientSimulation)
+{
+	Super::Crouch(bClientSimulation);
+
+	//ApplySpeed(WalkSpeed / 2.f);
+	//SetState(ECharacterState::Walking);
+}
+
+void AJHCharacter::UnCrouch(bool bClientSimulation)
+{
+	Super::UnCrouch(bClientSimulation);
+
+	//ApplySpeed(WalkSpeed);
+	//SetState(ECharacterState::Walking);
+}
+
 void AJHCharacter::CalculateAimOffset(float DeltaTime)
 {
 	 FVector Velocity = GetVelocity();
