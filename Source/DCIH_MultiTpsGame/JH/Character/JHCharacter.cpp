@@ -35,7 +35,6 @@ AJHCharacter::AJHCharacter()
 	HealthComp = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComp"));
 	StaminaComp = CreateDefaultSubobject<UStaminaComponent>(TEXT("StaminaComp"));
 
-
 	WalkSpeed = 400.f;
 	SprintSpeed = 700.f;
 	CurrentState = ECharacterState::Idle;
@@ -46,6 +45,9 @@ AJHCharacter::AJHCharacter()
 	DefaultFOV = 90.f;
 	AimFOV = 45.f;
 	MagazineNum = 0;
+
+	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
+	GetCharacterMovement()->CrouchedHalfHeight = 57.f;
 }
 
 void AJHCharacter::BeginPlay()
@@ -379,6 +381,13 @@ void AJHCharacter::Reload()
 	//	auto anim = Cast<UKJHCharacterAnim>(GetMesh()->GetAnimInstance());
 	//	anim->PlayReloadMontage();
 	//}
+}
+
+void AJHCharacter::Roll()
+{
+	auto anim = Cast<UKJHCharacterAnim>(GetMesh()->GetAnimInstance());
+	anim->PlayRollMontage();
+	LaunchCharacter(GetActorForwardVector() * 1000.0f, true, true);
 }
 
 void AJHCharacter::SetState(ECharacterState NewState)

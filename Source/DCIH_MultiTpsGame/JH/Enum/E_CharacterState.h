@@ -13,5 +13,6 @@ enum class ECharacterState : uint8
     Jumping     UMETA(DisplayName = "Jumping"),
     Shooting    UMETA(DisplayName = "Shooting"),
     Reloading   UMETA(DisplayName = "Reloading"),
+	Rolling	    UMETA(DisplayName = "Rolling"),
     Dead        UMETA(DisplayName = "Dead")
 };

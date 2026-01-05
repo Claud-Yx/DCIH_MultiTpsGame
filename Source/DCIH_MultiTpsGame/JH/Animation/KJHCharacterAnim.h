@@ -50,8 +50,14 @@ protected:
 
     UPROPERTY(EditAnywhere, Category = "Montage")
     TObjectPtr<class UAnimMontage> ReloadMontage;
-    
+
+    UPROPERTY(EditAnywhere, Category = "Montage")
+    TObjectPtr<class UAnimMontage> RollMontage;
+
     TObjectPtr<class AWeaponBase> EquippedWeapon;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Crouch")
+	bool bIsCrouching;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "PlayerAnim")
     FTransform LeftHandTransform;
@@ -62,4 +68,6 @@ public:
 	void PlayFireMontage();
 
 	void PlayReloadMontage();
+
+	void PlayRollMontage();
 };

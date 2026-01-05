@@ -65,6 +65,8 @@ public:	// Getter
 	UFUNCTION(BlueprintPure, Category = "Stamina")
 	FORCEINLINE UStaminaComponent* GetStaminaComponent() const { return StaminaComp; };
 
+	UFUNCTION(BlueprintPure, Category = "Crouch")
+	FORCEINLINE bool GetIsCrouch() { return IsCrouched(); };
 
 
 public:	// Input Action
@@ -93,7 +95,11 @@ public:	// Input Action
 	UFUNCTION(BlueprintCallable, Category = "Input | Aim")
 	void AimEnd();
 	UFUNCTION(BlueprintCallable, Category = "Input | Reload")
-	void Reload();	
+	void Reload();
+
+	UFUNCTION(BlueprintCallable, Category = "Input | Roll")
+	void Roll();
+
 
 
 protected:	// Internal Logic

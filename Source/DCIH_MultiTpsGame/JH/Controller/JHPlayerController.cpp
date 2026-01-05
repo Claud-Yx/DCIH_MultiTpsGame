@@ -118,8 +118,13 @@ void AJHPlayerController::SetupInputComponent()
 
 		if (ensureMsgf(IA_Crouch, TEXT("IA_Crouch not assigned")))
 		{
-			EIC->BindAction(IA_Crouch, ETriggerEvent::Started, this, &AJHPlayerController::OnCrouch);
-			EIC->BindAction(IA_Crouch, ETriggerEvent::Completed, this, &AJHPlayerController::OnUnCrouch);
+			EIC->BindAction(IA_Crouch, ETriggerEvent::Started, this, &AJHPlayerController::OnCrouchToggle);
+			// EIC->BindAction(IA_Crouch, ETriggerEvent::Completed, this, &AJHPlayerController::OnUnCrouch);
+		}
+
+		if (ensureMsgf(IA_Roll, TEXT("IA_Roll not assigned")))
+		{
+			EIC->BindAction(IA_Roll, ETriggerEvent::Started, this, &AJHPlayerController::OnRoll);
 		}
 	}
 }
@@ -202,12 +207,24 @@ void AJHPlayerController::OnReload()
 		CachedCharacter->Reload();
 }
 
-void AJHPlayerController::OnCrouch()
+void AJHPlayerController::OnCrouchToggle()
 {
-	CachedCharacter->Crouch();
+	if (CachedCharacter->IsCrouched()) 
+	{
+		CachedCharacter->UnCrouch();
+	}
+	else {
+		CachedCharacter->Crouch();
+	}
 }
 
 void AJHPlayerController::OnUnCrouch()
 {
 	CachedCharacter->UnCrouch();
+}
+
+void AJHPlayerController::OnRoll()
+{
+	if (CachedCharacter.IsValid())
+		CachedCharacter->Roll();
 }

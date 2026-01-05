@@ -37,7 +37,7 @@ void UKJHCharacterAnim::NativeUpdateAnimation(float DeltaSeconds)
 
 	EquippedWeapon = owningCharacter->GetEquippedWeapon();
 
-
+	bIsCrouching = owningCharacter->GetIsCrouch();
 
     if (EquippedWeapon && EquippedWeapon->GetMesh())
     {
@@ -75,4 +75,9 @@ void UKJHCharacterAnim::PlayReloadMontage()
 {
 	Montage_Play(ReloadMontage);
 	UE_LOG(LogTemp, Warning, TEXT("Reload Montage Played"));
+}
+
+void UKJHCharacterAnim::PlayRollMontage()
+{
+    Montage_Play(RollMontage);
 }
