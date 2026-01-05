@@ -20,7 +20,7 @@ class DCIH_MULTITPSGAME_API UYGC_Muzzle : public UArrowComponent
 public:
 	// 총알정보를 받아 히트스캔 방식으로 대상에 데미지, 이펙트 등을 전달
 	UFUNCTION(BlueprintCallable, Category = "YG")
-	void Fire(FYG_MuzzleFireData FireData);
+	void Fire(const FYG_MuzzleFireData& FireData);
 
 protected:
 	

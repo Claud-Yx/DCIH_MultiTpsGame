@@ -7,13 +7,13 @@
 
 extern TAutoConsoleVariable<int32> CVarBulletTrace;
 
-void UYGC_Muzzle::Fire( FYG_MuzzleFireData FireData )
+void UYGC_Muzzle::Fire( const FYG_MuzzleFireData& FireData )
 {
 	if ( GWorld )
 	{
 		FHitResult Hit;
 		FVector    StartLocation = GetComponentLocation();
-		FVector    EndLocation   = GetComponentLocation() + GetForwardVector() * FireData.Distance;
+		FVector    EndLocation   = GetComponentLocation() + GetForwardVector() * FireData.MaxRange;
 
 		// 관통형 공격이라면 여기서 분기를 일으키고 Multi 부분도 구현한다.
 		GWorld->LineTraceSingleByChannel( Hit, StartLocation, EndLocation, FireData.CollisionChannel );

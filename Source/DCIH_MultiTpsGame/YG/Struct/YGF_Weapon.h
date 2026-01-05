@@ -18,7 +18,7 @@ struct DCIH_MULTITPSGAME_API FYG_MuzzleFireData
 	class UYGDAB_Bullet* Bullet;
 
 	UPROPERTY( BlueprintReadWrite, EditAnywhere, Category="YG" )
-	float Distance{ 10000.f };
+	float MaxRange{ 10000.f };
 
 	UPROPERTY( BlueprintReadWrite, EditAnywhere, Category="YG" )
 	TEnumAsByte<ECollisionChannel> CollisionChannel;
