@@ -18,16 +18,26 @@ class DCIH_MULTITPSGAME_API AYG_PlayerCharacter : public AMT_Character
 public:
 	AYG_PlayerCharacter();
 
-	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+	virtual void SetupPlayerInputComponent( UInputComponent* PlayerInputComponent ) override;
 
 protected:
-	void MoveOnTps(const FInputActionValue& Value);
-	void LookOnTps(const FInputActionValue& Value);
-	
-protected:
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Components", meta=(AllowPrivateAccess=true))
+	virtual void Tick( float DeltaSeconds ) override;
+
+	void MoveOnTps( const FInputActionValue& Value );
+	void LookOnTps( const FInputActionValue& Value );
+
+	// Components
+
+	UPROPERTY( BlueprintReadOnly, VisibleAnywhere, Category="Components", meta=(AllowPrivateAccess=true) )
 	TObjectPtr<class UCameraComponent> MainCamera;
-	
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Components", meta=(AllowPrivateAccess=true))
+
+	UPROPERTY( BlueprintReadOnly, VisibleAnywhere, Category="Components", meta=(AllowPrivateAccess=true) )
 	TObjectPtr<class USpringArmComponent> MainCameraBoom;
+
+	UPROPERTY( BlueprintReadOnly, VisibleAnywhere, Category="Components", meta=(AllowPrivateAccess=true) )
+	TObjectPtr<class UYGC_LineVisualizer> InteractionTracePoint;
+
+	// Props
+	UPROPERTY( BlueprintReadOnly, EditAnywhere, Category="YG", meta=(AllowPrivateAccess=true) )
+	TEnumAsByte<ECollisionChannel> InteractionTraceChannel;
 };
