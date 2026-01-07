@@ -24,6 +24,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Kismet/KismetMathLibrary.h"
 
 AJHCharacter::AJHCharacter()
 {
@@ -387,7 +389,24 @@ void AJHCharacter::Roll()
 {
 	auto anim = Cast<UKJHCharacterAnim>(GetMesh()->GetAnimInstance());
 	anim->PlayRollMontage();
-	LaunchCharacter(GetActorForwardVector() * 1000.0f, true, true);
+
+
+
+	// LaunchCharacter(GetActorForwardVector() * 1000.0f, true, true);
+
+	//FVector Velocity = GetVelocity();
+
+	//if (Velocity.SizeSquared() > 10.0f)
+	//{
+	//	FVector LaunchDir = Velocity.GetSafeNormal();
+	//	LaunchCharacter(LaunchDir * 1000.0f, true, true);
+	//}
+	//else
+	//{
+	//	LaunchCharacter(GetActorForwardVector() * 1000.0f, true, true);
+	//}
+
+
 }
 
 void AJHCharacter::SetState(ECharacterState NewState)
