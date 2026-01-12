@@ -124,7 +124,12 @@ void AJHPlayerController::SetupInputComponent()
 
 		if (ensureMsgf(IA_Roll, TEXT("IA_Roll not assigned")))
 		{
-			EIC->BindAction(IA_Roll, ETriggerEvent::Started, this, &AJHPlayerController::OnRoll);
+			EIC->BindAction(IA_Roll, ETriggerEvent::Completed, this, &AJHPlayerController::OnRoll);
+		}
+
+		if (ensureMsgf(IA_Prone, TEXT("IA_Prone not assigned")))
+		{
+			EIC->BindAction(IA_Prone, ETriggerEvent::Completed, this, &AJHPlayerController::OnProneToggle);
 		}
 	}
 }
@@ -218,13 +223,25 @@ void AJHPlayerController::OnCrouchToggle()
 	}
 }
 
-void AJHPlayerController::OnUnCrouch()
-{
-	CachedCharacter->UnCrouch();
-}
+
 
 void AJHPlayerController::OnRoll()
 {
 	if (CachedCharacter.IsValid())
 		CachedCharacter->Roll();
+}
+
+void AJHPlayerController::OnProneToggle()
+{
+	if (CachedCharacter.IsValid())
+	{
+		if (CachedCharacter->GetIsProne())
+		{
+			CachedCharacter->UnProne();
+		}
+		else
+		{
+			CachedCharacter->Prone();
+		}
+	}
 }

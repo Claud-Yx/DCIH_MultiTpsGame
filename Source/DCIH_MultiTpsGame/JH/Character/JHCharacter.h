@@ -68,6 +68,9 @@ public:	// Getter
 	UFUNCTION(BlueprintPure, Category = "Crouch")
 	FORCEINLINE bool GetIsCrouch() { return IsCrouched(); };
 
+	UFUNCTION(BlueprintPure, Category = "Prone")
+	FORCEINLINE bool GetIsProne() { return bIsProne; };
+
 
 public:	// Input Action
 	UFUNCTION(BlueprintCallable, Category = "Input")
@@ -92,15 +95,24 @@ public:	// Input Action
 
 	UFUNCTION(BlueprintCallable, Category = "Input | Aim")
 	void AimStart();
+
 	UFUNCTION(BlueprintCallable, Category = "Input | Aim")
 	void AimEnd();
+
 	UFUNCTION(BlueprintCallable, Category = "Input | Reload")
 	void Reload();
 
 	UFUNCTION(BlueprintCallable, Category = "Input | Roll")
 	void Roll();
 
+	UFUNCTION(BlueprintCallable, Category = "Input | Roll")
+	void RollEnd();
 
+	UFUNCTION(BlueprintCallable, Category = "Input | Prone")
+	void Prone();
+
+	UFUNCTION(BlueprintCallable, Category = "Input | Prone")
+	void UnProne();
 
 protected:	// Internal Logic
 	UFUNCTION(BlueprintCallable, Category = "State")
@@ -134,9 +146,16 @@ protected:	// Internal Logic
 
 
 protected:
+	UFUNCTION()
+	void ChangeState(ECharacterState NewState);
+
+	UFUNCTION()
+	void ChangeWeaponState(ECharacterWeaponState NewState);
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
 	ECharacterState CurrentState;
-
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
+	ECharacterWeaponState CurrentWeaponState;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Aim | FOV")
 	float DefaultFOV;
 
@@ -148,6 +167,20 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
 	float SprintSpeed;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
+	float CrouchSpeed;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
+	float ProneSpeed;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Camera", meta = (AllowPrivateAccess = "true"))
+	float IdleEyeHeight;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Camera", meta = (AllowPrivateAccess = "true"))
+	float CrouchEyeHeight;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Camera", meta = (AllowPrivateAccess = "true"))
+	float ProneEyeHeight;
+
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<class AWeaponBase> WeaponClass;
@@ -172,6 +205,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Magazine")
 	int32 MagazineNum;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Magazine")
+	bool bIsRolling;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Magazine")
+	bool bIsProne;
 
 private:
 	void InitializeCharacter();

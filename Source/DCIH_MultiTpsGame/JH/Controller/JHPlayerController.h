@@ -37,8 +37,8 @@ private:
 	void OnAimEnd();
 	void OnReload();
 	void OnCrouchToggle();
-	void OnUnCrouch();
 	void OnRoll();
+    void OnProneToggle();
 
 
 public:
@@ -86,6 +86,9 @@ private:
 
     UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UInputAction> IA_Roll;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> IA_Prone;
 
     void HandleWeaponEquipped(class AWeaponBase* Weapon);
 

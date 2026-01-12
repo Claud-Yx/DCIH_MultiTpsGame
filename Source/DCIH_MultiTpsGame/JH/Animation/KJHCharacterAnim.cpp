@@ -38,6 +38,7 @@ void UKJHCharacterAnim::NativeUpdateAnimation(float DeltaSeconds)
 	EquippedWeapon = owningCharacter->GetEquippedWeapon();
 
 	bIsCrouching = owningCharacter->GetIsCrouch();
+	bIsProning = owningCharacter->GetIsProne();
 
     if (EquippedWeapon && EquippedWeapon->GetMesh())
     {
@@ -81,3 +82,61 @@ void UKJHCharacterAnim::PlayRollMontage()
 {
     Montage_Play(RollMontage);
 }
+
+//void UKJHCharacterAnim::AnimNotify_Launch()
+//{
+//	// owningCharacter->Roll();
+//	FVector Velocity = owningCharacter->GetVelocity();
+//
+//	if (Velocity.SizeSquared() > 10.0f)
+//	{
+//		FVector LaunchDir = Velocity.GetSafeNormal();
+//		owningCharacter->LaunchCharacter(LaunchDir * 1000.0f, true, true);
+//	}
+//	else
+//	{
+//		owningCharacter->LaunchCharacter(owningCharacter->GetActorForwardVector() * 1000.0f, true, true);
+//	}
+//    UE_LOG(LogTemp, Warning, TEXT("Launch Anim Notify Triggered"));
+//
+//}
+//
+//void UKJHCharacterAnim::AnimNotify_LaunchStop()
+//{
+//	owningCharacter->RollEnd();
+//	UE_LOG(LogTemp, Warning, TEXT("Launch Stop Anim Notify Triggered"));
+//	// owningCharacter->GetCharacterMovement()->StopMovementImmediately();
+//}
+//
+//void UKJHCharacterAnim::NativePlayMontageNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointNotifyPayload)
+//{
+//	Super::NativePlayMontageNotifyBegin(NotifyName, BranchingPointNotifyPayload);
+//
+//	// OwningCharacter가 없으면 실행 불가
+//	if (!owningCharacter) return;
+//
+//	// 1. "Launch" 노티파이가 들어왔는지 이름으로 확인
+//	if (NotifyName == TEXT("Launch"))
+//	{
+//		FVector Velocity = owningCharacter->GetVelocity();
+//
+//		// 작성하신 로직 그대로 적용
+//		if (Velocity.SizeSquared() > 10.0f)
+//		{
+//			FVector LaunchDir = Velocity.GetSafeNormal();
+//			owningCharacter->LaunchCharacter(LaunchDir * 1000.0f, true, true);
+//		}
+//		else
+//		{
+//			owningCharacter->LaunchCharacter(owningCharacter->GetActorForwardVector() * 1000.0f, true, true);
+//		}
+//
+//		UE_LOG(LogTemp, Warning, TEXT("Launch Triggered by AnimInstance"));
+//	}
+//	// 2. "LaunchStop" 노티파이 확인
+//	else if (NotifyName == TEXT("LaunchStop"))
+//	{
+//		owningCharacter->RollEnd(); // 캐릭터의 정지 함수 호출
+//		UE_LOG(LogTemp, Warning, TEXT("Stop Triggered by AnimInstance"));
+//	}
+//}

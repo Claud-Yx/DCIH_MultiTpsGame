@@ -11,8 +11,15 @@ enum class ECharacterState : uint8
     Walking     UMETA(DisplayName = "Walking"),
 	Running     UMETA(DisplayName = "Running"),
     Jumping     UMETA(DisplayName = "Jumping"),
-    Shooting    UMETA(DisplayName = "Shooting"),
-    Reloading   UMETA(DisplayName = "Reloading"),
 	Rolling	    UMETA(DisplayName = "Rolling"),
+	Crouching	UMETA(DisplayName = "Crouching"),
+	Proning     UMETA(DisplayName = "Proning"),
     Dead        UMETA(DisplayName = "Dead")
+};
+
+UENUM(BlueprintType)
+enum class ECharacterWeaponState : uint8
+{
+    Shooting    UMETA(DisplayName = "Shooting"),
+    Reloading   UMETA(DisplayName = "Reloading")
 };

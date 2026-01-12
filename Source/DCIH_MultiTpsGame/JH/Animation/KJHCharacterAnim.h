@@ -59,6 +59,9 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Crouch")
 	bool bIsCrouching;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ProneS")
+    bool bIsProning;
+
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "PlayerAnim")
     FTransform LeftHandTransform;
 
@@ -70,4 +73,12 @@ public:
 	void PlayReloadMontage();
 
 	void PlayRollMontage();
+
+    //// 구르기 시작 (Launch)
+    //UFUNCTION(BlueprintCallable)
+    //void AnimNotify_Launch();
+
+    //// 구르기 종료
+    //UFUNCTION(BlueprintCallable)
+    //void AnimNotify_LaunchStop();
 };

@@ -19,7 +19,7 @@
 #include "JH/Controller/JHPlayerController.h"
 
 #include"JH/Weapon/Rifle.h"
-
+#include "Components/CapsuleComponent.h"
 #include "JH/Character/JHCharacter.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
@@ -39,6 +39,13 @@ AJHCharacter::AJHCharacter()
 
 	WalkSpeed = 400.f;
 	SprintSpeed = 700.f;
+	CrouchSpeed = 300.f;
+	ProneSpeed = 100.f;
+
+	IdleEyeHeight = 64.f;
+	CrouchEyeHeight = 44.f;
+	ProneEyeHeight = 30.f;
+
 	CurrentState = ECharacterState::Idle;
 	TurningInPlace = ETurnInPlace::ETIP_NotTurning;
 	AO_Yaw = 0.f;
@@ -47,9 +54,12 @@ AJHCharacter::AJHCharacter()
 	DefaultFOV = 90.f;
 	AimFOV = 45.f;
 	MagazineNum = 0;
+	bIsRolling = false;
 
+	// crouch
 	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
-	GetCharacterMovement()->CrouchedHalfHeight = 57.f;
+	GetCharacterMovement()->CrouchedHalfHeight = CrouchEyeHeight;
+	GetCharacterMovement()->MaxWalkSpeedCrouched = CrouchSpeed;
 }
 
 void AJHCharacter::BeginPlay()
@@ -89,7 +99,7 @@ void AJHCharacter::Tick(float DeltaTime)
 	}
 
 
-	if (GetVelocity().Size() <= 5.f && !GetCharacterMovement()->IsFalling() && CurrentState != ECharacterState::Reloading)
+	if (GetVelocity().Size() <= 5.f && !GetCharacterMovement()->IsFalling() && CurrentWeaponState != ECharacterWeaponState::Reloading)
 	{
 		SetState(ECharacterState::Idle);
 	}
@@ -182,10 +192,10 @@ void AJHCharacter::InitializeWeapon()
 		// ������ ����
 		EquippedWeapon = World->SpawnActor<AWeaponBase>(WeaponClass);
 
-		AWeaponBase* SpawnedWeapon = World->SpawnActor<AWeaponBase>(WeaponClass);
-		if (SpawnedWeapon)
+		// AWeaponBase* SpawnedWeapon = World->SpawnActor<AWeaponBase>(WeaponClass);
+		if (EquippedWeapon)
 		{
-			EquipWeapon(SpawnedWeapon);
+			EquipWeapon(EquippedWeapon);
 		}
 
 		if (EquippedWeapon)
@@ -284,6 +294,9 @@ void AJHCharacter::Crouch(bool bClientSimulation)
 {
 	Super::Crouch(bClientSimulation);
 
+	// ChangeState(ECharacterState::Crouching);
+	bIsProne = false;
+	// bIsCrouched = true;
 	//ApplySpeed(WalkSpeed / 2.f);
 	//SetState(ECharacterState::Walking);
 }
@@ -304,7 +317,7 @@ void AJHCharacter::CalculateAimOffset(float DeltaTime)
 	// bool bIsInAir = GetCharacterMovement()->IsFalling();
 
 	//if (Speed == 0.f && !bIsInAir) // ���� ����
-	if (CurrentState == ECharacterState::Idle || (CurrentState == ECharacterState::Shooting && Speed == 0.f))
+	if (CurrentState == ECharacterState::Idle || (CurrentWeaponState == ECharacterWeaponState::Shooting && Speed == 0.f))
 	{
 		FRotator CurrentAimRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
 		FRotator DeltaAimRotation = UKismetMathLibrary::NormalizedDeltaRotator(StartingAimRotation, CurrentAimRotation);
@@ -345,7 +358,7 @@ void AJHCharacter::Attack()
 	{
 		EquippedWeapon->Attack();
 
-		SetState(ECharacterState::Shooting);
+		ChangeWeaponState(ECharacterWeaponState::Shooting);
 	}
 }
 
@@ -363,7 +376,7 @@ void AJHCharacter::Reload()
 {
 	if (MagazineNum <= 0) return;
 
-	if (CurrentState == ECharacterState::Reloading) return;
+	if (CurrentWeaponState == ECharacterWeaponState::Reloading) return;
 
 	auto anim = Cast<UKJHCharacterAnim>(GetMesh()->GetAnimInstance());
 	anim->PlayReloadMontage();
@@ -375,7 +388,7 @@ void AJHCharacter::Reload()
 		OnMagazineChanged.Broadcast(MagazineNum);
 
 		RangedWeapon->Reload();
-		SetState(ECharacterState::Reloading);
+		ChangeWeaponState(ECharacterWeaponState::Reloading);
 
 	}
 	//if (EquippedWeapon)
@@ -387,12 +400,12 @@ void AJHCharacter::Reload()
 
 void AJHCharacter::Roll()
 {
+	if (bIsRolling) return;
+	bIsRolling = true;
 	auto anim = Cast<UKJHCharacterAnim>(GetMesh()->GetAnimInstance());
 	anim->PlayRollMontage();
 
-
-
-	// LaunchCharacter(GetActorForwardVector() * 1000.0f, true, true);
+	// LaunchCharacter(GetActorForwardVector() * 5000.0f, true, true);
 
 	//FVector Velocity = GetVelocity();
 
@@ -409,6 +422,35 @@ void AJHCharacter::Roll()
 
 }
 
+void AJHCharacter::RollEnd()
+{
+	bIsRolling = false;
+	GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+}
+
+void AJHCharacter::Prone()
+{
+	bIsProne = true;
+
+	// BaseEyeHeight = ProneEyeHeight;
+
+	ChangeState(ECharacterState::Proning);
+
+
+
+	// CurrentState = ECharacterState::Prone;
+}
+
+void AJHCharacter::UnProne()
+{
+	bIsProne = false;
+
+
+
+	// CurrentState = ECharacterState::Idle;
+	// ChangeState(ECharacterState::Idle);
+}
+
 void AJHCharacter::SetState(ECharacterState NewState)
 {
 	if (CurrentState == NewState) return;
@@ -420,13 +462,20 @@ void AJHCharacter::SetState(ECharacterState NewState)
 bool AJHCharacter::CanFire() const
 {
 	// ���� �����̳�
-	static const TSet<ECharacterState> FireAllowedStates =
-	{
-		ECharacterState::Idle,
-		ECharacterState::Walking,
-		ECharacterState::Shooting
-	};
-	return FireAllowedStates.Contains(CurrentState);
+
+	if (CurrentState == ECharacterState::Idle ||
+		CurrentState == ECharacterState::Walking ||
+		CurrentWeaponState == ECharacterWeaponState::Shooting)
+		return true;
+	else 
+		return false;
+	//static const TSet<ECharacterState> FireAllowedStates =
+	//{
+	//	ECharacterState::Idle,
+	//	ECharacterState::Walking,
+	//	ECharacterState::Shooting
+	//};
+	//return FireAllowedStates.Contains(CurrentState);
 }
 
 
@@ -473,6 +522,85 @@ void AJHCharacter::TurnInPlace(float DeltaTime)
 			InterpAO_Yaw = 0.f;
 		}
 	}
+}
+
+void AJHCharacter::ChangeState(ECharacterState NewState)
+{
+	if (CurrentState == NewState) return;
+
+	CurrentState = NewState;
+
+	switch (CurrentState)
+	{
+	case ECharacterState::Idle:
+		ApplySpeed(WalkSpeed);
+		BaseEyeHeight = IdleEyeHeight;
+		BaseEyeHeight = IdleEyeHeight;
+
+		// 1. 원래 캡슐 크기 (예: 88.0f)
+		float StandHalfHeight = 88.0f;
+		float ProneHalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight(); // 현재 엎드린 높이
+
+		// 2. 캡슐 크기 복구
+		GetCapsuleComponent()->SetCapsuleSize(34.0f, StandHalfHeight);
+
+		// 3. ★핵심★: 줄어들었던 높이만큼 다시 위로 올려줌 (땅에 끼임 방지)
+		float HeightDiff = StandHalfHeight - ProneHalfHeight;
+		AddActorWorldOffset(FVector(0.f, 0.f, HeightDiff), true); // true: 벽 뚫기 방지(Sweep)
+
+		// 4. 메쉬 위치 원상 복구
+		GetMesh()->SetRelativeLocation(FVector(0.f, 0.f, -StandHalfHeight - 4.0f)); // 보통 -92.0f 정도
+
+		break;
+
+	case ECharacterState::Crouching:
+		// ApplySpeed(CrouchSpeed);
+		// BaseEyeHeight = CrouchEyeHeight;
+		break;
+
+	case ECharacterState::Proning:
+		ApplySpeed(ProneSpeed);
+
+		BaseEyeHeight = ProneEyeHeight;
+
+		// 현재 캡슐의 높이
+		float OldHalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+		float NewHalfHeight = 20.0f;
+		float NewRadius = 34.0f;
+		GetCapsuleComponent()->SetCapsuleSize(NewRadius, NewHalfHeight);
+
+		float HeightDifference = OldHalfHeight - NewHalfHeight;
+		AddActorWorldOffset(FVector(0.f, 0.f, -HeightDifference));
+
+		GetMesh()->SetRelativeLocation(FVector(0.f, 0.f, -30.f));
+
+		//ApplySpeed(ProneSpeed);
+
+		//BaseEyeHeight = ProneEyeHeight;
+
+		//// 현재 캡슐의 높이
+		//float OldHalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+		//float NewHalfHeight = 20.0f;
+		//float NewRadius = 34.0f;
+		//GetCapsuleComponent()->SetCapsuleSize(NewRadius, NewHalfHeight);
+		//
+		//float HeightDifference = OldHalfHeight - NewHalfHeight;
+		//AddActorWorldOffset(FVector(0.f, 0.f, -HeightDifference));
+
+		//GetMesh()->SetRelativeLocation(FVector(0.f, 0.f, -30.f));
+
+
+
+		break;
+	}
+}
+
+void AJHCharacter::ChangeWeaponState(ECharacterWeaponState NewState)
+{
+	if (CurrentWeaponState == NewState) return;
+
+	CurrentWeaponState = NewState;
+
 }
 
 void AJHCharacter::HandleDamage(float damageAmount)
