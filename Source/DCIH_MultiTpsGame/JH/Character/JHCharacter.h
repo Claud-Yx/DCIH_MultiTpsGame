@@ -181,6 +181,21 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	float ProneEyeHeight;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Capsule", meta = (AllowPrivateAccess = "true"))
+	float IdleHalfCapsuleHeight;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Capsule", meta = (AllowPrivateAccess = "true"))
+	float CrouchHalfCapsuleHeight;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Capsule", meta = (AllowPrivateAccess = "true"))
+	float ProneHalfCapsuleHeight;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Capsule", meta = (AllowPrivateAccess = "true"))
+	float IdleMeshZ;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Capsule", meta = (AllowPrivateAccess = "true"))
+	float CrouchMeshZ;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Capsule", meta = (AllowPrivateAccess = "true"))
+	float ProneMeshZ;
+
+
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<class AWeaponBase> WeaponClass;

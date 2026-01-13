@@ -46,6 +46,14 @@ AJHCharacter::AJHCharacter()
 	CrouchEyeHeight = 44.f;
 	ProneEyeHeight = 30.f;
 
+	IdleHalfCapsuleHeight = 88.f;
+	CrouchHalfCapsuleHeight = 44.f;
+	ProneHalfCapsuleHeight = 20.f;
+
+	IdleMeshZ = -92.f;
+	CrouchMeshZ = -42.f;
+	ProneMeshZ = -30.f;
+
 	CurrentState = ECharacterState::Idle;
 	TurningInPlace = ETurnInPlace::ETIP_NotTurning;
 	AO_Yaw = 0.f;
@@ -99,9 +107,13 @@ void AJHCharacter::Tick(float DeltaTime)
 	}
 
 
-	if (GetVelocity().Size() <= 5.f && !GetCharacterMovement()->IsFalling() && CurrentWeaponState != ECharacterWeaponState::Reloading)
+	if (GetVelocity().Size() <= 5.f && 
+		!GetCharacterMovement()->IsFalling() && 
+		CurrentWeaponState != ECharacterWeaponState::Reloading &&
+		CurrentState != ECharacterState::Proning&&
+		CurrentState != ECharacterState::Crouching)
 	{
-		SetState(ECharacterState::Idle);
+		ChangeState(ECharacterState::Idle);
 	}
 
 	// UE_LOG(LogTemp, Warning, TEXT("Velocity SizeSquared : %f"), GetVelocity().Size());
@@ -228,12 +240,12 @@ void AJHCharacter::Move(const FVector2D& Axis)
 
 	if (Axis.SizeSquared() > 0.f)
 	{
-		if (CurrentState != ECharacterState::Running)
+		if (CurrentState != ECharacterState::Running &&  CurrentState != ECharacterState::Proning && CurrentState != ECharacterState::Crouching)
 			SetState(ECharacterState::Walking);
 	}
 	else
 	{
-		SetState(ECharacterState::Idle);
+		// SetState(ECharacterState::Idle);
 	}
 }
 
@@ -299,12 +311,36 @@ void AJHCharacter::Crouch(bool bClientSimulation)
 	// bIsCrouched = true;
 	//ApplySpeed(WalkSpeed / 2.f);
 	//SetState(ECharacterState::Walking);
+	ChangeState(ECharacterState::Crouching);
+
+
 }
 
 void AJHCharacter::UnCrouch(bool bClientSimulation)
 {
 	Super::UnCrouch(bClientSimulation);
 
+
+
+
+
+
+
+
+
+	//if (bIsProne)
+	//	ChangeState(ECharacterState::Proning);
+	//else
+	//	ChangeState(ECharacterState::Idle);
+
+
+
+
+
+
+
+
+	// ChangeState(ECharacterState::Idle);
 	//ApplySpeed(WalkSpeed);
 	//SetState(ECharacterState::Walking);
 }
@@ -431,11 +467,16 @@ void AJHCharacter::RollEnd()
 void AJHCharacter::Prone()
 {
 	bIsProne = true;
+	
+	bIsCrouched = false;
+
 
 	// BaseEyeHeight = ProneEyeHeight;
 
-	ChangeState(ECharacterState::Proning);
+	
 
+	ChangeState(ECharacterState::Proning);
+	UnCrouch();
 
 
 	// CurrentState = ECharacterState::Prone;
@@ -446,9 +487,16 @@ void AJHCharacter::UnProne()
 	bIsProne = false;
 
 
+	if (GetCharacterMovement()->IsCrouching())
+	{
+		ChangeState(ECharacterState::Crouching);
+	}
+	else
+	{
+		ChangeState(ECharacterState::Idle);
+	}
 
 	// CurrentState = ECharacterState::Idle;
-	// ChangeState(ECharacterState::Idle);
 }
 
 void AJHCharacter::SetState(ECharacterState NewState)
@@ -528,71 +576,59 @@ void AJHCharacter::ChangeState(ECharacterState NewState)
 {
 	if (CurrentState == NewState) return;
 
+	float OldHalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+
+	// float CurrentHalfHeight = GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight();
+
+	float TargetHalfHeight = IdleHalfCapsuleHeight;
+	float TargetEyeHeight = IdleEyeHeight;
+	float TargetMeshZ = IdleMeshZ;
+	float TargetSpeed=WalkSpeed;
+
 	CurrentState = NewState;
 
 	switch (CurrentState)
 	{
 	case ECharacterState::Idle:
-		ApplySpeed(WalkSpeed);
-		BaseEyeHeight = IdleEyeHeight;
-		BaseEyeHeight = IdleEyeHeight;
-
-		// 1. 원래 캡슐 크기 (예: 88.0f)
-		float StandHalfHeight = 88.0f;
-		float ProneHalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight(); // 현재 엎드린 높이
-
-		// 2. 캡슐 크기 복구
-		GetCapsuleComponent()->SetCapsuleSize(34.0f, StandHalfHeight);
-
-		// 3. ★핵심★: 줄어들었던 높이만큼 다시 위로 올려줌 (땅에 끼임 방지)
-		float HeightDiff = StandHalfHeight - ProneHalfHeight;
-		AddActorWorldOffset(FVector(0.f, 0.f, HeightDiff), true); // true: 벽 뚫기 방지(Sweep)
-
-		// 4. 메쉬 위치 원상 복구
-		GetMesh()->SetRelativeLocation(FVector(0.f, 0.f, -StandHalfHeight - 4.0f)); // 보통 -92.0f 정도
-
+	case ECharacterState::Walking:
+	case ECharacterState::Running:
+		TargetHalfHeight = IdleHalfCapsuleHeight;
+		TargetEyeHeight = IdleEyeHeight;
+		TargetMeshZ = IdleMeshZ;
+		TargetSpeed = WalkSpeed;
+		bIsCrouched = false;
 		break;
 
 	case ECharacterState::Crouching:
-		// ApplySpeed(CrouchSpeed);
-		// BaseEyeHeight = CrouchEyeHeight;
+		// TargetHalfHeight = CrouchHalfCapsuleHeight;
+		// TargetEyeHeight = CrouchEyeHeight;
+		// TargetMeshZ = CrouchMeshZ;
+		// TargetSpeed = CrouchSpeed;
 		break;
 
 	case ECharacterState::Proning:
-		ApplySpeed(ProneSpeed);
+		bIsCrouched = false;
 
-		BaseEyeHeight = ProneEyeHeight;
-
-		// 현재 캡슐의 높이
-		float OldHalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
-		float NewHalfHeight = 20.0f;
-		float NewRadius = 34.0f;
-		GetCapsuleComponent()->SetCapsuleSize(NewRadius, NewHalfHeight);
-
-		float HeightDifference = OldHalfHeight - NewHalfHeight;
-		AddActorWorldOffset(FVector(0.f, 0.f, -HeightDifference));
-
-		GetMesh()->SetRelativeLocation(FVector(0.f, 0.f, -30.f));
-
-		//ApplySpeed(ProneSpeed);
-
-		//BaseEyeHeight = ProneEyeHeight;
-
-		//// 현재 캡슐의 높이
-		//float OldHalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
-		//float NewHalfHeight = 20.0f;
-		//float NewRadius = 34.0f;
-		//GetCapsuleComponent()->SetCapsuleSize(NewRadius, NewHalfHeight);
-		//
-		//float HeightDifference = OldHalfHeight - NewHalfHeight;
-		//AddActorWorldOffset(FVector(0.f, 0.f, -HeightDifference));
-
-		//GetMesh()->SetRelativeLocation(FVector(0.f, 0.f, -30.f));
-
-
-
+		TargetHalfHeight = ProneHalfCapsuleHeight;
+		TargetEyeHeight = ProneEyeHeight;
+		TargetMeshZ = ProneMeshZ;
+		TargetSpeed = ProneSpeed;
 		break;
 	}
+
+	GetCapsuleComponent()->SetCapsuleHalfHeight(TargetHalfHeight, true);
+
+	float HalfHeightDiff = OldHalfHeight - TargetHalfHeight;
+
+	// Z축으로 -HalfHeightDiff 만큼 이동 (Sweep 옵션 true로 벽 뚫기 방지)
+	AddActorWorldOffset(FVector(0.f, 0.f, -HalfHeightDiff), true, nullptr, ETeleportType::TeleportPhysics);
+
+	BaseEyeHeight = TargetEyeHeight;
+
+	GetMesh()->SetRelativeLocation(FVector(0.f, 0.f, TargetMeshZ));
+
+	ApplySpeed(TargetSpeed);
+
 }
 
 void AJHCharacter::ChangeWeaponState(ECharacterWeaponState NewState)
