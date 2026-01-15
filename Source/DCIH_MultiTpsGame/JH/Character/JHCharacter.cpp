@@ -328,6 +328,7 @@ void AJHCharacter::UnCrouch(bool bClientSimulation)
 
 
 
+
 	//if (bIsProne)
 	//	ChangeState(ECharacterState::Proning);
 	//else
