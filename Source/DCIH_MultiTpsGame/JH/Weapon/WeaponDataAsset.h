@@ -27,7 +27,7 @@ enum class EWeaponType : uint8
 };
 
 UCLASS(BlueprintType)
-class DCIH_MULTITPSGAME_API UWeaponDataAsset : public UDataAsset
+class DCIH_MULTITPSGAME_API UWeaponDataAsset : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
 	
@@ -51,7 +51,7 @@ public:
 
 	// 인벤토리에서 장착할 때 이 클래스를 Spawn
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon|Spawn")
-	TSubclassOf<AActor> EquipWeaponClass; // 추천: AWeaponBase*로 바꿔도 됨
+	TSubclassOf<AActor> WeaponClass; // 추천: AWeaponBase*로 바꿔도 됨
 
 	// ====== 월드에 떨어진 모습 ======
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon|Pickup")

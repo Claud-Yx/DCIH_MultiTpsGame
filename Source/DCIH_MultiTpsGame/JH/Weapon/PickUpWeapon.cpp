@@ -3,6 +3,8 @@
 #include "JH/Weapon/PickUpWeapon.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/Character.h"
+#include"JH/Weapon/WeaponPickUpInterface.h"
+#include "JH/Weapon/WeaponDataAsset.h"
 
 APickUpWeapon::APickUpWeapon()
 {
@@ -20,16 +22,29 @@ APickUpWeapon::APickUpWeapon()
 void APickUpWeapon::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	CollisionSphere->OnComponentBeginOverlap.AddDynamic(this, &APickUpWeapon::OnOverlapBegin);
 }
+
+void APickUpWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if(OtherActor->Implements<UWeaponPickUpInterface>())
+	{
+		IWeaponPickUpInterface::Execute_PickUpWeapon(OtherActor, WeaponData);
+		Destroy();
+	}
+	//ACharacter* Character = Cast<ACharacter>(OtherActor);
+	//if(Character)
+	//{
+	//	Character->PickUpWeapon();
+	//	Destroy();
+	//}
+}
+
+
 
 void APickUpWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-}
-
-void APickUpWeapon::Interact_Implementation(AActor* Interactor)
-{
 }
 

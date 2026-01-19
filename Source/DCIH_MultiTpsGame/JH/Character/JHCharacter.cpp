@@ -26,6 +26,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "JH/Weapon/WeaponDataAsset.h"
 
 AJHCharacter::AJHCharacter()
 {
@@ -66,7 +67,7 @@ AJHCharacter::AJHCharacter()
 
 	// crouch
 	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
-	GetCharacterMovement()->CrouchedHalfHeight = CrouchEyeHeight;
+	GetCharacterMovement()->SetCrouchedHalfHeight(CrouchEyeHeight);
 	GetCharacterMovement()->MaxWalkSpeedCrouched = CrouchSpeed;
 }
 
@@ -573,6 +574,7 @@ void AJHCharacter::TurnInPlace(float DeltaTime)
 	}
 }
 
+
 void AJHCharacter::ChangeState(ECharacterState NewState)
 {
 	if (CurrentState == NewState) return;
@@ -638,6 +640,18 @@ void AJHCharacter::ChangeWeaponState(ECharacterWeaponState NewState)
 
 	CurrentWeaponState = NewState;
 
+}
+
+void AJHCharacter::PickUpWeapon_Implementation(UWeaponDataAsset* WeaponDataAsset)
+{
+
+	HolsterWeapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponDataAsset->WeaponClass);
+	HolsterWeapon->SetOwner(this);
+	HolsterWeapon->AttachToComponent(
+		GetMesh(),
+		FAttachmentTransformRules::SnapToTargetNotIncludingScale,
+		TEXT("HolsterWeaponSocket")
+	);
 }
 
 void AJHCharacter::HandleDamage(float damageAmount)

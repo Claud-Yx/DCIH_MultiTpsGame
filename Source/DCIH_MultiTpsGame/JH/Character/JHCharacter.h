@@ -7,6 +7,7 @@
 #include "JH/UI/Interface/HealthProviderInterface.h"
 #include "JH/Delegates/HealthDelegate.h"//       ?
 #include "JH/Interface/MagazineInterface.h"
+#include"JH/Weapon/WeaponPickUpInterface.h"
 
 #include "JHCharacter.generated.h"
 
@@ -17,7 +18,8 @@ class DCIH_MULTITPSGAME_API AJHCharacter
 	:
 	public ACharacter,
 	public IHealthProviderInterface,
-	public IMagazineInterface
+	public IMagazineInterface,
+	public IWeaponPickUpInterface
 {
 	GENERATED_BODY()
 
@@ -114,6 +116,10 @@ public:	// Input Action
 	UFUNCTION(BlueprintCallable, Category = "Input | Prone")
 	void UnProne();
 
+	UFUNCTION()
+	void PickUpWeapon_Implementation(class UWeaponDataAsset *WeaponDataAsset);
+
+
 protected:	// Internal Logic
 	UFUNCTION(BlueprintCallable, Category = "State")
 	void SetState(ECharacterState NewState);
@@ -146,11 +152,13 @@ protected:	// Internal Logic
 
 
 protected:
+
 	UFUNCTION()
 	void ChangeState(ECharacterState NewState);
 
 	UFUNCTION()
 	void ChangeWeaponState(ECharacterWeaponState NewState);
+
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
 	ECharacterState CurrentState;
@@ -202,6 +210,10 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class AWeaponBase> EquippedWeapon;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class AWeaponBase> HolsterWeapon;
+
 
 	FRotator StartingAimRotation;
 

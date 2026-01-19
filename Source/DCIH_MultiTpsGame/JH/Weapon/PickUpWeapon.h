@@ -4,18 +4,26 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "JH/Weapon/WeaponPickUpInterface.h"
 #include "PickUpWeapon.generated.h"
 
 
 UCLASS()
-class DCIH_MULTITPSGAME_API APickUpWeapon : public AActor, public IWeaponPickUpInterface
+class DCIH_MULTITPSGAME_API APickUpWeapon : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
 	APickUpWeapon();
+
+	UFUNCTION()
+	void OnOverlapBegin(
+		UPrimitiveComponent* OverlappedComp,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex,
+		bool bFromSweep,
+		const FHitResult& SweepResult);
 
 protected:
 	// Called when the game starts or when spawned
@@ -32,7 +40,6 @@ public:
 
 	//UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	//int32 CurrentAmmo = 0;
-	virtual void Interact_Implementation(AActor* Interactor) override;
 
 protected:
 	UPROPERTY(VisibleAnywhere)
@@ -41,5 +48,7 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	class UStaticMeshComponent* Mesh;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<class UWeaponDataAsset> WeaponData;
 
 };
