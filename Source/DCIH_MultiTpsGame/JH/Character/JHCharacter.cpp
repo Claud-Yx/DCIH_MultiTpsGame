@@ -574,7 +574,6 @@ void AJHCharacter::TurnInPlace(float DeltaTime)
 	}
 }
 
-
 void AJHCharacter::ChangeState(ECharacterState NewState)
 {
 	if (CurrentState == NewState) return;
@@ -647,6 +646,9 @@ void AJHCharacter::PickUpWeapon_Implementation(UWeaponDataAsset* WeaponDataAsset
 
 	HolsterWeapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponDataAsset->WeaponClass);
 	HolsterWeapon->SetOwner(this);
+
+	
+
 	HolsterWeapon->AttachToComponent(
 		GetMesh(),
 		FAttachmentTransformRules::SnapToTargetNotIncludingScale,

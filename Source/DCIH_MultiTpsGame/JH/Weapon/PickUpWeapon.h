@@ -26,6 +26,8 @@ public:
 		const FHitResult& SweepResult);
 
 protected:
+	virtual void OnConstruction(const FTransform& Transform) override;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
