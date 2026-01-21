@@ -59,13 +59,13 @@ protected:
 public:
     // ĳ���Ϳ��� ó��
     UFUNCTION(BlueprintCallable, Category = "Weapon")
-    virtual void Equip(ACharacter* Character);
+    virtual void OnEquipped(ACharacter* Character);
 
     UFUNCTION(BlueprintCallable, Category = "Weapon")
-    virtual void UnEquip();
+    virtual void OnUnEquipped();
 
     UFUNCTION(BlueprintCallable, Category = "Weapon")
-    virtual void Drop();
+    virtual void OnDropped();
 
     //UFUNCTION(BlueprintCallable, Category = "Weapon")
     //virtual void Attack();
@@ -79,6 +79,8 @@ protected:
     void DetachWeapon();
     void EnablePhysics(bool bEnable);
 
+    UPROPERTY()
+    FName WeaponSocketName;
 
 
     // virtual void SetOwner(AActor* NewOwner) override;

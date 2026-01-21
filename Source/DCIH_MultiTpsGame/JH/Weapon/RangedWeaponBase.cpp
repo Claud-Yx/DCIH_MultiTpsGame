@@ -103,14 +103,7 @@ bool ARangedWeaponBase::CanFire()
 		return false;
 	}
 
-	LastFireTime = currentTime; // ������ �߻� �ð� ������Ʈ
-	//const float CurrentTime = GetWorld()->GetTimeSeconds();
-	//const float Elapsed = CurrentTime - LastFireTime;
-
-	//if (Elapsed < FireRate)
-	//{
-	//	return false;
-	//}
+	LastFireTime = currentTime;
 
 	return true;
 
@@ -118,13 +111,6 @@ bool ARangedWeaponBase::CanFire()
 
 void ARangedWeaponBase::Fire()
 {
-	//if (!CanFire()) return;
-
-	//if (CurAmmo <= 0)
-	//{
-	//	Reload();
-	//	return;
-	//}
 	WeaponState = EWeaponState::Firing;
 	bLastFireSuccess = false;
 
@@ -136,22 +122,12 @@ void ARangedWeaponBase::Fire()
 		return;
 	}
 
-	//float currentTime = GetWorld()->GetTimeSeconds();
-
-	//if (currentTime - LastFireTime < FireRate)
-	//{
-	//	return;
-	//}
-
-	//LastFireTime = currentTime; // ������ �߻� �ð� ������Ʈ
 	ApplyRecoil();
 	
 	ConsumeAmmo(1);
-	// CurAmmo = FMath::Max(CurAmmo - 1, 0);
 
 	bLastFireSuccess = true;
 	WeaponState = EWeaponState::Equipping;
-
 }
 
 void ARangedWeaponBase::Reload()

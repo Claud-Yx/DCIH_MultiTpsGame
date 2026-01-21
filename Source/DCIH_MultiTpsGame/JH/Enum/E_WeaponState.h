@@ -3,10 +3,10 @@
 UENUM(BlueprintType)
 enum class EWeaponState : uint8
 {
-    UnEquipping,
-    Holstering,
-    Equipping,
+    UnEquipped,
+    Holstered,
+    Equipped,
     
     Firing,
-    Reloading,
+    Reloading
 };

@@ -9,10 +9,10 @@ AWeaponBase::AWeaponBase()
 {
     PrimaryActorTick.bCanEverTick = true;
 
-    MeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
+    MeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("MeshComp"));
     SetRootComponent(MeshComp);
 
-   CollisionComp = CreateDefaultSubobject<USphereComponent>(TEXT("PickupSphere"));
+   CollisionComp = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionComp"));
    CollisionComp->SetupAttachment(RootComponent);
 
    CollisionComp->SetSphereRadius(100.f);
@@ -20,7 +20,9 @@ AWeaponBase::AWeaponBase()
    CollisionComp->SetCollisionResponseToAllChannels(ECR_Ignore);
    CollisionComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
-    WeaponState = EWeaponState::UnEquipping;
+    WeaponState = EWeaponState::UnEquipped;
+
+	WeaponSocketName = FName("WeaponSocket");
 }
 
 void AWeaponBase::BeginPlay()
@@ -28,7 +30,7 @@ void AWeaponBase::BeginPlay()
     Super::BeginPlay();
 }
 
-void AWeaponBase::Equip(ACharacter* Character)
+void AWeaponBase::OnEquipped(ACharacter* Character)
 {
     if (!Character) return;
 
@@ -37,8 +39,8 @@ void AWeaponBase::Equip(ACharacter* Character)
     
     OwnerController = Cast<APlayerController>(Character->GetController());
 
-    SetWeaponState(EWeaponState::Equipping);
-    AttachWeaponToSocket(FName("WeaponSocket"));
+    SetWeaponState(EWeaponState::Equipped);
+    AttachWeaponToSocket(WeaponSocketName);
     EnablePhysics(false);
 
     if (CollisionComp)
@@ -77,16 +79,16 @@ void AWeaponBase::AttachWeaponToSocket(const FName& SocketName)
 //     }
 // }
 
-void AWeaponBase::UnEquip()
+void AWeaponBase::OnUnEquipped()
 {
-    SetWeaponState(EWeaponState::UnEquipping);
+    SetWeaponState(EWeaponState::UnEquipped);
     OwnerCharacter = nullptr;
     OwnerController = nullptr;
 }
 
-void AWeaponBase::Drop()
+void AWeaponBase::OnDropped()
 {
-    SetWeaponState(EWeaponState::UnEquipping);
+    SetWeaponState(EWeaponState::UnEquipped);
     DetachWeapon();
     EnablePhysics(true);
 

@@ -172,7 +172,7 @@ void AJHCharacter::EquipWeapon(AWeaponBase* Weapon)
 	}
 
 	EquippedWeapon = Weapon;
-	EquippedWeapon->Equip(this);
+	EquippedWeapon->OnEquipped(this);
 
 	OnWeaponEquipped.Broadcast(Weapon); // "무기 장착됨" 사실만 알림
 
@@ -186,7 +186,7 @@ void AJHCharacter::UnEquipWeapon()
 {
 	if (!EquippedWeapon) return;
 
-	EquippedWeapon->UnEquip();
+	EquippedWeapon->OnUnEquipped();
 	EquippedWeapon = nullptr;
 }
 
@@ -194,7 +194,7 @@ void AJHCharacter::DropWeapon()
 {
 	if (!EquippedWeapon) return;
 
-	EquippedWeapon->Drop();
+	EquippedWeapon->OnDropped();
 	EquippedWeapon = nullptr;
 }
 

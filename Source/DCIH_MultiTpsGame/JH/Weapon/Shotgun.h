@@ -19,5 +19,18 @@ public:
 
 	virtual void Fire() override;
 
+private:
+	UFUNCTION(BlueprintCallable, Category = "Fire")
+	void HitScan();
+
+protected:
+	UPROPERTY(EditAnywhere)
+	int PelletNum;
+
+	UPROPERTY()
+	float SpreadAngle;
+
+	UPROPERTY()
+	bool bShowLineTrace = false;
 
 };
