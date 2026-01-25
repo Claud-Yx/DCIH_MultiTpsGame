@@ -91,7 +91,7 @@ FVector ARangedWeaponBase::GetAimPoint() const
 
 bool ARangedWeaponBase::CanFire()
 {
-	if (WeaponState != EWeaponState::Equipping &&
+	if (WeaponState != EWeaponState::Equipped &&
 		WeaponState != EWeaponState::Firing)
 	{
 		return false;
@@ -127,7 +127,7 @@ void ARangedWeaponBase::Fire()
 	ConsumeAmmo(1);
 
 	bLastFireSuccess = true;
-	WeaponState = EWeaponState::Equipping;
+	WeaponState = EWeaponState::Equipped;
 }
 
 void ARangedWeaponBase::Reload()
@@ -150,7 +150,7 @@ void ARangedWeaponBase::Reload()
 void ARangedWeaponBase::FinishReload()
 {
 	CurAmmo = MaxAmmo;
-	SetWeaponState(EWeaponState::Equipping);
+	SetWeaponState(EWeaponState::Equipped);
 	AmmoChangedDelegate.Broadcast(CurAmmo, MaxAmmo);
 
 	if (UWorld* World = GetWorld())

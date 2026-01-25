@@ -8,6 +8,7 @@
 #include "JH/Delegates/HealthDelegate.h"//       ?
 #include "JH/Interface/MagazineInterface.h"
 #include"JH/Weapon/WeaponPickUpInterface.h"
+#include "JH/Interface/InteractTarget.h"
 
 #include "JHCharacter.generated.h"
 
@@ -19,7 +20,8 @@ class DCIH_MULTITPSGAME_API AJHCharacter
 	public ACharacter,
 	public IHealthProviderInterface,
 	public IMagazineInterface,
-	public IWeaponPickUpInterface
+	public IWeaponPickUpInterface,
+	public IInteractTarget
 {
 	GENERATED_BODY()
 

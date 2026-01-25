@@ -1,5 +1,3 @@
-
-
 #include "JH/Weapon/PickUpWeapon.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/Character.h"
@@ -42,9 +40,7 @@ void APickUpWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* 
 	}
 }
 
-
 void APickUpWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
-

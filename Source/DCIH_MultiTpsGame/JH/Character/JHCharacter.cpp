@@ -27,6 +27,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "JH/Weapon/WeaponDataAsset.h"
+#include "CombatComponent.h"
 
 AJHCharacter::AJHCharacter()
 {
@@ -181,6 +182,8 @@ void AJHCharacter::EquipWeapon(AWeaponBase* Weapon)
 	//	PC->GetUIManager()->RegisterUIObject(Weapon);
 	//}
 }
+
+
 
 void AJHCharacter::UnEquipWeapon()
 {
@@ -500,6 +503,7 @@ void AJHCharacter::UnProne()
 
 	// CurrentState = ECharacterState::Idle;
 }
+
 
 void AJHCharacter::SetState(ECharacterState NewState)
 {

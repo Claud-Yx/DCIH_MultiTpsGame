@@ -43,4 +43,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon|Pickup")
 	TObjectPtr<UStaticMesh> PickupMesh = nullptr;
 	
+	UPROPERTY(EditDefaultsOnly)
+	FName HandSocket;
+
+	UPROPERTY(EditDefaultsOnly)
+	FName HolsterSocket;
 };

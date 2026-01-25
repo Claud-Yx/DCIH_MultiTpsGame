@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "JH/Enum/E_WeaponState.h"
+#include "JH/Interface/InteractTarget.h"
 #include "WeaponBase.generated.h"
 
 class USkeletalMeshComponent;
@@ -11,7 +12,7 @@ class APawn;
 // ============================================
 
 UCLASS(Abstract)
-class DCIH_MULTITPSGAME_API AWeaponBase : public AActor
+class DCIH_MULTITPSGAME_API AWeaponBase : public AActor, public IInteractTarget
 {
     GENERATED_BODY()
 
@@ -28,6 +29,7 @@ protected:
 public:
 	UFUNCTION(BlueprintPure, Category = "Components")
     FORCEINLINE USkeletalMeshComponent* GetMesh() const { return MeshComp; }
+
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     TObjectPtr<class USphereComponent> CollisionComp;
@@ -42,8 +44,6 @@ public:
     UFUNCTION(BlueprintPure, Category = "State")
     FORCEINLINE EWeaponState GetWeaponState() const { return WeaponState; }
     void SetWeaponState(EWeaponState newState) { WeaponState = newState; }
-
-
 
 	// ========== Owners ==========
 protected:

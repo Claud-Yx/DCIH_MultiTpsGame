@@ -20,15 +20,15 @@ AWeaponBase::AWeaponBase()
    CollisionComp->SetCollisionResponseToAllChannels(ECR_Ignore);
    CollisionComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
-    WeaponState = EWeaponState::UnEquipped;
-
-	WeaponSocketName = FName("WeaponSocket");
+   WeaponState = EWeaponState::UnEquipped;
+   WeaponSocketName = FName("WeaponSocket");
 }
 
 void AWeaponBase::BeginPlay()
 {
     Super::BeginPlay();
 }
+
 
 void AWeaponBase::OnEquipped(ACharacter* Character)
 {
