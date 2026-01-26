@@ -27,7 +27,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "JH/Weapon/WeaponDataAsset.h"
-#include "CombatComponent.h"
+#include "JH/Components/CombatComponent.h"
 
 AJHCharacter::AJHCharacter()
 {
@@ -166,11 +166,11 @@ void AJHCharacter::EquipWeapon(AWeaponBase* Weapon)
 {
 	if (!Weapon) return;
 
-	// Unequip current weapon
-	if (EquippedWeapon)
-	{
-		UnEquipWeapon();
-	}
+	//// Unequip current weapon
+	//if (EquippedWeapon)
+	//{
+	//	UnEquipWeapon();
+	//}
 
 	EquippedWeapon = Weapon;
 	EquippedWeapon->OnEquipped(this);
@@ -182,6 +182,8 @@ void AJHCharacter::EquipWeapon(AWeaponBase* Weapon)
 	//	PC->GetUIManager()->RegisterUIObject(Weapon);
 	//}
 }
+
+
 
 
 

@@ -20,9 +20,8 @@ protected:
 public:	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-
 	UFUNCTION()
-	void EquipWeapon(class AWeaponBase* _Weapon);
+	void EquipWeapon(AWeaponBase* Weapon);
 
 	UFUNCTION()
 	void SwapWeapon();
@@ -32,6 +31,9 @@ public:
 
 
 	void PickUpWeapon(AWeaponBase* NewWeapon);
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<AWeaponBase> CurrentWeapon;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<AWeaponBase> FirstWeapon;

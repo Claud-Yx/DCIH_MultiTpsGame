@@ -8,7 +8,7 @@
 
 class USkeletalMeshComponent;
 class APawn;
-
+class UWeaponDataAsset;
 // ============================================
 
 UCLASS(Abstract)
@@ -29,6 +29,8 @@ protected:
 public:
 	UFUNCTION(BlueprintPure, Category = "Components")
     FORCEINLINE USkeletalMeshComponent* GetMesh() const { return MeshComp; }
+
+    UWeaponDataAsset* GetWeaponData() const;
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
@@ -82,6 +84,8 @@ protected:
     UPROPERTY()
     FName WeaponSocketName;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    TObjectPtr<UWeaponDataAsset> WeaponData;
 
     // virtual void SetOwner(AActor* NewOwner) override;
 

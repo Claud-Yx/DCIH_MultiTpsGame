@@ -2,6 +2,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/Character.h"
+#include "JH/Weapon/WeaponDataAsset.h"
 
 // IMPLEMENT_PURE_VIRTUAL(AWeaponBase, Attack, );
 
@@ -29,6 +30,11 @@ void AWeaponBase::BeginPlay()
     Super::BeginPlay();
 }
 
+UWeaponDataAsset* AWeaponBase::GetWeaponData() const
+{
+    return WeaponData;
+}
+
 
 void AWeaponBase::OnEquipped(ACharacter* Character)
 {
@@ -39,14 +45,14 @@ void AWeaponBase::OnEquipped(ACharacter* Character)
     
     OwnerController = Cast<APlayerController>(Character->GetController());
 
-    SetWeaponState(EWeaponState::Equipped);
-    AttachWeaponToSocket(WeaponSocketName);
     EnablePhysics(false);
 
     if (CollisionComp)
     {
         CollisionComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     }
+    AttachWeaponToSocket(WeaponSocketName);
+    SetWeaponState(EWeaponState::Equipped);
 
     // SetActorTickEnabled(true);
 }
