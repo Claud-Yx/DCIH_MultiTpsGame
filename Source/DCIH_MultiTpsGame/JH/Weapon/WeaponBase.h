@@ -36,7 +36,15 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     TObjectPtr<class USphereComponent> CollisionComp;
 
-
+    UFUNCTION()
+    void OnPickupSphereOverlap(
+        UPrimitiveComponent* OverlappedComponent,
+        AActor* OtherActor,
+        UPrimitiveComponent* OtherComp,
+        int32 OtherBodyIndex,
+        bool bFromSweep,
+        const FHitResult& SweepResult
+    );
 
 	// ========== State ==========
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State")

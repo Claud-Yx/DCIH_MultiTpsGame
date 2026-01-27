@@ -38,6 +38,7 @@ AJHCharacter::AJHCharacter()
 
 	HealthComp = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComp"));
 	StaminaComp = CreateDefaultSubobject<UStaminaComponent>(TEXT("StaminaComp"));
+	CombatComp = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComp"));
 
 	WalkSpeed = 400.f;
 	SprintSpeed = 700.f;
@@ -647,20 +648,20 @@ void AJHCharacter::ChangeWeaponState(ECharacterWeaponState NewState)
 
 }
 
-void AJHCharacter::PickUpWeapon_Implementation(UWeaponDataAsset* WeaponDataAsset)
-{
-
-	HolsterWeapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponDataAsset->WeaponClass);
-	HolsterWeapon->SetOwner(this);
-
-	
-
-	HolsterWeapon->AttachToComponent(
-		GetMesh(),
-		FAttachmentTransformRules::SnapToTargetNotIncludingScale,
-		TEXT("HolsterWeaponSocket")
-	);
-}
+//void AJHCharacter::PickUpWeapon_Implementation(UWeaponDataAsset* WeaponDataAsset)
+//{
+//
+//	HolsterWeapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponDataAsset->WeaponClass);
+//	HolsterWeapon->SetOwner(this);
+//
+//	
+//
+//	HolsterWeapon->AttachToComponent(
+//		GetMesh(),
+//		FAttachmentTransformRules::SnapToTargetNotIncludingScale,
+//		TEXT("HolsterWeaponSocket")
+//	);
+//}
 
 void AJHCharacter::HandleDamage(float damageAmount)
 {

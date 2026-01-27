@@ -19,9 +19,8 @@ class DCIH_MULTITPSGAME_API AJHCharacter
 	:
 	public ACharacter,
 	public IHealthProviderInterface,
-	public IMagazineInterface,
-	public IWeaponPickUpInterface,
-	public IInteractTarget
+	public IMagazineInterface
+	//public IWeaponPickUpInterface
 {
 	GENERATED_BODY()
 
@@ -60,8 +59,12 @@ public:	// Getter
 	UFUNCTION(BlueprintPure, Category = "Aim Offset")
 	FORCEINLINE float GetAO_Pitch() const { return AO_Pitch; }
 
+
+
 	UFUNCTION(BlueprintPure, Category = "Weapon")
 	FORCEINLINE AWeaponBase* GetEquippedWeapon() { return EquippedWeapon; }
+
+
 
 	UFUNCTION(BlueprintPure, Category = "Turn In Place")
 	FORCEINLINE ETurnInPlace GetTurningInPlace() const { return TurningInPlace; }
@@ -75,6 +78,15 @@ public:	// Getter
 	UFUNCTION(BlueprintPure, Category = "Prone")
 	FORCEINLINE bool GetIsProne() { return bIsProne; };
 
+
+
+
+
+
+
+	// ======================================
+	// Input Actions
+	// =======================================
 
 public:	// Input Action
 	UFUNCTION(BlueprintCallable, Category = "Input")
@@ -118,8 +130,8 @@ public:	// Input Action
 	UFUNCTION(BlueprintCallable, Category = "Input | Prone")
 	void UnProne();
 
-	UFUNCTION()
-	void PickUpWeapon_Implementation(class UWeaponDataAsset *WeaponDataAsset);
+	//UFUNCTION()
+	//void PickUpWeapon_Implementation(class UWeaponDataAsset *WeaponDataAsset);
 
 
 protected:	// Internal Logic
@@ -256,4 +268,7 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UStaminaComponent> StaminaComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UCombatComponent> CombatComp;
 };

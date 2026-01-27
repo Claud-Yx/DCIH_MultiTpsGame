@@ -35,6 +35,17 @@ UWeaponDataAsset* AWeaponBase::GetWeaponData() const
     return WeaponData;
 }
 
+void AWeaponBase::OnPickupSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+    UCombatComponent* CombatComp = OtherActor->FindComponentByClass<UCombatComponent>();
+    if (CombatComp)
+    {
+        // 2. 컴포넌트에게 "나를 가져가라"고 명령
+        // (단, 자동 줍기이므로 꽉 찼을 때 강제 교체는 하지 않는 게 일반적입니다)
+        CombatComp->EquipWeapon(this);
+    }
+}
+
 
 void AWeaponBase::OnEquipped(ACharacter* Character)
 {

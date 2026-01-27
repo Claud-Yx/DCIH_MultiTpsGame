@@ -7,7 +7,7 @@
 class AWeaponBase;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class DCIH_MULTITPSGAME_API UCombatComponent : public UActorComponent
+class DCIH_MULTITPSGAME_API UCombatComponent : public UActorComponent, public IInteractTarget
 {
 	GENERATED_BODY()
 
@@ -41,4 +41,5 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<AWeaponBase> SecondWeapon;
 
+	virtual void OnInteract_Implementation(AActor* Interactor) override;
 };
