@@ -4,6 +4,7 @@
 #include "GameFramework/Character.h"
 #include "JH/Interface/InteractTarget.h"
 #include "JH/Weapon/WeaponDataAsset.h"
+#include "JH/Components/CombatComponent.h"
 
 // IMPLEMENT_PURE_VIRTUAL(AWeaponBase, Attack, );
 
@@ -29,6 +30,11 @@ AWeaponBase::AWeaponBase()
 void AWeaponBase::BeginPlay()
 {
     Super::BeginPlay();
+
+    if (CollisionComp)
+    {
+        CollisionComp->OnComponentBeginOverlap.AddDynamic(this, &AWeaponBase::OnPickupSphereOverlap);
+    }
 }
 
 UWeaponDataAsset* AWeaponBase::GetWeaponData() const
@@ -38,10 +44,12 @@ UWeaponDataAsset* AWeaponBase::GetWeaponData() const
 
 void AWeaponBase::OnPickupSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    if (OtherActor->Implements<UInteractTarget>())
+
+    UCombatComponent* CombatComp = OtherActor->FindComponentByClass<UCombatComponent>();
+	if (CombatComp)
     {
-        IInteractTarget::Execute_OnInteract(this, this);
-        Destroy();
+		CombatComp->PickUpWeapon(this);
+        // Destroy();
     }
     //// UCombatComponent* CombatComp = OtherActor->FindComponentByClass<UCombatComponent>();
     //if (CombatComp)

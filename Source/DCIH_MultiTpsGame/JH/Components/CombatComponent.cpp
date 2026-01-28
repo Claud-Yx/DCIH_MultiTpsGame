@@ -5,7 +5,7 @@
 
 UCombatComponent::UCombatComponent()
 {
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
 
 }
 
@@ -29,26 +29,28 @@ void UCombatComponent::EquipWeapon(AWeaponBase* Weapon)
 
 	USkeletalMeshComponent* Mesh = OwnerCharacter->GetMesh();
 
-	if (CurrentWeapon && CurrentWeapon != Weapon)
+	//if (CurrentWeapon && CurrentWeapon != Weapon)
 	{
 		Weapon->AttachToComponent
 		(
 			Mesh,
 			FAttachmentTransformRules::SnapToTargetNotIncludingScale,
-			CurrentWeapon->GetWeaponData()->HolsterSocket
-		);
-	}
-	else {
-		Weapon->AttachToComponent
-		(
-			Mesh,
-			FAttachmentTransformRules::SnapToTargetNotIncludingScale,
-			Weapon->GetWeaponData()->HandSocket
-			// FName("WeaponSocket")
+			Weapon->GetWeaponData()->HolsterSocket
 		);
 
-		CurrentWeapon = Weapon;
+		Weapon->OnEquipped(Cast<ACharacter>(GetOwner()));
 	}
+	//else {
+	//	Weapon->AttachToComponent
+	//	(
+	//		Mesh,
+	//		FAttachmentTransformRules::SnapToTargetNotIncludingScale,
+	//		Weapon->GetWeaponData()->HandSocket
+	//		// FName("WeaponSocket")
+	//	);
+
+		CurrentWeapon = Weapon;
+	// }
 	
 	// CurrentWeapon = Weapon;
 
@@ -71,7 +73,9 @@ void UCombatComponent::DropCurrentWeapon()
 
 void UCombatComponent::PickUpWeapon(AWeaponBase* NewWeapon)
 {
-	if (NewWeapon == FirstWeapon || NewWeapon == SecondWeapon) return;
+	UE_LOG(LogTemp, Warning, TEXT("PickUpWeapon"));
+
+	// if (NewWeapon == FirstWeapon || NewWeapon == SecondWeapon) return;
 
 	if (!FirstWeapon)
 	{
