@@ -13,7 +13,7 @@ void UKJHCharacterAnim::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
 
-    // ÃÖÃÊ Ä³¸¯ÅÍ Ä³½Ì
+    // ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½
     if (APawn* Pawn = TryGetPawnOwner())
     {
         owningCharacter = Cast<AJHCharacter>(Pawn);
@@ -62,7 +62,7 @@ void UKJHCharacterAnim::NativeUpdateAnimation(float DeltaSeconds)
 
 	TurningInPlace = owningCharacter->GetTurningInPlace();
 
-    // È­¸é Ãâ·Â
+    // È­ï¿½ï¿½ ï¿½ï¿½ï¿½
     // FString DebugText = FString::Print(TEXT("Speed: %.2f, Direction: %.2f"), speed, direction);
     // UKismetSystemLibrary::PrintString(this, DebugText, true, true, FLinearColor::Yellow, 0.f);
 }
@@ -112,15 +112,15 @@ void UKJHCharacterAnim::PlayRollMontage()
 //{
 //	Super::NativePlayMontageNotifyBegin(NotifyName, BranchingPointNotifyPayload);
 //
-//	// OwningCharacter°¡ ¾øÀ¸¸é ½ÇÇà ºÒ°¡
+//	// OwningCharacterï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ò°ï¿½
 //	if (!owningCharacter) return;
 //
-//	// 1. "Launch" ³ëÆ¼ÆÄÀÌ°¡ µé¾î¿Ô´ÂÁö ÀÌ¸§À¸·Î È®ÀÎ
+//	// 1. "Launch" ï¿½ï¿½Æ¼ï¿½ï¿½ï¿½Ì°ï¿½ ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
 //	if (NotifyName == TEXT("Launch"))
 //	{
 //		FVector Velocity = owningCharacter->GetVelocity();
 //
-//		// ÀÛ¼ºÇÏ½Å ·ÎÁ÷ ±×´ë·Î Àû¿ë
+//		// ï¿½Û¼ï¿½ï¿½Ï½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½×´ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 //		if (Velocity.SizeSquared() > 10.0f)
 //		{
 //			FVector LaunchDir = Velocity.GetSafeNormal();
@@ -133,10 +133,10 @@ void UKJHCharacterAnim::PlayRollMontage()
 //
 //		UE_LOG(LogTemp, Warning, TEXT("Launch Triggered by AnimInstance"));
 //	}
-//	// 2. "LaunchStop" ³ëÆ¼ÆÄÀÌ È®ÀÎ
+//	// 2. "LaunchStop" ï¿½ï¿½Æ¼ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
 //	else if (NotifyName == TEXT("LaunchStop"))
 //	{
-//		owningCharacter->RollEnd(); // Ä³¸¯ÅÍÀÇ Á¤Áö ÇÔ¼ö È£Ãâ
+//		owningCharacter->RollEnd(); // Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½ È£ï¿½ï¿½
 //		UE_LOG(LogTemp, Warning, TEXT("Stop Triggered by AnimInstance"));
 //	}
 //}

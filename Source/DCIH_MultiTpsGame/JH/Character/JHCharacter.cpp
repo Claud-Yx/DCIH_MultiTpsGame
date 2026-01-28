@@ -118,15 +118,6 @@ void AJHCharacter::Tick(float DeltaTime)
 	{
 		ChangeState(ECharacterState::Idle);
 	}
-
-	// UE_LOG(LogTemp, Warning, TEXT("Velocity SizeSquared : %f"), GetVelocity().Size());
-
-	ARifle* rifle = Cast<ARifle>(EquippedWeapon);
-	// UE_LOG(LogTemp, Warning, TEXT("Stamina : %d"), rifle->MagazineNum);
-	// ���
-	//FString StateName = UEnum::GetValueAsString(CurrentState);
-	//UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("State : %s"), *StateName));
-
 }
 
 void AJHCharacter::InitializeCharacter()
@@ -163,72 +154,7 @@ void AJHCharacter::InitializeCamera()
 	// Camera->bUsePawnControlRotation = false; // ī�޶�� �ո� ����
 }
 
-void AJHCharacter::EquipWeapon(AWeaponBase* Weapon)
-{
-	if (!Weapon) return;
 
-	//// Unequip current weapon
-	//if (EquippedWeapon)
-	//{
-	//	UnEquipWeapon();
-	//}
-
-	EquippedWeapon = Weapon;
-	EquippedWeapon->OnEquipped(this);
-
-	OnWeaponEquipped.Broadcast(Weapon); // "무기 장착됨" 사실만 알림
-
-	//if (AJHPlayerController* PC = Cast<AJHPlayerController>(GetController()))
-	//{
-	//	PC->GetUIManager()->RegisterUIObject(Weapon);
-	//}
-}
-
-
-
-
-
-void AJHCharacter::UnEquipWeapon()
-{
-	if (!EquippedWeapon) return;
-
-	EquippedWeapon->OnUnEquipped();
-	EquippedWeapon = nullptr;
-}
-
-void AJHCharacter::DropWeapon()
-{
-	if (!EquippedWeapon) return;
-
-	EquippedWeapon->OnDropped();
-	EquippedWeapon = nullptr;
-}
-
-void AJHCharacter::InitializeWeapon()
-{
-	if (UWorld* World = GetWorld())
-	{
-		// ������ ����
-		EquippedWeapon = World->SpawnActor<AWeaponBase>(WeaponClass);
-
-		// AWeaponBase* SpawnedWeapon = World->SpawnActor<AWeaponBase>(WeaponClass);
-		if (EquippedWeapon)
-		{
-			EquipWeapon(EquippedWeapon);
-		}
-
-		if (EquippedWeapon)
-		{
-			EquippedWeapon->SetOwner(this);
-
-			EquippedWeapon->AttachToComponent(
-				GetMesh(),
-				FAttachmentTransformRules::SnapToTargetNotIncludingScale,
-				TEXT("WeaponSocket")
-			);
-		}
-	}
-}
 
 
 
@@ -714,3 +640,77 @@ void AJHCharacter::AddMagazine_Implementation()
 //{
 //	ProviderHealthEvent.Broadcast(Cur, Max);
 //}
+
+
+
+
+
+
+
+
+
+
+
+
+void AJHCharacter::EquipWeapon(AWeaponBase* Weapon)
+{
+	if (!Weapon) return;
+
+	//// Unequip current weapon
+	//if (EquippedWeapon)
+	//{
+	//	UnEquipWeapon();
+	//}
+
+	EquippedWeapon = Weapon;
+	EquippedWeapon->OnEquipped(this);
+
+	OnWeaponEquipped.Broadcast(Weapon); // "무기 장착됨" 사실만 알림
+
+	//if (AJHPlayerController* PC = Cast<AJHPlayerController>(GetController()))
+	//{
+	//	PC->GetUIManager()->RegisterUIObject(Weapon);
+	//}
+}
+
+void AJHCharacter::UnEquipWeapon()
+{
+	if (!EquippedWeapon) return;
+
+	EquippedWeapon->OnUnEquipped();
+	EquippedWeapon = nullptr;
+}
+
+void AJHCharacter::DropWeapon()
+{
+	if (!EquippedWeapon) return;
+
+	EquippedWeapon->OnDropped();
+	EquippedWeapon = nullptr;
+}
+
+void AJHCharacter::InitializeWeapon()
+{
+	if (UWorld* World = GetWorld())
+	{
+		// ������ ����
+		EquippedWeapon = World->SpawnActor<AWeaponBase>(WeaponClass);
+
+		// AWeaponBase* SpawnedWeapon = World->SpawnActor<AWeaponBase>(WeaponClass);
+		if (EquippedWeapon)
+		{
+			EquipWeapon(EquippedWeapon);
+		}
+
+		if (EquippedWeapon)
+		{
+			EquippedWeapon->SetOwner(this);
+
+			EquippedWeapon->AttachToComponent(
+				GetMesh(),
+				FAttachmentTransformRules::SnapToTargetNotIncludingScale,
+				TEXT("WeaponSocket")
+			);
+		}
+	}
+}

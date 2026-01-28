@@ -89,3 +89,12 @@ void UCombatComponent::PickUpWeapon(AWeaponBase* NewWeapon)
 		PickUpWeapon(NewWeapon);
 	}
 }
+
+void UCombatComponent::OnInteract_Implementation(AActor* Interactor)
+{
+	AWeaponBase* NewWeapon = Cast<AWeaponBase>(Interactor);
+	if (NewWeapon) 
+	{
+		PickUpWeapon(NewWeapon);
+	}
+}

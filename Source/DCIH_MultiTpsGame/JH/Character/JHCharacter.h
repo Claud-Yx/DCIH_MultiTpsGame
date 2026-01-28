@@ -20,7 +20,6 @@ class DCIH_MULTITPSGAME_API AJHCharacter
 	public ACharacter,
 	public IHealthProviderInterface,
 	public IMagazineInterface
-	//public IWeaponPickUpInterface
 {
 	GENERATED_BODY()
 

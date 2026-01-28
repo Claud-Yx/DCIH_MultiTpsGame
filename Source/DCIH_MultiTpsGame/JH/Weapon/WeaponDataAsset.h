@@ -39,7 +39,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon|Spawn")
 	TSubclassOf<AActor> WeaponClass;
 
-	// ====== ¿ùµå¿¡ ¶³¾îÁø ¸ð½À ======
+	// ====== ï¿½ï¿½ï¿½å¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ======
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon|Pickup")
 	TObjectPtr<UStaticMesh> PickupMesh = nullptr;
 	

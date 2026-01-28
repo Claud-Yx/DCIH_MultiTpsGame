@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "JH/Interface/InteractTarget.h"
 #include "CombatComponent.generated.h"
 
 class AWeaponBase;
@@ -41,5 +42,6 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<AWeaponBase> SecondWeapon;
 
+protected:
 	virtual void OnInteract_Implementation(AActor* Interactor) override;
 };

@@ -74,11 +74,11 @@ public:
 
 	void PlayRollMontage();
 
-    //// ±¸¸£±â ½ÃÀÛ (Launch)
+    //// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (Launch)
     //UFUNCTION(BlueprintCallable)
     //void AnimNotify_Launch();
 
-    //// ±¸¸£±â Á¾·á
+    //// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     //UFUNCTION(BlueprintCallable)
     //void AnimNotify_LaunchStop();
 };

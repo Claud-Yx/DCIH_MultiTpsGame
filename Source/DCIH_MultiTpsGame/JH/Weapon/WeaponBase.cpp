@@ -2,6 +2,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/Character.h"
+#include "JH/Interface/InteractTarget.h"
 #include "JH/Weapon/WeaponDataAsset.h"
 
 // IMPLEMENT_PURE_VIRTUAL(AWeaponBase, Attack, );
@@ -37,13 +38,19 @@ UWeaponDataAsset* AWeaponBase::GetWeaponData() const
 
 void AWeaponBase::OnPickupSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    UCombatComponent* CombatComp = OtherActor->FindComponentByClass<UCombatComponent>();
-    if (CombatComp)
+    if (OtherActor->Implements<UInteractTarget>())
     {
-        // 2. ÄÄÆ÷³ÍÆ®¿¡°Ô "³ª¸¦ °¡Á®°¡¶ó"°í ¸í·É
-        // (´Ü, ÀÚµ¿ ÁÝ±âÀÌ¹Ç·Î ²Ë Ã¡À» ¶§ °­Á¦ ±³Ã¼´Â ÇÏÁö ¾Ê´Â °Ô ÀÏ¹ÝÀûÀÔ´Ï´Ù)
-        CombatComp->EquipWeapon(this);
+        IInteractTarget::Execute_OnInteract(this, this);
+        Destroy();
     }
+    //// UCombatComponent* CombatComp = OtherActor->FindComponentByClass<UCombatComponent>();
+    //if (CombatComp)
+    //{
+    //    // 2. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ "ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"ï¿½ï¿½ ï¿½ï¿½ï¿½
+    //    // (ï¿½ï¿½, ï¿½Úµï¿½ ï¿½Ý±ï¿½ï¿½Ì¹Ç·ï¿½ ï¿½ï¿½ Ã¡ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ ï¿½ï¿½ ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½)
+    //    CombatComp->EquipWeapon(this);
+    //}
+    
 }
 
 
