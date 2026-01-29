@@ -7,6 +7,20 @@
 
 class AWeaponBase;
 
+
+
+USTRUCT(BlueprintType)
+struct FWeaponContainer 
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	int32 MaxCount = 0;
+
+	UPROPERTY()
+	TArray<TObjectPtr<AWeaponBase>> Weapons;
+};
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class DCIH_MULTITPSGAME_API UCombatComponent : public UActorComponent, public IInteractTarget
 {
@@ -22,7 +36,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION()
-	void EquipWeapon(AWeaponBase* Weapon);
+	void EquipWeapon(AWeaponBase* Weapon, FName SocketName);
 
 	UFUNCTION()
 	void SwapWeapon();
@@ -33,14 +47,13 @@ public:
 
 	void PickUpWeapon(AWeaponBase* NewWeapon);
 
+
+	UPROPERTY()
+	TMap<EWeaponCategory, FWeaponContainer> WeaponContainers;
+
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<AWeaponBase> CurrentWeapon;
 
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<AWeaponBase> FirstWeapon;
-
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<AWeaponBase> SecondWeapon;
 
 protected:
 	virtual void OnInteract_Implementation(AActor* Interactor) override;

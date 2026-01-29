@@ -158,6 +158,9 @@ void AJHCharacter::InitializeCamera()
 
 
 
+
+
+
 void AJHCharacter::Move(const FVector2D& Axis)
 {
 	if (!Controller) return;
@@ -432,6 +435,11 @@ void AJHCharacter::UnProne()
 
 	// CurrentState = ECharacterState::Idle;
 }
+
+
+
+
+
 
 
 void AJHCharacter::SetState(ECharacterState NewState)

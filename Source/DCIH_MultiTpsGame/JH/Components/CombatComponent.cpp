@@ -13,6 +13,15 @@ void UCombatComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	WeaponContainers.Add(
+		EWeaponCategory::Ranged,
+		FWeaponContainer{ 2 }
+	);
+	WeaponContainers.Add(
+		EWeaponCategory::Melee,
+		FWeaponContainer{ 1 }
+	);
+
 }
 
 
@@ -22,7 +31,7 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 }
 
-void UCombatComponent::EquipWeapon(AWeaponBase* Weapon)
+void UCombatComponent::EquipWeapon(AWeaponBase* Weapon, FName SocketName)
 {
 	ACharacter* OwnerCharacter = Cast<ACharacter>(GetOwner());
 	if (!OwnerCharacter) return;
@@ -49,9 +58,9 @@ void UCombatComponent::EquipWeapon(AWeaponBase* Weapon)
 	//		// FName("WeaponSocket")
 	//	);
 
-		CurrentWeapon = Weapon;
+	CurrentWeapon = Weapon;
 	// }
-	
+
 	// CurrentWeapon = Weapon;
 
 }
@@ -60,7 +69,7 @@ void UCombatComponent::SwapWeapon()
 {
 	if (FirstWeapon && SecondWeapon)
 	{
-		CurrentWeapon == FirstWeapon ? 
+		CurrentWeapon == FirstWeapon ?
 			CurrentWeapon = SecondWeapon : CurrentWeapon = FirstWeapon;
 	}
 
@@ -73,31 +82,41 @@ void UCombatComponent::DropCurrentWeapon()
 
 void UCombatComponent::PickUpWeapon(AWeaponBase* NewWeapon)
 {
-	UE_LOG(LogTemp, Warning, TEXT("PickUpWeapon"));
-
 	// if (NewWeapon == FirstWeapon || NewWeapon == SecondWeapon) return;
 
-	if (!FirstWeapon)
+	EWeaponCategory Category = NewWeapon->GetWeaponData()->Category;
+
+	FWeaponContainer& Container = WeaponContainers[Category];
+
+	if (Container.Weapons.Num() >= Container.MaxCount)
 	{
-		FirstWeapon = NewWeapon;
-		EquipWeapon(FirstWeapon);
+		if (CurrentWeapon && CurrentWeapon->GetWeaponData()->Category == Category)
+		{
+			Container.Weapons.Remove(CurrentWeapon);
+		}
+		else 
+		{
+			return;
+		}
 	}
-	else if (!SecondWeapon)
+
+	Container.Weapons.Add(NewWeapon);
+
+	if (!CurrentWeapon)
 	{
-		SecondWeapon = NewWeapon;
-		EquipWeapon(SecondWeapon);
+		CurrentWeapon = NewWeapon;
+		EquipWeapon(NewWeapon, NewWeapon->GetWeaponData()->HandSocket);
 	}
 	else
 	{
-		DropCurrentWeapon();
-		PickUpWeapon(NewWeapon);
+		EquipWeapon(NewWeapon, NewWeapon->GetWeaponData()->HolsterSocket);
 	}
 }
 
 void UCombatComponent::OnInteract_Implementation(AActor* Interactor)
 {
 	AWeaponBase* NewWeapon = Cast<AWeaponBase>(Interactor);
-	if (NewWeapon) 
+	if (NewWeapon)
 	{
 		PickUpWeapon(NewWeapon);
 	}

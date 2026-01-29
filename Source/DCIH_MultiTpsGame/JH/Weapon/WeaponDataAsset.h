@@ -34,7 +34,10 @@ class DCIH_MULTITPSGAME_API UWeaponDataAsset : public UPrimaryDataAsset
 public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon|Info")
-	EWeaponType WeaponType;
+	EWeaponCategory Category;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon|Info")
+	EWeaponType Type;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon|Spawn")
 	TSubclassOf<AActor> WeaponClass;
@@ -48,4 +51,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	FName HolsterSocket;
+
+	UPROPERTY(EditDefaultsOnly)
+	
 };
