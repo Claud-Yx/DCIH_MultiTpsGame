@@ -27,7 +27,9 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "JH/Weapon/WeaponDataAsset.h"
-#include "JH/Components/CombatComponent.h"
+#include "JH/Components/WeaponManagerComponent.h"
+
+// #include "JH/Components/CombatComponent.h"
 
 AJHCharacter::AJHCharacter()
 {
@@ -38,7 +40,8 @@ AJHCharacter::AJHCharacter()
 
 	HealthComp = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComp"));
 	StaminaComp = CreateDefaultSubobject<UStaminaComponent>(TEXT("StaminaComp"));
-	CombatComp = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComp"));
+	WeaponManagerComp = CreateDefaultSubobject<UWeaponManagerComponent>(TEXT("WeaponManagerComp"));
+	// CombatComp = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComp"));
 
 	WalkSpeed = 400.f;
 	SprintSpeed = 700.f;

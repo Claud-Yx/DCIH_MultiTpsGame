@@ -1,30 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "JH/Enum/E_WeaponTypes.h"
 #include "WeaponDataAsset.generated.h"
 
-UENUM(BlueprintType)
-enum class EWeaponCategory : uint8
-{
-	Ranged UMETA(DisplayName = "Ranged"),
-	Melee  UMETA(DisplayName = "Melee")
-};
 
-UENUM(BlueprintType)
-enum class EWeaponType : uint8
-{
-	Rifle         UMETA(DisplayName = "Rifle"),
-	Shotgun       UMETA(DisplayName = "Shotgun"),
-	Sniper        UMETA(DisplayName = "Sniper"),
-	RocketLauncher UMETA(DisplayName = "RocketLauncher"),
-
-	Bayonet       UMETA(DisplayName = "Bayonet"),
-	DoubleSword   UMETA(DisplayName = "DoubleSword"),
-	Dagger        UMETA(DisplayName = "Dagger")
-};
 
 UCLASS(BlueprintType)
 class DCIH_MULTITPSGAME_API UWeaponDataAsset : public UPrimaryDataAsset
@@ -42,9 +23,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon|Spawn")
 	TSubclassOf<AActor> WeaponClass;
 
-	// ====== ���忡 ������ ��� ======
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon|Pickup")
-	TObjectPtr<UStaticMesh> PickupMesh = nullptr;
+	// UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon|Pickup")
+	// TObjectPtr<UStaticMesh> PickupMesh = nullptr;
 	
 	UPROPERTY(EditDefaultsOnly)
 	FName HandSocket;
@@ -52,6 +32,5 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	FName HolsterSocket;
 
-	UPROPERTY(EditDefaultsOnly)
 	
 };

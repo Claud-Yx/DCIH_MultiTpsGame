@@ -269,5 +269,5 @@ private:
 	TObjectPtr<class UStaminaComponent> StaminaComp;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UCombatComponent> CombatComp;
+	TObjectPtr<class UWeaponManagerComponent> WeaponManagerComp;
 };

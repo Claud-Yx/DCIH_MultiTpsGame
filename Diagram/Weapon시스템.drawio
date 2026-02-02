@@ -1,6 +1,6 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.0.4 Chrome/128.0.6613.186 Electron/32.2.5 Safari/537.36" version="26.0.4">
   <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
-    <mxGraphModel dx="420" dy="3065" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="496" dy="3190" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-0" />
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-1" parent="WIyWlLk6GJQsqaUBKTNV-0" />
@@ -198,13 +198,55 @@
         <mxCell id="1fPOJgtBlt0SAxxjrBAq-140" value="CombatComponent" style="swimlane;whiteSpace=wrap;html=1;startSize=23;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1fPOJgtBlt0SAxxjrBAq-137" vertex="1">
           <mxGeometry x="30" y="150" width="140" height="130" as="geometry" />
         </mxCell>
-        <mxCell id="0zUDOuqg119lopsCjVfB-0" value="PickUpInterface" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+        <mxCell id="0zUDOuqg119lopsCjVfB-0" value="PickUpInterface" style="rounded=1;whiteSpace=wrap;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
           <mxGeometry x="2220" y="-860" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="0zUDOuqg119lopsCjVfB-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="1fPOJgtBlt0SAxxjrBAq-140" target="0zUDOuqg119lopsCjVfB-0">
+        <mxCell id="0zUDOuqg119lopsCjVfB-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="1fPOJgtBlt0SAxxjrBAq-140" target="0zUDOuqg119lopsCjVfB-0" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="0zUDOuqg119lopsCjVfB-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="1fPOJgtBlt0SAxxjrBAq-124" target="0zUDOuqg119lopsCjVfB-0">
+        <mxCell id="0zUDOuqg119lopsCjVfB-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="1fPOJgtBlt0SAxxjrBAq-124" target="0zUDOuqg119lopsCjVfB-0" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="bAeryA355tWf0bQ4sySU-17" value="" style="swimlane;startSize=0;fillColor=#ffe6cc;strokeColor=#d79b00;strokeWidth=5;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="2760" y="-1200" width="210" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="bAeryA355tWf0bQ4sySU-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="bAeryA355tWf0bQ4sySU-17" source="bAeryA355tWf0bQ4sySU-19" target="bAeryA355tWf0bQ4sySU-20" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="bAeryA355tWf0bQ4sySU-19" value="Character" style="swimlane;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="bAeryA355tWf0bQ4sySU-17" vertex="1">
+          <mxGeometry x="40" y="10" width="120" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="bAeryA355tWf0bQ4sySU-20" value="WeaponManagerComp" style="swimlane;whiteSpace=wrap;html=1;startSize=23;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="bAeryA355tWf0bQ4sySU-17" vertex="1">
+          <mxGeometry x="20" y="150" width="160" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="bAeryA355tWf0bQ4sySU-26" value="PickUpWeapon" style="rounded=0;whiteSpace=wrap;html=1;" parent="bAeryA355tWf0bQ4sySU-20" vertex="1">
+          <mxGeometry x="28.32" y="80" width="110" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="bAeryA355tWf0bQ4sySU-31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="bAeryA355tWf0bQ4sySU-22" target="bAeryA355tWf0bQ4sySU-28" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="bAeryA355tWf0bQ4sySU-22" value="WeaponBase" style="swimlane;whiteSpace=wrap;html=1;startSize=23;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="2801.6800000000003" y="-840" width="126.63999999999987" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="bAeryA355tWf0bQ4sySU-24" value="OnBeginOverlap" style="whiteSpace=wrap;html=1;" parent="bAeryA355tWf0bQ4sySU-22" vertex="1">
+          <mxGeometry x="9.959999999999999" y="30" width="103.36" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="bAeryA355tWf0bQ4sySU-28" value="WeaponData" style="swimlane;whiteSpace=wrap;html=1;startSize=20;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="2675.04" y="-670" width="126.64" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="bAeryA355tWf0bQ4sySU-35" value="&lt;span style=&quot;text-wrap: wrap;&quot;&gt;WeaponCategory&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=default;fillColor=none;perimeterSpacing=3;rounded=1;arcSize=50;" parent="bAeryA355tWf0bQ4sySU-28" vertex="1">
+          <mxGeometry x="3.3200000000001637" y="40" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="bAeryA355tWf0bQ4sySU-38" value="&lt;span style=&quot;text-wrap: wrap;&quot;&gt;WeaponType&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=default;fillColor=none;perimeterSpacing=3;rounded=1;arcSize=50;" parent="bAeryA355tWf0bQ4sySU-28" vertex="1">
+          <mxGeometry x="18.320000000000164" y="79.5" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="bAeryA355tWf0bQ4sySU-39" value="&lt;span style=&quot;text-wrap: wrap;&quot;&gt;HandSocket&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=default;fillColor=none;perimeterSpacing=3;rounded=1;arcSize=50;" parent="bAeryA355tWf0bQ4sySU-28" vertex="1">
+          <mxGeometry x="18.320000000000164" y="120" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="bAeryA355tWf0bQ4sySU-40" value="&lt;span style=&quot;text-wrap: wrap;&quot;&gt;HolsterSocket&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=default;fillColor=none;perimeterSpacing=3;rounded=1;arcSize=50;" parent="bAeryA355tWf0bQ4sySU-28" vertex="1">
+          <mxGeometry x="13.320000000000164" y="160" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="dJ6tbDcLyS1wx05MkLq9-0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="bAeryA355tWf0bQ4sySU-24" target="bAeryA355tWf0bQ4sySU-26">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
       </root>

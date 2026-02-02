@@ -22,7 +22,7 @@ public:
 protected:
     virtual void BeginPlay() override;
 
-
+    
 	// ========== Components ==========
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     TObjectPtr<class USkeletalMeshComponent> MeshComp;

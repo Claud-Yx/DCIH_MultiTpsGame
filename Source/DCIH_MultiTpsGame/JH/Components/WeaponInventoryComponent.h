@@ -2,59 +2,50 @@
 //
 //#include "CoreMinimal.h"
 //#include "Components/ActorComponent.h"
-//#include "JH/Interface/InteractTarget.h"
-//#include "CombatComponent.generated.h"
+//#include "WeaponInventoryComponent.generated.h"
 //
+//class EWeaponCategory;
 //class AWeaponBase;
 //
-//
-//
 //USTRUCT(BlueprintType)
-//struct FWeaponContainer 
+//struct FWeaponSLot
 //{
 //	GENERATED_BODY()
-//
+//	
 //	UPROPERTY()
-//	int32 MaxCount = 0;
-//
+//	int32 MaxCount;
 //	UPROPERTY()
 //	TArray<TObjectPtr<AWeaponBase>> Weapons;
 //};
 //
 //UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-//class DCIH_MULTITPSGAME_API UCombatComponent : public UActorComponent, public IInteractTarget
+//class DCIH_MULTITPSGAME_API UWeaponInventoryComponent : public UActorComponent
 //{
 //	GENERATED_BODY()
 //
 //public:	
-//	UCombatComponent();
-//
+//	UWeaponInventoryComponent();
 //protected:
 //	virtual void BeginPlay() override;
-//
 //public:	
 //	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 //
 //	UFUNCTION()
-//	void EquipWeapon(AWeaponBase* Weapon, FName SocketName);
+//	void AddWeapon(AWeaponBase NewWeapon);
+//
+//	UFUNCTION()
+//	void EquipWeapon();
+//	
+//	UFUNCTION()
+//	void DropCurrentWeapon();
 //
 //	UFUNCTION()
 //	void SwapWeapon();
 //
-//	UFUNCTION()
-//	void DropCurrentWeapon();
-//
-//
-//	void PickUpWeapon(AWeaponBase* NewWeapon);
-//
+//private:
+//	UPROPERTY()
+//	TMap<EWeaponCategory, FWeaponSLot> WeaponSlots;
 //
 //	UPROPERTY()
-//	TMap<EWeaponCategory, FWeaponContainer> WeaponContainers;
-//
-//	UPROPERTY(VisibleAnywhere)
 //	TObjectPtr<AWeaponBase> CurrentWeapon;
-//
-//
-//protected:
-//	virtual void OnInteract_Implementation(AActor* Interactor) override;
 //};

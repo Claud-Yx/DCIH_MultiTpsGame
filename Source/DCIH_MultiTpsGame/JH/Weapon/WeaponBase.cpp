@@ -4,7 +4,7 @@
 #include "GameFramework/Character.h"
 #include "JH/Interface/InteractTarget.h"
 #include "JH/Weapon/WeaponDataAsset.h"
-#include "JH/Components/CombatComponent.h"
+#include "JH/Components/WeaponManagerComponent.h"
 
 // IMPLEMENT_PURE_VIRTUAL(AWeaponBase, Attack, );
 
@@ -45,10 +45,10 @@ UWeaponDataAsset* AWeaponBase::GetWeaponData() const
 void AWeaponBase::OnPickupSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 
-    UCombatComponent* CombatComp = OtherActor->FindComponentByClass<UCombatComponent>();
-	if (CombatComp)
+    UWeaponManagerComponent* WeaponManagerComp = OtherActor->FindComponentByClass<UWeaponManagerComponent>();
+	if (WeaponManagerComp)
     {
-		CombatComp->PickUpWeapon(this);
+        WeaponManagerComp->PickUpWeapon(this);
         // Destroy();
     }
     //// UCombatComponent* CombatComp = OtherActor->FindComponentByClass<UCombatComponent>();
