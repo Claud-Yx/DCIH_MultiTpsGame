@@ -11,22 +11,16 @@ UWeaponManagerComponent::UWeaponManagerComponent()
 
 	WeaponSlots[0].MaxCount = 2;
 	WeaponSlots[1].MaxCount = 1;
-
 }
-
 
 void UWeaponManagerComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-
 }
-
 
 void UWeaponManagerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
 }
 
 void UWeaponManagerComponent::PickUpWeapon(AWeaponBase* NewWeapon)
@@ -35,8 +29,8 @@ void UWeaponManagerComponent::PickUpWeapon(AWeaponBase* NewWeapon)
 
 	AttachToSocket(NewWeapon, NewWeapon->GetWeaponData()->HolsterSocket);
 
-
 	UE_LOG(LogTemp, Warning, TEXT("Picked up weapon: %s"), *NewWeapon->GetName());
+	
 	//int32 CategoryIndex = (NewWeapon->GetWeaponData()->WeaponCategory == EWeaponType::Ranged) ? 0 : 1;
 	//FWeaponSlot& TargetSlot = WeaponSlots[CategoryIndex];
 
@@ -58,7 +52,6 @@ void UWeaponManagerComponent::PickUpWeapon(AWeaponBase* NewWeapon)
 
 void UWeaponManagerComponent::AttachToSocket(AWeaponBase* Weapon, const FName& SocketName)
 {
-
 	UE_LOG(LogTemp, Warning, TEXT("Attaching weapon: %s to socket: %s"), *Weapon->GetName(), *SocketName.ToString());
 	AActor* Owner = GetOwner();
 	// if (!Owner||!CurrentWeapon) return;
