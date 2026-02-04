@@ -5,7 +5,6 @@
 #include "WeaponManagerComponent.generated.h"
 
 
-
 class AWeaponBase;
 
 
@@ -26,36 +25,31 @@ UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class DCIH_MULTITPSGAME_API UWeaponManagerComponent : public UActorComponent
 {
 	GENERATED_BODY()
+
 public:	
 	UWeaponManagerComponent();
 
-	
-	
-
-
-
-
-
-
-
-protected:
-	virtual void BeginPlay() override;
-public:	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
+	
 	void PickUpWeapon(class AWeaponBase* NewWeapon);
 
 	void DropCurrentWeapon();
 
 	void SwapWeapon();
+	
+protected:
+	virtual void BeginPlay() override;
 
 private:
+	void AttachToSocket(AWeaponBase* Weapon,const FName& SocketName);
 	UPROPERTY(VisibleAnywhere)
+
 	TArray<FWeaponSlot> WeaponSlots;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<AWeaponBase> CurrentWeapon;
 
-	void AttachToSocket(AWeaponBase* Weapon,const FName& SocketName);
-
+	static constexpr int32 MAX_WEAPON_SLOT{ 0 };
+	static constexpr int32 RANGED_WEAPON{ 0 };
+	static constexpr int32 MELEE_WEAPON{ 1 };
 };

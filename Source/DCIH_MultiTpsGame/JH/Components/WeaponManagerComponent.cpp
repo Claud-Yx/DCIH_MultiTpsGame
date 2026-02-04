@@ -1,16 +1,17 @@
 #include "JH/Components/WeaponManagerComponent.h"
 #include "JH/Weapon/WeaponBase.h"
-#include"JH/Weapon/WeaponDataAsset.h"
+#include "JH/Enum/E_WeaponTypes.h"
+#include "JH/Weapon/WeaponDataAsset.h"
 
 UWeaponManagerComponent::UWeaponManagerComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
 	// Ranged / Melee
-	WeaponSlots.SetNum(2);
+	WeaponSlots.SetNum(MAX_WEAPON_SLOT);
 
-	WeaponSlots[0].MaxCount = 2;
-	WeaponSlots[1].MaxCount = 1;
+	WeaponSlots[RANGED_WEAPON].MaxCount = 2;
+	WeaponSlots[MELEE_WEAPON].MaxCount = 1;
 }
 
 void UWeaponManagerComponent::BeginPlay()
@@ -25,34 +26,48 @@ void UWeaponManagerComponent::TickComponent(float DeltaTime, ELevelTick TickType
 
 void UWeaponManagerComponent::PickUpWeapon(AWeaponBase* NewWeapon)
 {
-	if (!NewWeapon || !NewWeapon->GetWeaponData()) return;
+    if (!NewWeapon || !NewWeapon->GetWeaponData())
+    {
+        UE_LOG(LogTemp, Error, TEXT("PickUpWeapon: NewWeapon or Data is Null!"));
+        return;
+    }
 
-	AttachToSocket(NewWeapon, NewWeapon->GetWeaponData()->HolsterSocket);
+    const EWeaponCategory Category = NewWeapon->GetWeaponData()->Category;
 
-	UE_LOG(LogTemp, Warning, TEXT("Picked up weapon: %s"), *NewWeapon->GetName());
-	
-	//int32 CategoryIndex = (NewWeapon->GetWeaponData()->WeaponCategory == EWeaponType::Ranged) ? 0 : 1;
-	//FWeaponSlot& TargetSlot = WeaponSlots[CategoryIndex];
+    const int32 TargetIndex = (Category == EWeaponCategory::Ranged) ? RANGED_WEAPON : MELEE_WEAPON;
+    FWeaponSlot& TargetSlot = WeaponSlots[TargetIndex];
 
-	//if (TargetSlot.Weapons.Num() < TargetSlot.MaxCount)
-	//{
-	//	TargetSlot.Weapons.Add(NewWeapon);
+    if (TargetSlot.Weapons.Num() >= TargetSlot.MaxCount)
+    {
+        return;
+    }
 
-	//	if (!CurrentWeapon)
-	//	{
-	//		CurrentWeapon = NewWeapon;
-	//		AttachToSocket(NewWeapon, NewWeapon->GetWeaponData()->HandSocket);
-	//	}
-	//	else
-	//	{
-	//		AttachToSocket(NewWeapon, NewWeapon->GetWeaponData()->HolsterSocket);
-	//	}
-	//}
+    TargetSlot.Weapons.Add(NewWeapon);
+    NewWeapon->SetOwner(GetOwner());
+
+    if (!CurrentWeapon)
+    {
+        CurrentWeapon = NewWeapon;
+        AttachToSocket(NewWeapon, NewWeapon->GetWeaponData()->HandSocket);
+    }
+    else
+    {
+        AttachToSocket(NewWeapon, NewWeapon->GetWeaponData()->HolsterSocket);
+    }
+
+    NewWeapon->SetActorEnableCollision(false);
+}
+
+void UWeaponManagerComponent::DropCurrentWeapon()
+{
+}
+
+void UWeaponManagerComponent::SwapWeapon()
+{
 }
 
 void UWeaponManagerComponent::AttachToSocket(AWeaponBase* Weapon, const FName& SocketName)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Attaching weapon: %s to socket: %s"), *Weapon->GetName(), *SocketName.ToString());
 	AActor* Owner = GetOwner();
 	// if (!Owner||!CurrentWeapon) return;
 
