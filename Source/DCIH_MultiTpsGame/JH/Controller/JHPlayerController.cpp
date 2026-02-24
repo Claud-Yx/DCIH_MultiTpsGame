@@ -131,6 +131,16 @@ void AJHPlayerController::SetupInputComponent()
 		{
 			EIC->BindAction(IA_Prone, ETriggerEvent::Completed, this, &AJHPlayerController::OnProneToggle);
 		}
+
+		if (ensureMsgf(IA_WeaponChange_1, TEXT("IA_Prone not assigned")))
+		{
+			EIC->BindAction(IA_WeaponChange_1, ETriggerEvent::Completed, this, &AJHPlayerController::OnWeaponChange1);
+		}
+		if (ensureMsgf(IA_WeaponChange_2, TEXT("IA_Prone not assigned")))
+		{
+			EIC->BindAction(IA_WeaponChange_2, ETriggerEvent::Completed, this, &AJHPlayerController::OnWeaponChange2);
+		}
+
 	}
 }
 
@@ -244,4 +254,14 @@ void AJHPlayerController::OnProneToggle()
 			CachedCharacter->Prone();
 		}
 	}
+}
+
+void AJHPlayerController::OnWeaponChange1()
+{
+	CachedCharacter->SwapWeapon(1);
+}
+
+void AJHPlayerController::OnWeaponChange2()
+{
+	CachedCharacter->SwapWeapon(2);
 }

@@ -439,6 +439,10 @@ void AJHCharacter::UnProne()
 	// CurrentState = ECharacterState::Idle;
 }
 
+void AJHCharacter::SwapWeapon(int WeaponNum)
+{
+	WeaponManagerComp->SwapWeapon(WeaponNum);
+}
 
 
 

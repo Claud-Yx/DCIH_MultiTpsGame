@@ -40,6 +40,9 @@ private:
 	void OnRoll();
     void OnProneToggle();
 
+	void OnWeaponChange1();
+	void OnWeaponChange2();
+
 
 public:
     float MousePitch = 0.f;
@@ -89,6 +92,12 @@ private:
 
     UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> IA_Prone;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> IA_WeaponChange_1;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> IA_WeaponChange_2;
 
     void HandleWeaponEquipped(class AWeaponBase* Weapon);
 

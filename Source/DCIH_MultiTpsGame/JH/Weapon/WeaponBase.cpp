@@ -24,7 +24,7 @@ AWeaponBase::AWeaponBase()
    CollisionComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
    WeaponState = EWeaponState::UnEquipped;
-   WeaponSocketName = FName("WeaponSocket");
+   // WeaponSocketName = FName("WeaponSocket");
 }
 
 void AWeaponBase::BeginPlay()
@@ -51,16 +51,8 @@ void AWeaponBase::OnPickupSphereOverlap(UPrimitiveComponent* OverlappedComponent
         WeaponManagerComp->PickUpWeapon(this);
         // Destroy();
     }
-    //// UCombatComponent* CombatComp = OtherActor->FindComponentByClass<UCombatComponent>();
-    //if (CombatComp)
-    //{
-    //    // 2. ������Ʈ���� "���� ��������"�� ���
-    //    // (��, �ڵ� �ݱ��̹Ƿ� �� á�� �� ���� ��ü�� ���� �ʴ� �� �Ϲ����Դϴ�)
-    //    CombatComp->EquipWeapon(this);
-    //}
     
 }
-
 
 void AWeaponBase::OnEquipped(ACharacter* Character)
 {
@@ -82,7 +74,6 @@ void AWeaponBase::OnEquipped(ACharacter* Character)
 
     // SetActorTickEnabled(true);
 }
-
 void AWeaponBase::AttachWeaponToSocket(const FName& SocketName)
 {
     if (!OwnerCharacter.Get() || !MeshComp) return;
@@ -97,19 +88,19 @@ void AWeaponBase::AttachWeaponToSocket(const FName& SocketName)
     AttachToComponent(OwnerCharacter->GetMesh(), AttachRules, SocketName);
 }
 
-// void AWeaponBase::SetOwner(AActor* NewOwner)
-// {
-//     Super::SetOwner(NewOwner);
-// 
-//     if (APawn* P = Cast<APawn>(NewOwner))
-//     {
-//         OwnerCharacter = P;
-//     }
-//     else
-//     {
-//         OwnerCharacter.Reset();
-//     }
-// }
+ void AWeaponBase::SetOwner(AActor* NewOwner)
+ {
+     Super::SetOwner(NewOwner);
+ 
+     if (ACharacter* C = Cast<ACharacter>(NewOwner))
+     {
+         OwnerCharacter = C;
+     }
+     else
+     {
+         OwnerCharacter.Reset();
+     }
+ }
 
 void AWeaponBase::OnUnEquipped()
 {

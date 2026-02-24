@@ -129,6 +129,9 @@ public:	// Input Action
 	UFUNCTION(BlueprintCallable, Category = "Input | Prone")
 	void UnProne();
 
+	UFUNCTION(BlueprintCallable, Category = "Input | ChangeWeapon")
+	void SwapWeapon(int WeaponNum);
+
 	//UFUNCTION()
 	//void PickUpWeapon_Implementation(class UWeaponDataAsset *WeaponDataAsset);
 

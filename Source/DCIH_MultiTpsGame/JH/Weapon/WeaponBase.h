@@ -3,7 +3,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "JH/Enum/E_WeaponState.h"
-#include "JH/Interface/InteractTarget.h"
 #include "WeaponBase.generated.h"
 
 class USkeletalMeshComponent;
@@ -12,29 +11,29 @@ class UWeaponDataAsset;
 // ============================================
 
 UCLASS(Abstract)
-class DCIH_MULTITPSGAME_API AWeaponBase : public AActor, public IInteractTarget
+class DCIH_MULTITPSGAME_API AWeaponBase : public AActor
 {
     GENERATED_BODY()
 
 public:
     AWeaponBase();
 
-protected:
-    virtual void BeginPlay() override;
+    virtual void Attack() PURE_VIRTUAL(AWeaponBase::Attack, );
 
+    UFUNCTION(BlueprintPure, Category = "Data")
+    UWeaponDataAsset* GetWeaponData() const;
     
-	// ========== Components ==========
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-    TObjectPtr<class USkeletalMeshComponent> MeshComp;
-public:
-	UFUNCTION(BlueprintPure, Category = "Components")
+    UFUNCTION(BlueprintPure, Category = "Components")
     FORCEINLINE USkeletalMeshComponent* GetMesh() const { return MeshComp; }
 
-    UWeaponDataAsset* GetWeaponData() const;
+    UFUNCTION(BlueprintPure, Category = "State")
+    FORCEINLINE EWeaponState GetWeaponState() const { return WeaponState; }
+
+    UFUNCTION(BlueprintCallable, Category = "Weapon|State")
+    void SetWeaponState(EWeaponState NewState) { WeaponState = NewState; }
 
 protected:
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-    TObjectPtr<class USphereComponent> CollisionComp;
+    virtual void BeginPlay() override;
 
     UFUNCTION()
     void OnPickupSphereOverlap(
@@ -45,29 +44,36 @@ protected:
         bool bFromSweep,
         const FHitResult& SweepResult
     );
+	// ========== Components ==========
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+    TObjectPtr<class USkeletalMeshComponent> MeshComp;
 
-	// ========== State ==========
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+    TObjectPtr<class USphereComponent> CollisionComp;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    TObjectPtr<UWeaponDataAsset> WeaponData;
+
+    UPROPERTY(BlueprintReadOnly, Category = "Owner")
+    TWeakObjectPtr<class ACharacter> OwnerCharacter;
+
+    UPROPERTY(BlueprintReadOnly, Category = "Owner")
+    TWeakObjectPtr<class APlayerController> OwnerController;
+
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State")
     EWeaponState WeaponState;
 
-public:
-    UFUNCTION(BlueprintPure, Category = "State")
-    FORCEINLINE EWeaponState GetWeaponState() const { return WeaponState; }
-    void SetWeaponState(EWeaponState newState) { WeaponState = newState; }
 
-	// ========== Owners ==========
-protected:
-	UPROPERTY()
-	TWeakObjectPtr<class ACharacter> OwnerCharacter;
-
-	UPROPERTY()
-	TWeakObjectPtr<class APlayerController> OwnerController;
-
-
-
+	// ========== State ==========
+//public:
+//
+//    void SetWeaponState(EWeaponState newState) { WeaponState = newState; }
+//
+//	// ========== Owners ==========
+//protected:
 	// ========== Functions ==========
 public:
-    // ĳ���Ϳ��� ó��
+//    // ĳ���Ϳ��� ó��
     UFUNCTION(BlueprintCallable, Category = "Weapon")
     virtual void OnEquipped(ACharacter* Character);
 
@@ -76,27 +82,17 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "Weapon")
     virtual void OnDropped();
-
     //UFUNCTION(BlueprintCallable, Category = "Weapon")
     //virtual void Attack();
-    virtual void Attack() PURE_VIRTUAL(AWeaponBase::Attack, );
-
-
-
-	// ========== Attach&Detach ==========
+	//  ========== Attach&Detach ==========
 protected:
     void AttachWeaponToSocket(const FName& SocketName);
     void DetachWeapon();
     void EnablePhysics(bool bEnable);
-
     UPROPERTY()
     FName WeaponSocketName;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    TObjectPtr<UWeaponDataAsset> WeaponData;
-
-    // virtual void SetOwner(AActor* NewOwner) override;
-
-    // virtual void Attack() {unimplemented();}
+public:
+     virtual void SetOwner(AActor* NewOwner) override;
+     // virtual void Attack() {unimplemented();}
 
 };

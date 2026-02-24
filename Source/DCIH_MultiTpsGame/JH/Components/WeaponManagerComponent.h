@@ -35,7 +35,8 @@ public:
 
 	void DropCurrentWeapon();
 
-	void SwapWeapon();
+	void SwapWeapon(int32 SlotNum);
+
 	
 protected:
 	virtual void BeginPlay() override;
@@ -49,7 +50,9 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<AWeaponBase> CurrentWeapon;
 
-	static constexpr int32 MAX_WEAPON_SLOT{ 0 };
+
+
+	static constexpr int32 MAX_WEAPON_SLOT{ 2 };
 	static constexpr int32 RANGED_WEAPON{ 0 };
 	static constexpr int32 MELEE_WEAPON{ 1 };
 };
