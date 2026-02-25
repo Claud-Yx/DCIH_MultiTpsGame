@@ -4,6 +4,7 @@
 #include "Animation/AnimInstance.h"
 #include "JH/Character/JHCharacter.h"
 #include "JH/Enum/E_TurnInPlace.h"
+#include "JH/Enum/E_WeaponTypes.h"
 #include "KJHCharacterAnim.generated.h"
 
 class AJHCharacter;
@@ -65,6 +66,9 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "PlayerAnim")
     FTransform LeftHandTransform;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WeaponType")
+    EWeaponType CurrentWeaponCategory;
+
 	FTransform GetLeftHandTransform() const { return LeftHandTransform; }
 
 public:
@@ -74,6 +78,10 @@ public:
 
 	void PlayRollMontage();
 
+    EWeaponType GetEquippedWeaponCategorys() const
+    {
+        return owningCharacter.Get()->GetCurrentWeaponCategory();
+    }
     //// ������ ���� (Launch)
     //UFUNCTION(BlueprintCallable)
     //void AnimNotify_Launch();

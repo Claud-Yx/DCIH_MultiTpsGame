@@ -62,6 +62,8 @@ void UKJHCharacterAnim::NativeUpdateAnimation(float DeltaSeconds)
 
 	TurningInPlace = owningCharacter->GetTurningInPlace();
 
+	CurrentWeaponType = GetEquippedWeaponType();
+
     // ȭ�� ���
     // FString DebugText = FString::Print(TEXT("Speed: %.2f, Direction: %.2f"), speed, direction);
     // UKismetSystemLibrary::PrintString(this, DebugText, true, true, FLinearColor::Yellow, 0.f);

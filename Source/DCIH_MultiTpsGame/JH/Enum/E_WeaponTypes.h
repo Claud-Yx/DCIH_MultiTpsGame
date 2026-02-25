@@ -5,6 +5,7 @@
 UENUM(BlueprintType)
 enum class EWeaponCategory : uint8
 {
+	None   UMETA(DisplayName = "None"),
 	Ranged UMETA(DisplayName = "Ranged"),
 	Melee  UMETA(DisplayName = "Melee")
 };

@@ -9,10 +9,12 @@
 #include "JH/Interface/MagazineInterface.h"
 #include"JH/Weapon/WeaponPickUpInterface.h"
 #include "JH/Interface/InteractTarget.h"
+#include "JH/Enum/E_WeaponTypes.h"
 
 #include "JHCharacter.generated.h"
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnWeaponEquipped, AWeaponBase*);
+class UWeaponManagerComponent;
 
 UCLASS()
 class DCIH_MULTITPSGAME_API AJHCharacter
@@ -76,6 +78,9 @@ public:	// Getter
 
 	UFUNCTION(BlueprintPure, Category = "Prone")
 	FORCEINLINE bool GetIsProne() { return bIsProne; };
+
+	EWeaponType GetCurrentWeaponCategory() const;
+
 
 
 
@@ -272,5 +277,8 @@ private:
 	TObjectPtr<class UStaminaComponent> StaminaComp;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UWeaponManagerComponent> WeaponManagerComp;
+	TObjectPtr<UWeaponManagerComponent> WeaponManagerComp;
+
+
+	
 };

@@ -660,6 +660,10 @@ void AJHCharacter::AddMagazine_Implementation()
 
 
 
+EWeaponType AJHCharacter::GetCurrentWeaponCategory() const
+{
+	return WeaponManagerComp->GetCurrentWeaponCategory();
+}
 
 
 
@@ -729,3 +733,4 @@ void AJHCharacter::InitializeWeapon()
 		}
 	}
 }
+

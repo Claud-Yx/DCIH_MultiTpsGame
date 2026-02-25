@@ -2,6 +2,9 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "JH/Weapon/WeaponDataAsset.h"
+#include "JH/Enum/E_WeaponTypes.h"
+#include "JH/Weapon/WeaponBase.h"
 #include "WeaponManagerComponent.generated.h"
 
 
@@ -37,6 +40,10 @@ public:
 
 	void SwapWeapon(int32 SlotNum);
 
+	FORCEINLINE EWeaponType GetCurrentWeaponCategory() const
+	{
+		return CurrentWeapon->GetWeaponData()->Category;
+	};
 	
 protected:
 	virtual void BeginPlay() override;
