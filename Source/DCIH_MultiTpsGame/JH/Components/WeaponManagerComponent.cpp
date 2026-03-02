@@ -17,6 +17,8 @@ UWeaponManagerComponent::UWeaponManagerComponent()
 void UWeaponManagerComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	//CurrentWeapon->GetWeaponData()->Category = EWeaponCategory::None;
 }
 
 void UWeaponManagerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -36,6 +38,8 @@ void UWeaponManagerComponent::PickUpWeapon(AWeaponBase* NewWeapon)
 
     const int32 TargetIndex = (Category == EWeaponCategory::Ranged) ? RANGED_WEAPON : MELEE_WEAPON;
     FWeaponSlot& TargetSlot = WeaponSlots[TargetIndex];
+
+
 
     if (TargetSlot.Weapons.Num() >= TargetSlot.MaxCount)
     {
@@ -159,3 +163,12 @@ void UWeaponManagerComponent::AttachToSocket(AWeaponBase* Weapon, const FName& S
 	FAttachmentTransformRules Rules(EAttachmentRule::SnapToTarget, true);
 	Weapon->AttachToComponent(OwnerMesh, Rules, SocketName);
 }
+
+EWeaponCategory UWeaponManagerComponent:: GetCurrentWeaponCategory() const
+{
+    if (!CurrentWeapon) 
+        return EWeaponCategory::None;
+    else {
+        return CurrentWeapon->GetWeaponData()->Category;
+    }
+};

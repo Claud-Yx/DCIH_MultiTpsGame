@@ -43,6 +43,8 @@ private:
 	void OnWeaponChange1();
 	void OnWeaponChange2();
 
+	void OnPickUp();
+
 
 public:
     float MousePitch = 0.f;
@@ -98,6 +100,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> IA_WeaponChange_2;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UInputAction> IA_PickUp;
 
     void HandleWeaponEquipped(class AWeaponBase* Weapon);
 

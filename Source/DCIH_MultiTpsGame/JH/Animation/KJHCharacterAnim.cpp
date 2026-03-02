@@ -42,19 +42,23 @@ void UKJHCharacterAnim::NativeUpdateAnimation(float DeltaSeconds)
 
     if (EquippedWeapon && EquippedWeapon->GetMesh())
     {
-        LeftHandTransform = EquippedWeapon->GetMesh()->GetSocketTransform(
+        LeftHandTransform = EquippedWeapon->GetMesh()->GetSocketTransform
+        (
             FName("LeftHandSocket"),
-            ERelativeTransformSpace::RTS_World);
+            ERelativeTransformSpace::RTS_World
+        );
 
         FVector OutPosition;
         FRotator OutRotation;
 
-        owningCharacter->GetMesh()->TransformToBoneSpace(
+        owningCharacter->GetMesh()->TransformToBoneSpace
+        (
             FName("RightHand"),
             LeftHandTransform.GetLocation(),
             FRotator::ZeroRotator,
             OutPosition,
-            OutRotation);
+            OutRotation
+        );
 
         LeftHandTransform.SetLocation(OutPosition);
         LeftHandTransform.SetRotation(FQuat(OutRotation));
@@ -62,8 +66,8 @@ void UKJHCharacterAnim::NativeUpdateAnimation(float DeltaSeconds)
 
 	TurningInPlace = owningCharacter->GetTurningInPlace();
 
-	CurrentWeaponType = GetEquippedWeaponType();
-
+    CurrentWeaponCategory = GetEquippedWeaponCategory();
+    
     // ȭ�� ���
     // FString DebugText = FString::Print(TEXT("Speed: %.2f, Direction: %.2f"), speed, direction);
     // UKismetSystemLibrary::PrintString(this, DebugText, true, true, FLinearColor::Yellow, 0.f);

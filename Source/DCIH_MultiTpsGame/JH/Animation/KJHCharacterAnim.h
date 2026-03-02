@@ -67,7 +67,7 @@ protected:
     FTransform LeftHandTransform;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WeaponType")
-    EWeaponType CurrentWeaponCategory;
+    EWeaponCategory CurrentWeaponCategory;
 
 	FTransform GetLeftHandTransform() const { return LeftHandTransform; }
 
@@ -78,14 +78,13 @@ public:
 
 	void PlayRollMontage();
 
-    EWeaponType GetEquippedWeaponCategorys() const
+    EWeaponCategory GetEquippedWeaponCategory() const
     {
         return owningCharacter.Get()->GetCurrentWeaponCategory();
     }
     //// ������ ���� (Launch)
     //UFUNCTION(BlueprintCallable)
     //void AnimNotify_Launch();
-
     //// ������ ����
     //UFUNCTION(BlueprintCallable)
     //void AnimNotify_LaunchStop();

@@ -140,6 +140,10 @@ void AJHPlayerController::SetupInputComponent()
 		{
 			EIC->BindAction(IA_WeaponChange_2, ETriggerEvent::Completed, this, &AJHPlayerController::OnWeaponChange2);
 		}
+		if (ensureMsgf(IA_PickUp, TEXT("IA_PickUp not assigned")))
+		{
+			EIC->BindAction(IA_PickUp, ETriggerEvent::Started, this, &AJHPlayerController::OnPickUp);
+		}
 
 	}
 }
@@ -264,4 +268,10 @@ void AJHPlayerController::OnWeaponChange1()
 void AJHPlayerController::OnWeaponChange2()
 {
 	CachedCharacter->SwapWeapon(2);
+}
+
+void AJHPlayerController::OnPickUp()
+{
+	CachedCharacter->PickUp();
+
 }

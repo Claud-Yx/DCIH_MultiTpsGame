@@ -79,7 +79,7 @@ public:	// Getter
 	UFUNCTION(BlueprintPure, Category = "Prone")
 	FORCEINLINE bool GetIsProne() { return bIsProne; };
 
-	EWeaponType GetCurrentWeaponCategory() const;
+	EWeaponCategory GetCurrentWeaponCategory() const;
 
 
 
@@ -137,6 +137,9 @@ public:	// Input Action
 	UFUNCTION(BlueprintCallable, Category = "Input | ChangeWeapon")
 	void SwapWeapon(int WeaponNum);
 
+	UFUNCTION(BlueprintCallable, Category = "Input | PickUp")
+	void PickUp();
+
 	//UFUNCTION()
 	//void PickUpWeapon_Implementation(class UWeaponDataAsset *WeaponDataAsset);
 
@@ -170,7 +173,10 @@ protected:	// Internal Logic
 
 	void TurnInPlace(float DeltaTime);
 
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
 
+	void UpdateCharacterOriented();
 
 protected:
 
@@ -279,6 +285,7 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UWeaponManagerComponent> WeaponManagerComp;
 
-
+	UPROPERTY()
+	class AWeaponBase* OverlappingWeapon;
 	
 };

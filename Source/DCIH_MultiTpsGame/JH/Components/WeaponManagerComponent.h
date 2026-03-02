@@ -7,6 +7,7 @@
 #include "JH/Weapon/WeaponBase.h"
 #include "WeaponManagerComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWeaponChanged);
 
 class AWeaponBase;
 
@@ -40,11 +41,12 @@ public:
 
 	void SwapWeapon(int32 SlotNum);
 
-	FORCEINLINE EWeaponType GetCurrentWeaponCategory() const
-	{
-		return CurrentWeapon->GetWeaponData()->Category;
-	};
+	EWeaponCategory GetCurrentWeaponCategory() const; 
 	
+public:
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnWeaponChanged OnWeaponChanged; 
+
 protected:
 	virtual void BeginPlay() override;
 

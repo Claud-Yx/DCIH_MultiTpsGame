@@ -39,18 +39,22 @@ void AWeaponBase::BeginPlay()
 
 UWeaponDataAsset* AWeaponBase::GetWeaponData() const
 {
-    return WeaponData;
+    if(WeaponData)
+        return WeaponData;
+    else {
+        return nullptr;
+    }
 }
 
 void AWeaponBase::OnPickupSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 
-    UWeaponManagerComponent* WeaponManagerComp = OtherActor->FindComponentByClass<UWeaponManagerComponent>();
-	if (WeaponManagerComp)
-    {
-        WeaponManagerComp->PickUpWeapon(this);
-        // Destroy();
-    }
+ //   UWeaponManagerComponent* WeaponManagerComp = OtherActor->FindComponentByClass<UWeaponManagerComponent>();
+	//if (WeaponManagerComp)
+ //   {
+ //       WeaponManagerComp->PickUpWeapon(this);
+ //       // Destroy();
+ //   }
     
 }
 

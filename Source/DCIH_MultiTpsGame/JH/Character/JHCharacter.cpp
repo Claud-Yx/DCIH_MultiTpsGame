@@ -90,6 +90,8 @@ void AJHCharacter::BeginPlay()
 	}
 
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+	
+	UpdateCharacterOriented();
 }
 
 void AJHCharacter::Tick(float DeltaTime)
@@ -97,6 +99,14 @@ void AJHCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	CalculateAimOffset(DeltaTime);
+
+	//if (WeaponManagerComp->GetCurrentWeaponCategory() == EWeaponCategory::None)
+	//{
+	//	GetCharacterMovement()->bOrientRotationToMovement = true;
+	//}
+	//else {
+	//	GetCharacterMovement()->bOrientRotationToMovement = false;
+	//}
 
 	if (CurrentState == ECharacterState::Running) 
 	{
@@ -135,7 +145,7 @@ void AJHCharacter::InitializeCharacter()
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	bUseControllerRotationYaw = true;   // ��Ʈ�ѷ� ȸ�� ���
-	GetCharacterMovement()->bOrientRotationToMovement = false; // �̵� �������� ȸ��
+	GetCharacterMovement()->bOrientRotationToMovement = true; // �̵� �������� ȸ��
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 540.f, 0.f);
 
 	ApplySpeed(WalkSpeed);
@@ -308,11 +318,13 @@ void AJHCharacter::CalculateAimOffset(float DeltaTime)
 	}
 
 	// if (Speed > 0.f || bIsInAir)
-	if(CurrentState == ECharacterState::Walking)
+	if(CurrentState == ECharacterState::Walking&&GetCurrentWeaponCategory()!=EWeaponCategory::None)
 	{
 		StartingAimRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
 		AO_Yaw = 0.f;
 		bUseControllerRotationYaw = true;
+		// 
+		// 
 		//GetCharacterMovement()->bOrientRotationToMovement = true; // �̵� �������� ȸ��
 	}
 	else if (CurrentState == ECharacterState::Running) 
@@ -444,6 +456,17 @@ void AJHCharacter::SwapWeapon(int WeaponNum)
 	WeaponManagerComp->SwapWeapon(WeaponNum);
 }
 
+void AJHCharacter::PickUp()
+{
+	if (OverlappingWeapon) 
+	{
+		WeaponManagerComp->PickUpWeapon(OverlappingWeapon);
+
+		OverlappingWeapon = nullptr;
+		UpdateCharacterOriented();
+	}
+}
+
 
 
 
@@ -519,6 +542,43 @@ void AJHCharacter::TurnInPlace(float DeltaTime)
 			AO_Yaw = 0.f;
 			InterpAO_Yaw = 0.f;
 		}
+	}
+}
+
+void AJHCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	Super::NotifyActorBeginOverlap(OtherActor);
+
+	if (AWeaponBase* Weapon = Cast<AWeaponBase>(OtherActor))
+	{
+		OverlappingWeapon = Weapon;
+	}
+}
+
+void AJHCharacter::NotifyActorEndOverlap(AActor* OtherActor)
+{
+	Super::NotifyActorEndOverlap(OtherActor);
+
+	if (OtherActor == OverlappingWeapon)
+	{
+		OverlappingWeapon = nullptr;
+	}
+}
+
+void AJHCharacter::UpdateCharacterOriented()
+{
+	if (GetCurrentWeaponCategory() == EWeaponCategory::None)
+	{
+		// 무기 없음: 이동 방향으로 캐릭터 회전
+		bUseControllerRotationYaw = false;
+		GetCharacterMovement()->bOrientRotationToMovement = true;
+
+	}
+	else
+	{
+		// 무기 있음: 컨트롤러(카메라) 방향에 고정
+		bUseControllerRotationYaw = true;
+		GetCharacterMovement()->bOrientRotationToMovement = false;
 	}
 }
 
@@ -660,7 +720,7 @@ void AJHCharacter::AddMagazine_Implementation()
 
 
 
-EWeaponType AJHCharacter::GetCurrentWeaponCategory() const
+EWeaponCategory AJHCharacter::GetCurrentWeaponCategory() const
 {
 	return WeaponManagerComp->GetCurrentWeaponCategory();
 }
