@@ -82,7 +82,7 @@ void AJHCharacter::BeginPlay()
 
 	StartingAimRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
 	
-	InitializeWeapon();
+	// SInitializeWeapon();
 
 	if (HealthComp)
 	{
@@ -342,11 +342,11 @@ void AJHCharacter::Attack()
 	auto anim = Cast<UKJHCharacterAnim>(GetMesh()->GetAnimInstance());
 	anim->PlayFireMontage();
 
-	if (EquippedWeapon)
+	if (auto CurWeapon = WeaponManagerComp->GetCurrentWeapon())
 	{
-		EquippedWeapon->Attack();
+		CurWeapon->Attack();
 
-		ChangeWeaponState(ECharacterWeaponState::Shooting);
+		// ChangeWeaponState(ECharacterWeaponState::Shooting);
 	}
 }
 
@@ -376,7 +376,7 @@ void AJHCharacter::Reload()
 		OnMagazineChanged.Broadcast(MagazineNum);
 
 		RangedWeapon->Reload();
-		ChangeWeaponState(ECharacterWeaponState::Reloading);
+		// ChangeWeaponState(ECharacterWeaponState::Reloading);
 
 	}
 	//if (EquippedWeapon)
@@ -453,14 +453,14 @@ void AJHCharacter::UnProne()
 
 void AJHCharacter::SwapWeapon(int WeaponNum)
 {
-	WeaponManagerComp->SwapWeapon(WeaponNum);
+	WeaponManagerComp->Swap(WeaponNum);
 }
 
 void AJHCharacter::PickUp()
 {
-	if (OverlappingWeapon) 
+	if (WeaponManagerComp&&OverlappingWeapon)
 	{
-		WeaponManagerComp->PickUpWeapon(OverlappingWeapon);
+		WeaponManagerComp->PickUp(OverlappingWeapon);
 
 		OverlappingWeapon = nullptr;
 		UpdateCharacterOriented();
@@ -726,6 +726,12 @@ EWeaponCategory AJHCharacter::GetCurrentWeaponCategory() const
 }
 
 
+AWeaponBase* AJHCharacter::GetCurrentWeapon()
+{
+	return WeaponManagerComp->GetCurrentWeapon();
+}
+
+
 
 
 
@@ -793,4 +799,3 @@ void AJHCharacter::InitializeWeapon()
 		}
 	}
 }
-

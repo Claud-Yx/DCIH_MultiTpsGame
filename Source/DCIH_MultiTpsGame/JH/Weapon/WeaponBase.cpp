@@ -27,6 +27,11 @@ AWeaponBase::AWeaponBase()
    // WeaponSocketName = FName("WeaponSocket");
 }
 
+void AWeaponBase::SetOwnerController(APlayerController* Controller)
+{
+    OwnerController = Controller;
+}
+
 void AWeaponBase::BeginPlay()
 {
     Super::BeginPlay();

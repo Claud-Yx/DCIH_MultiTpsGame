@@ -3,6 +3,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "JH/Components/WeaponManagerComponent.h"
 #include "JH/Weapon/WeaponBase.h"
 
 UKJHCharacterAnim::UKJHCharacterAnim()
@@ -35,14 +36,15 @@ void UKJHCharacterAnim::NativeUpdateAnimation(float DeltaSeconds)
 
     characterState = owningCharacter->GetState();
 
-	EquippedWeapon = owningCharacter->GetEquippedWeapon();
+
+    CurrentWeapon = owningCharacter->GetCurrentWeapon();
 
 	bIsCrouching = owningCharacter->GetIsCrouch();
 	bIsProning = owningCharacter->GetIsProne();
 
-    if (EquippedWeapon && EquippedWeapon->GetMesh())
+    if (CurrentWeapon && CurrentWeapon->GetMesh())
     {
-        LeftHandTransform = EquippedWeapon->GetMesh()->GetSocketTransform
+        LeftHandTransform = CurrentWeapon->GetMesh()->GetSocketTransform
         (
             FName("LeftHandSocket"),
             ERelativeTransformSpace::RTS_World

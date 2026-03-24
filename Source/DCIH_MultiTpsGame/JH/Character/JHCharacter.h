@@ -7,11 +7,13 @@
 #include "JH/UI/Interface/HealthProviderInterface.h"
 #include "JH/Delegates/HealthDelegate.h"//       ?
 #include "JH/Interface/MagazineInterface.h"
-#include"JH/Weapon/WeaponPickUpInterface.h"
+#include "JH/Weapon/WeaponPickUpInterface.h"
 #include "JH/Interface/InteractTarget.h"
 #include "JH/Enum/E_WeaponTypes.h"
 
 #include "JHCharacter.generated.h"
+
+class AWeaponBase;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnWeaponEquipped, AWeaponBase*);
 class UWeaponManagerComponent;
@@ -83,8 +85,10 @@ public:	// Getter
 
 
 
+	AWeaponBase* GetCurrentWeapon();
 
 
+	
 
 
 

@@ -32,6 +32,8 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Weapon|State")
     void SetWeaponState(EWeaponState NewState) { WeaponState = NewState; }
 
+    void SetOwnerController(class APlayerController* Controller);
+
 protected:
     virtual void BeginPlay() override;
 

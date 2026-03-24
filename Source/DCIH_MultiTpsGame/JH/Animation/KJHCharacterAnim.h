@@ -55,7 +55,7 @@ protected:
     UPROPERTY(EditAnywhere, Category = "Montage")
     TObjectPtr<class UAnimMontage> RollMontage;
 
-    TObjectPtr<class AWeaponBase> EquippedWeapon;
+    TObjectPtr<class AWeaponBase> CurrentWeapon;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Crouch")
 	bool bIsCrouching;
