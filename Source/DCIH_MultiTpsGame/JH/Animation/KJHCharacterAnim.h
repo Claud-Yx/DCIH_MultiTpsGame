@@ -78,10 +78,8 @@ public:
 
 	void PlayRollMontage();
 
-    EWeaponCategory GetEquippedWeaponCategory() const
-    {
-        return owningCharacter.Get()->GetCurrentWeaponCategory();
-    }
+    EWeaponCategory GetEquippedWeaponCategory() const;
+
     //// ������ ���� (Launch)
     //UFUNCTION(BlueprintCallable)
     //void AnimNotify_Launch();

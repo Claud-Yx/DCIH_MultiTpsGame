@@ -13,20 +13,6 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWeaponChanged);
 class AWeaponBase;
 
 
-//USTRUCT(BlueprintType)
-//struct FWeaponSlot
-//{
-//	GENERATED_BODY()
-//
-//	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-//	EWeaponCategory Category;
-//
-//	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-//	TObjectPtr<AWeaponBase> Weapon = nullptr;
-//
-//	bool IsEmpty() const { return Weapon == nullptr; }
-//};
-
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class DCIH_MULTITPSGAME_API UWeaponManagerComponent : public UActorComponent
@@ -39,6 +25,14 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
+	UFUNCTION(BlueprintPure, Category = "Weapon")
+	FORCEINLINE AWeaponBase* GetCurrentWeapon() const{return CurrentWeapon.Get();}
+
+	UFUNCTION(BLueprintPure)
+	EWeaponCategory GetCurrentWeaponCategory() const;
+
+
+public: // Inner Logic
 
 	void PickUp(class AWeaponBase* NewWeapon);
 
@@ -48,32 +42,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void DropCurrent();
 
-public:
-	UFUNCTION(BlueprintPure, Category = "Weapon")
-	FORCEINLINE AWeaponBase* GetCurrentWeapon() const 
-	{ return CurrentWeapon.Get(); }
 
-	UFUNCTION(BLueprintPure)
-	EWeaponCategory GetCurrentWeaponCategory() const;
-
-	//UFUNCTION(BlueprintPure, Category = "Weapon")
-	//bool HasWEeaponInSlot(int32 SlotIndex) const;
-
-
-public:
-	//UPROPERTY(BlueprintAssignable, Category = "Events")
-	//FOnWeaponChanged OnCurrentWeaponChanged;
-
-	//UPROPERTY(BlueprintAssignable, Category = "Events")
-	//FOnPickUpFailed OnPickUpFailed;
-
-
-	
-
-public:
+public:	// Delegates
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnWeaponChanged OnWeaponChanged; 
-
 
 
 private:
@@ -95,4 +67,6 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
 	TWeakObjectPtr<AWeaponBase> CurrentWeapon;
+
+	EWeaponCategory CuurentWeaponCategory;
 };

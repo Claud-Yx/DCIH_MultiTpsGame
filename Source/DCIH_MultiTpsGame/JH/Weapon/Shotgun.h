@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -24,13 +22,13 @@ private:
 	void HitScan();
 
 protected:
-	UPROPERTY(EditAnywhere)
-	int PelletNum;
+	UPROPERTY(EditDefaultsOnly)
+	int PelletCount;
 
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly)
 	float SpreadAngle;
 
-	UPROPERTY()
-	bool bShowLineTrace = false;
+	//UPROPERTY()
+	//bool bShowLineTrace = false;
 
 };

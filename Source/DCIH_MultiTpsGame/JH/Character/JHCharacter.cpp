@@ -551,6 +551,7 @@ void AJHCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 
 	if (AWeaponBase* Weapon = Cast<AWeaponBase>(OtherActor))
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Detected Weapon: %s"), *Weapon->GetName());
 		OverlappingWeapon = Weapon;
 	}
 }
@@ -748,7 +749,7 @@ void AJHCharacter::EquipWeapon(AWeaponBase* Weapon)
 	//}
 
 	EquippedWeapon = Weapon;
-	EquippedWeapon->OnEquipped(this);
+	EquippedWeapon->OnEquip(this);
 
 	OnWeaponEquipped.Broadcast(Weapon); // "무기 장착됨" 사실만 알림
 
@@ -762,7 +763,7 @@ void AJHCharacter::UnEquipWeapon()
 {
 	if (!EquippedWeapon) return;
 
-	EquippedWeapon->OnUnEquipped();
+	EquippedWeapon->OnUnEquip();
 	EquippedWeapon = nullptr;
 }
 
@@ -770,7 +771,7 @@ void AJHCharacter::DropWeapon()
 {
 	if (!EquippedWeapon) return;
 
-	EquippedWeapon->OnDropped();
+	EquippedWeapon->OnDrop();
 	EquippedWeapon = nullptr;
 }
 

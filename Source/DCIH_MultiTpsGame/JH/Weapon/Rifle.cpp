@@ -5,25 +5,20 @@
 
 ARifle::ARifle()
 {
-    TraceRange = 20000.f;
+ //   TraceRange = 20000.f;
 
-    CurAmmo = 300;
-    MaxAmmo = 30;
-    Damage = 30.f;
-    FireRate = 0.1f;
-    LastFireTime = -FireRate; // 처음엔 바로 발사 가능하도록 초기화
-    ReloadTime = 1.0f;
+ //   CurAmmo = 300;
+ //   MaxAmmo = 30;
+ //   Damage = 30.f;
+ //   FireRate = 0.1f;
+ //   LastFireTime = -FireRate; // 처음엔 바로 발사 가능하도록 초기화
+ //   ReloadTime = 1.0f;
 
-	RecoilConfig.RecoilVerticalMin = 0.05f;
-	RecoilConfig.RecoilVerticalMax = 0.2f;
-	RecoilConfig.RecoilHorizontalMin = -0.1f;
-	RecoilConfig.RecoilHorizontalMax = 0.1f;
-	RecoilConfig.RecoilRecoverySpeed = 1.f;
-}
-
-void ARifle::Tick(float Deltatime)
-{
-    Super::Tick(Deltatime);
+	//RecoilConfig.RecoilVerticalMin = 0.05f;
+	//RecoilConfig.RecoilVerticalMax = 0.2f;
+	//RecoilConfig.RecoilHorizontalMin = -0.1f;
+	//RecoilConfig.RecoilHorizontalMax = 0.1f;
+	//RecoilConfig.RecoilRecoverySpeed = 1.f;
 }
 
 // 프레임 2개씩 들어오는데
@@ -33,7 +28,7 @@ void ARifle::Fire()
 {
     Super::Fire();
 
-    if (!bLastFireSuccess) return;
+    // if (!bLastFireSuccess) return;
 
 	HitScan();
 }
@@ -42,10 +37,15 @@ void ARifle::HitScan()
 {
     FCollisionQueryParams TraceParams(SCENE_QUERY_STAT(RifleTrace), true, this);
 
-    if (OwnerCharacter.IsValid())
-    {
-        TraceParams.AddIgnoredActor(OwnerCharacter.Get());
-    }
+	TraceParams.AddIgnoredActor(this);
+
+    if (OwnerCharacter.IsValid()) TraceParams.AddIgnoredActor(OwnerCharacter.Get());
+
+
+	const FVector Start = GetMuzzleLocation();
+    const FVector End = GetAimPoint();
+
+
 
     if (MeshComp)
     {
@@ -55,22 +55,20 @@ void ARifle::HitScan()
     FHitResult Hit;
     const bool bHit = GetWorld()->LineTraceSingleByChannel(
         Hit,
-        GetMuzzleLocation(),
-        GetAimPoint(),
-        TraceChannel,
+        Start,
+        End,
+        ECC_Visibility,
         TraceParams
     );
-    const FVector ShotDir = (GetAimPoint() - GetMuzzleLocation()).GetSafeNormal();
+
+
 
     if (bHit) {
-        ApplyDamage(Hit, ShotDir);
-
+        const FVector ShotDir = (End - Start).GetSafeNormal();
+        ApplyHitDamage(Hit, ShotDir);
     }
 
-
-
-	DrawDebugTrace(ShotDir, Hit, bHit);
-
+	DrawDebugTrace(Start, End, Hit, bHit);
 }
 
 //void ARifle::DrawDebugTrace(const FVector& ShotDir, const FHitResult& Hit, const bool bHit) const

@@ -91,6 +91,11 @@ void UKJHCharacterAnim::PlayRollMontage()
     Montage_Play(RollMontage);
 }
 
+EWeaponCategory UKJHCharacterAnim::GetEquippedWeaponCategory() const
+{
+	return owningCharacter.Get()->GetWeaponManager()->GetCurrentWeaponCategory();
+}
+
 //void UKJHCharacterAnim::AnimNotify_Launch()
 //{
 //	// owningCharacter->Roll();

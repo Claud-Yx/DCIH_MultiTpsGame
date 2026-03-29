@@ -14,9 +14,9 @@
 #include "JHCharacter.generated.h"
 
 class AWeaponBase;
+class UWeaponManagerComponent;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnWeaponEquipped, AWeaponBase*);
-class UWeaponManagerComponent;
 
 UCLASS()
 class DCIH_MULTITPSGAME_API AJHCharacter
@@ -62,15 +62,17 @@ public:	// Getter
 	UFUNCTION(BlueprintPure, Category = "Aim Offset")
 	FORCEINLINE float GetAO_Pitch() const { return AO_Pitch; }
 
+	UFUNCTION(BlueprintPure, Category = "Turn In Place")
+	FORCEINLINE ETurnInPlace GetTurningInPlace() const { return TurningInPlace; }
 
 
 	UFUNCTION(BlueprintPure, Category = "Weapon")
 	FORCEINLINE AWeaponBase* GetEquippedWeapon() { return EquippedWeapon; }
 
+	UFUNCTION(BlueprintPure, Category = "Weapon")
 
+	FORCEINLINE UWeaponManagerComponent* GetWeaponManager() { return WeaponManagerComp; }
 
-	UFUNCTION(BlueprintPure, Category = "Turn In Place")
-	FORCEINLINE ETurnInPlace GetTurningInPlace() const { return TurningInPlace; }
 
 	UFUNCTION(BlueprintPure, Category = "Stamina")
 	FORCEINLINE UStaminaComponent* GetStaminaComponent() const { return StaminaComp; };
@@ -289,7 +291,8 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UWeaponManagerComponent> WeaponManagerComp;
 
-	UPROPERTY()
+	public:
+	UPROPERTY(meta = (AllowPrivateAccess = "true"))
 	class AWeaponBase* OverlappingWeapon;
 	
 };

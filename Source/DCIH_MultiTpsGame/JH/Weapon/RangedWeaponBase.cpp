@@ -1,5 +1,6 @@
 #include "JH/Weapon/RangedWeaponBase.h"
 
+#include "JH/Weapon/WeaponDataAsset.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/Pawn.h"
@@ -14,20 +15,68 @@ ARangedWeaponBase::ARangedWeaponBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	MuzzleSocketName = "Muzzle";
-	TraceChannel = ECC_Visibility;
+	MuzzleSocket = TEXT("Muzzle");
+	// TraceChannel = ECC_Visibility;
 	// MagazineNum = 0;
 }
 
 void ARangedWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
-	SetActorTickEnabled(true);
+
+	if (WeaponData)
+	{
+		CurAmmo = WeaponData->MaxAmmo;
+		MaxAmmo = WeaponData->MaxAmmo;
+
+		// LastFireTime을 FireRate 이전으로 초기화해서 즉시 발사 가능하게
+		LastFireTime = -WeaponData->FireRate;
+	}
 }
 
 void ARangedWeaponBase::Tick(float DeltaTime)
 {
+	Super::Tick(DeltaTime);
 	RecoilRecovery(DeltaTime);
+}
+
+void ARangedWeaponBase::Fire()
+{
+	bLastFireSuccess = false;
+
+	if (!CanFire()) return;
+
+	if (CurAmmo <= 0)
+	{
+		Reload();
+		return;
+	}
+
+	ConsumeAmmo(1);
+	ApplyRecoil();
+	
+	// Fire();
+
+	bLastFireSuccess = true;
+
+
+	//WeaponState = EWeaponState::Firing;
+	//bLastFireSuccess = false;
+
+	//if (!CanFire()) return;
+
+	//if (CurAmmo <= 0)
+	//{
+	//	Reload();
+	//	return;
+	//}
+
+	//ApplyRecoil();
+	//
+	//ConsumeAmmo(1);
+
+	//bLastFireSuccess = true;
+	//WeaponState = EWeaponState::Equipped;
 }
 
 //void ARangedWeaponBase::AddMagazine(int32 MagazineAmount)
@@ -39,96 +88,92 @@ void ARangedWeaponBase::Tick(float DeltaTime)
 
 FVector ARangedWeaponBase::GetMuzzleLocation() const
 {
-	if (MeshComp && MeshComp->DoesSocketExist(MuzzleSocketName))
+	if (MeshComp && MeshComp->DoesSocketExist(MuzzleSocket))
 	{
-		return MeshComp->GetSocketLocation(MuzzleSocketName);
+		return MeshComp->GetSocketLocation(MuzzleSocket);
 	}
 	return GetActorLocation();
 }
 
 FVector ARangedWeaponBase::GetAimPoint() const
 {
-	FVector camStartLoc;
-	FRotator camRot;
+	FVector CamLoc;
+	FRotator CamRot;
 
-	OwnerController->GetPlayerViewPoint(camStartLoc, camRot);
+	OwnerController->GetPlayerViewPoint(CamLoc, CamRot);
 
-	/*if (const ACharacter* P = OwnerCharacter.Get())
+
+	const float Range = WeaponData ? WeaponData->TraceRange : 20000.f;
+	const FVector End = CamLoc + CamRot.Vector() * Range;
+
+	FHitResult Hit;
+	FCollisionQueryParams Params(SCENE_QUERY_STAT(AimTrace), false);
+	Params.AddIgnoredActor(this);
+	if (OwnerCharacter.IsValid()) Params.AddIgnoredActor(OwnerCharacter.Get());
+
+	if (GetWorld()->LineTraceSingleByChannel(Hit, CamLoc, End, ECC_Visibility, Params)
+		&& Hit.bBlockingHit)
 	{
-		if (AController* C = P->GetController())
-		{
-			C->GetPlayerViewPoint(camStartLoc, camRot);
-		}
-	}*/
-	const FVector camEndLoc = camStartLoc + camRot.Vector() * TraceRange;
-
-
-
-	FHitResult camHit;
-	FCollisionQueryParams camParams(SCENE_QUERY_STAT(CameraAimTrace), false, this);
-	if (APawn* P = OwnerCharacter.Get())
-	{
-		camParams.AddIgnoredActor(P);
+		return Hit.ImpactPoint;
 	}
-	if (MeshComp)
-	{
-		camParams.AddIgnoredComponent(Cast<UPrimitiveComponent>(MeshComp));
-	}
+	return End;
+}
 
-	if (GetWorld()->LineTraceSingleByChannel
+void ARangedWeaponBase::ApplyHitDamage(const FHitResult& Hit, const FVector& ShotDir)
+{
+	if (!Hit.GetActor() || !WeaponData) return;
+
+	UGameplayStatics::ApplyPointDamage
 	(
-		camHit,
-		camStartLoc,
-		camEndLoc,
-		TraceChannel,
-		camParams) 
-		&& camHit.bBlockingHit)
-	{
-		return camHit.ImpactPoint;
-	}
-	return camEndLoc;
+		Hit.GetActor(),
+		WeaponData->Damage,
+		ShotDir,
+		Hit,
+		OwnerController.Get(),
+		this,
+		UDamageType::StaticClass()
+	);
 }
 
-bool ARangedWeaponBase::CanFire()
+void ARangedWeaponBase::DrawDebugTrace(const FVector& Start, const FVector& End, const FHitResult& Hit, bool bHit) const
 {
-	if (WeaponState != EWeaponState::Equipped &&
-		WeaponState != EWeaponState::Firing)
+#if ENABLE_DRAW_DEBUG
+	DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 1.5f, 0, 1.f);
+
+	if (bHit && Hit.bBlockingHit)
+		DrawDebugPoint(GetWorld(), Hit.ImpactPoint, 8.f, FColor::Red, false, 1.5f);
+	else
+		DrawDebugPoint(GetWorld(), End, 6.f, FColor::Blue, false, 1.5f);
+#endif
+}
+
+bool ARangedWeaponBase::CanFire() const
+{
+	if (WeaponState != EWeaponState::Equipped )
 	{
 		return false;
 	}
-	float currentTime = GetWorld()->GetTimeSeconds();
-
-	if (currentTime - LastFireTime < FireRate)
+	if(WeaponData == nullptr)
 	{
 		return false;
 	}
 
-	LastFireTime = currentTime;
+	float CurrentTime = GetWorld()->GetTimeSeconds();
 
-	return true;
+	return (CurrentTime - LastFireTime) >= WeaponData->FireRate;
+
+
+	//if (currentTime - LastFireTime < FireRate)
+	//{
+	//	return false;
+	//}
+
+	//LastFireTime = currentTime;
+
+	//return true;
 
 }
 
-void ARangedWeaponBase::Fire()
-{
-	WeaponState = EWeaponState::Firing;
-	bLastFireSuccess = false;
-
-	if (!CanFire()) return;
-
-	if (CurAmmo <= 0)
-	{
-		Reload();
-		return;
-	}
-
-	ApplyRecoil();
-	
-	ConsumeAmmo(1);
-
-	bLastFireSuccess = true;
-	WeaponState = EWeaponState::Equipped;
-}
 
 void ARangedWeaponBase::Reload()
 {
@@ -142,7 +187,7 @@ void ARangedWeaponBase::Reload()
 		ReloadTimerHandle,
 		this,
 		&ARangedWeaponBase::FinishReload,
-		ReloadTime,
+		WeaponData->ReloadTime,
 		false
 	);
 }
@@ -151,12 +196,8 @@ void ARangedWeaponBase::FinishReload()
 {
 	CurAmmo = MaxAmmo;
 	SetWeaponState(EWeaponState::Equipped);
-	AmmoChangedDelegate.Broadcast(CurAmmo, MaxAmmo);
-
-	if (UWorld* World = GetWorld())
-	{
-		World->GetTimerManager().ClearTimer(ReloadTimerHandle);
-	}
+	OnAmmoChanged.Broadcast(CurAmmo, MaxAmmo);
+	GetWorld() ->GetTimerManager().ClearTimer(ReloadTimerHandle);
 }
 
 void ARangedWeaponBase::ApplyRecoil()
@@ -183,9 +224,9 @@ void ARangedWeaponBase::RecoilRecovery(float DeltaTime)
 	if (!OwnerCharacter.IsValid())
 		return;
 
-	JHController = Cast<AJHPlayerController>(OwnerController.Get());
+	CachedJHController = Cast<AJHPlayerController>(OwnerController.Get());
 
-	float PlayerDownInput = JHController->MousePitch;
+	float PlayerDownInput = CachedJHController->MousePitch;
 	// UE_LOG(LogTemp, Warning, TEXT("PlayerDownInput: %f"), PlayerDownInput);
 
 	float TotalRecovery = RecoilConfig.CurrentRecoilVertical + PlayerDownInput;
@@ -193,7 +234,7 @@ void ARangedWeaponBase::RecoilRecovery(float DeltaTime)
 
 	if (TotalRecovery < RecoilConfig.RecoilVerticalMin) {
 		RecoilConfig.CurrentRecoilVertical = 0.f;
-		JHController->MousePitch = 0.f;
+		CachedJHController->MousePitch = 0.f;
 		return;
 	}
 
@@ -201,7 +242,7 @@ void ARangedWeaponBase::RecoilRecovery(float DeltaTime)
 
 	RecoverAmount = FMath::Min(RecoverAmount, TotalRecovery);
 
-	JHController->AddPitchInput(RecoverAmount);
+	CachedJHController->AddPitchInput(RecoverAmount);
 
 
 	RecoilConfig.CurrentRecoilVertical -= RecoverAmount;
@@ -217,40 +258,13 @@ void ARangedWeaponBase::RecoilRecovery(float DeltaTime)
 	//RecoilConfig.CurrentRecoilVertical -= VertRecovery;
 }
 
-void ARangedWeaponBase::ApplyDamage(const FHitResult& Hit,const FVector& ShotDir)
-{
-	if (!Hit.GetActor()) return;
-
-	UGameplayStatics::ApplyPointDamage(
-		Hit.GetActor(),
-		Damage,
-		ShotDir,
-		Hit,
-		OwnerController.Get(),
-		this,
-		UDamageType::StaticClass()
-
-	);
-}
 
 void ARangedWeaponBase::ConsumeAmmo(int32 Amount)
 {
 	CurAmmo = FMath::Clamp(CurAmmo - Amount, 0, MaxAmmo);
+	OnAmmoChanged.Broadcast(CurAmmo, MaxAmmo);
 
-	AmmoChangedDelegate.Broadcast(CurAmmo, MaxAmmo);
-}
-
-void ARangedWeaponBase::DrawDebugTrace(const FVector& ShotDir, const FHitResult& Hit, const bool bHit) const
-{
-
-	DrawDebugLine(GetWorld(), GetMuzzleLocation(), GetAimPoint(), FColor::Green, false, 2.f, 0, 1.5f);
-
-	if (bHit && Hit.bBlockingHit)
-	{
-		DrawDebugPoint(GetWorld(), Hit.ImpactPoint, 8.f, FColor::Red, false, 2.f);
-	}
-	else
-	{
-		DrawDebugPoint(GetWorld(), GetAimPoint(), 6.f, FColor::Blue, false, 2.f);
-	}
+	// LastFireTime은 CanFire 통과 시점에 갱신
+	LastFireTime = GetWorld()->GetTimeSeconds();
+	// Broadcast(CurAmmo, MaxAmmo);
 }

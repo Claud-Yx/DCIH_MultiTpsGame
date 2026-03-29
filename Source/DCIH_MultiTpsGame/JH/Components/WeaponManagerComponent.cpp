@@ -1,7 +1,7 @@
 #include "JH/Components/WeaponManagerComponent.h"
 #include "JH/Weapon/WeaponBase.h"
-#include "JH/Enum/E_WeaponTypes.h"
 #include "JH/Weapon/WeaponDataAsset.h"
+#include "GameFramework/Character.h"
 
 UWeaponManagerComponent::UWeaponManagerComponent()
 {
@@ -26,8 +26,8 @@ void UWeaponManagerComponent::PickUp(AWeaponBase* NewWeapon)
 {
     if (!NewWeapon || !NewWeapon->GetWeaponData()) return;
     
-	const EWeaponCategory Category = NewWeapon->GetWeaponData()->Category;
-	const int32 TargetSlotIndex = GetEmptySlotIndex(Category);
+	const EWeaponCategory Category  = NewWeapon->GetWeaponData()->Category;
+	const int32 TargetSlotIndex     = GetEmptySlotIndex(Category);
 
 	if (TargetSlotIndex == -1)
 	{
@@ -35,16 +35,58 @@ void UWeaponManagerComponent::PickUp(AWeaponBase* NewWeapon)
 		return;
 	}
 
+    // 슬롯에 이미 무기가 있으면 드롭
     if (Slots[TargetSlotIndex])
     {
 		AWeaponBase* Old = Slots[TargetSlotIndex].Get();
+        if(CurrentWeapon.Get() == Old)
+			CurrentWeapon.Reset();
+
+		Old->OnDrop();
+        Slots[TargetSlotIndex] = nullptr;
     }
 
+	// 새로운 무기를 슬롯에 추가
 	Slots[TargetSlotIndex] = NewWeapon;
     NewWeapon->SetOwner(GetOwner());
 
+    if (ACharacter* Char = Cast<ACharacter>(GetOwner()))
+    {
+        NewWeapon->SetOwnerController(Cast<APlayerController>(Char->GetController()));
+        NewWeapon->OnEquip(Char);
+    }
+
+    // 첫 무기면 바로 장착, 아니면 홀스터
+    if (!CurrentWeapon.IsValid())
+    {
+        CurrentWeapon = NewWeapon;
+        AttachToSocket(NewWeapon, NewWeapon->GetWeaponData()->HandSocket);
+        // OnWeaponChanged.Broadcast(NewWeapon);
+    }
+    else
+    {
+        AttachToSocket(NewWeapon, NewWeapon->GetWeaponData()->HolsterSocket);
+    }
+
+    //if (APawn* OwnerPawn = Cast<APawn>(GetOwner()))
+    //{
+    //    if (APlayerController* PC = Cast<APlayerController>(OwnerPawn->GetController()))
+    //    {
+    //        NewWeapon->SetOwnerController(PC);
+    //    }
+    //}
 
 
+    //AttachToSocket(NewWeapon, NewWeapon->GetWeaponData()->HandSocket);
+
+    //CurrentWeapon = NewWeapon;
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
  //   if (Slots.Num() > SLOT_COUNT) return;
 
 	//Slots.Add(NewWeapon);
@@ -97,7 +139,7 @@ void UWeaponManagerComponent::DropCurrent()
     {
         if (Slot.Get() == Dropping) { Slot = nullptr; break; }
     }
-	CurrentWeapon->OnDropped();
+	CurrentWeapon->OnDrop();
     CurrentWeapon.Reset();
 }
 
